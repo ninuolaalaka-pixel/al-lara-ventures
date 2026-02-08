@@ -14,6 +14,7 @@ export default async function handler(req, res) {
   const totalAmount = cartItems.reduce((sum, item) => {
     return sum + item.price * item.quantity * 100;
   }, 0);
+  console.log("TOTAL AMOUNT:", totalAmount);
 
   try {
     const response = await fetch("https://api.ziina.com/payment_intents", {
@@ -40,6 +41,7 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
+    console.log("ZIINA RAW RESPONSE:", data);
 
     if (!data.payment_url) {
       return res.status(500).json({ error: "Ziina checkout failed" });
