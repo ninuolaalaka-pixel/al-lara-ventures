@@ -45,14 +45,17 @@ console.log("TOTAL AMOUNT IN FILS:", totalAmount);
     const data = await response.json();
     console.log("ZIINA RAW RESPONSE:", data);
 
-    if (!data.payment_url) {
-      return res.status(500).json({ error: "Ziina checkout failed" });
-    }
+    const url =
+  data.payment_url ||
+  data.checkout_url ||
+  data.hosted_payment_url ||
+  (data.links && data.links.payment_url);
 
-    return res.status(200).json({
-      success: true,
-      url: data.payment_url
-    });
+if (!url) {
+  return res.status(500).json({ error: "Ziina checkout failed", details: data });
+}
+
+return res.status(200).json({ success: true, url });
 
   } catch (error) {
     console.error("Ziina error:", error);
