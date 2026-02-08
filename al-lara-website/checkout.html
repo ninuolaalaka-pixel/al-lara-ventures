@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout – AL LARA</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .checkout-container {
+      max-width: 450px;
+      margin: 80px auto;
+      padding: 30px;
+      border-radius: 12px;
+      background: #ffffff;
+      box-shadow: 0 0 20px rgba(0,0,0,0.08);
+      font-family: Arial, sans-serif;
+    }
+    .checkout-container h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      font-weight: 600;
+    }
+    .checkout-container label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .checkout-container input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 18px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+    .checkout-btn {
+      width: 100%;
+      padding: 14px;
+      background: black;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .checkout-btn:hover {
+      background: #333;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="checkout-container">
+    <h2>Checkout</h2>
+
+    <label for="customer-name">Full Name</label>
+    <input id="customer-name" type="text" placeholder="Enter your name" required>
+
+    <label for="customer-email">Email Address</label>
+    <input id="customer-email" type="email" placeholder="Enter your email" required>
+
+    <button id="checkout-uae-btn" class="checkout-btn">Pay Now</button>
+  </div>
+
+  <script src="js/cart.js"></script>
+</body>
+</html>
