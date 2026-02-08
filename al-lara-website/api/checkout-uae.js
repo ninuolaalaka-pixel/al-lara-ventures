@@ -1,5 +1,5 @@
 export const config = {
-  runtime: "edge",
+  runtime: "node.js",
   regions: ["bah1"]
 };
 export default async function handler(req, res) {
@@ -20,7 +20,7 @@ export default async function handler(req, res) {
   console.log("TOTAL AMOUNT:", totalAmount);
 
   try {
-    const response = await fetch("https://api-v2.ziina.com/payment_intent", {
+    const response = await fetch("https://api-v2.ziina.com/api/payment_intent", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${process.env.ZIINA_SECRET_KEY}`,
