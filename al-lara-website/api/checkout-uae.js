@@ -11,10 +11,11 @@ export default async function handler(req, res) {
   }
 
   // Calculate total amount in fils (AED * 100)
-  const totalAmount = cartItems.reduce((sum, item) => {
-    return sum + item.price * item.quantity * 100;
-  }, 0);
-  console.log("TOTAL AMOUNT:", totalAmount);
+  const totalAmount = Math.round(cartItems.reduce((sum, item) => {
+  return sum + (item.price * item.quantity * 100);
+}, 0));
+
+console.log("TOTAL AMOUNT IN FILS:", totalAmount);
 
   try {
     const response = await fetch("https://api-v2.ziina.com/api/payment_intent", {
@@ -25,12 +26,13 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         amount: totalAmount,
-        currency: "AED",
-        description: `Order from ${customer.name}`,
+        currency_code: "AED",
+        message: `Order from ${customer.name}`,
+        test: true, // Set to false in production
 
         // CUSTOM REDIRECTS (your pages)
-        success_redirect_url: "https://al-lara-ventures.vercel.app/checkout-success",
-        cancel_redirect_url: "https://al-lara-ventures.vercel.app/checkout-cancelled",
+        success_url: "https://al-lara-ventures.vercel.app/checkout-success",
+        cancel_url: "https://al-lara-ventures.vercel.app/checkout-cancelled",
 
         metadata: {
           customerEmail: customer.email,
