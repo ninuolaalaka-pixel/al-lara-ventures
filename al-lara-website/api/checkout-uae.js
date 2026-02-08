@@ -1,6 +1,4 @@
-import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -13,37 +11,48 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Invalid cart" });
   }
 
-  const lineItems = cartItems.map(item => ({
-    price_data: {
-      currency: "aed",
-      product_data: {
-        name: item.name
-      },
-      unit_amount: item.price * 100 // Stripe expects amount in cents
-    },
-    quantity: item.quantity
-  }));
+  // Calculate total amount in fils (AED * 100)
+  const totalAmount = cartItems.reduce((sum, item) => {
+    return sum + item.price * item.quantity * 100;
+  }, 0);
 
   try {
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      line_items: lineItems,
-      mode: "payment",
-      success_url: "https://al-lara-ventures.vercel.app//checkout-success?session_id={CHECKOUT_SESSION_ID}",
-      cancel_url: "https://al-lara-ventures.vercel.app//checkout-cancelled",
-      customer_email: customer.email,
-      metadata: {
-        customerName: customer.name,
-        region: "UAE"
-      }
+    const response = await fetch("https://api.ziina.com/payment_intents", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${process.env.ZIINA_API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        amount: totalAmount,
+        currency: "AED",
+        description: `Order from ${customer.name}`,
+
+        // ⭐ CUSTOM REDIRECTS (your pages)
+        success_redirect_url: "https://al-lara-ventures.vercel.app/checkout-success",
+        cancel_redirect_url: "https://al-lara-ventures.vercel.app/checkout-cancelled",
+
+        metadata: {
+          customerEmail: customer.email,
+          customerName: customer.name,
+          region: "UAE"
+        }
+      })
     });
+
+    const data = await response.json();
+
+    if (!data.payment_url) {
+      return res.status(500).json({ error: "Ziina checkout failed" });
+    }
 
     return res.status(200).json({
       success: true,
-      url: session.url
+      url: data.payment_url
     });
+
   } catch (error) {
-    console.error("Stripe error:", error);
-    return res.status(500).json({ error: "Stripe checkout failed" });
+    console.error("Ziina error:", error);
+    return res.status(500).json({ error: "Ziina checkout failed" });
   }
 }
