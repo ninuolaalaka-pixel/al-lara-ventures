@@ -43,7 +43,7 @@ console.log("TOTAL AMOUNT IN FILS:", totalAmount);
     });
 
     const data = await response.json();
-    console.log("ZIINA RAW RESPONSE FULL:", JSON.stringify(data, null, 2));
+    console.log("ZIINA RAW FULL RESPONSE:", JSON.stringify(data, null, 2));
 
 
     const url =
