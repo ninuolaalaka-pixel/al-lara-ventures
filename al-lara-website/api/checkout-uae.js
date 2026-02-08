@@ -1,5 +1,4 @@
 
-
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
@@ -20,7 +19,7 @@ export default async function handler(req, res) {
     const response = await fetch("https://api.ziina.com/payment_intents", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${process.env.ZIINA_API_KEY}`,
+        "Authorization": `Bearer ${process.env.ZIINA_SECRET_KEY}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
