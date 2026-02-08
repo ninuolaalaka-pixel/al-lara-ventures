@@ -28,7 +28,7 @@ export default async function handler(req, res) {
         currency: "AED",
         description: `Order from ${customer.name}`,
 
-        // ⭐ CUSTOM REDIRECTS (your pages)
+        // CUSTOM REDIRECTS (your pages)
         success_redirect_url: "https://al-lara-ventures.vercel.app/checkout-success",
         cancel_redirect_url: "https://al-lara-ventures.vercel.app/checkout-cancelled",
 
