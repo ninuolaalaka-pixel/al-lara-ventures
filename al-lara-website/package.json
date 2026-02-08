@@ -1,5 +1,9 @@
 {
+  "name": "al-lara-website",
+  "version": "1.0.0",
+  "type": "module",
   "dependencies": {
-    "stripe": "^20.2.0"
+    "stripe": "^20.2.0",
+    "resend": "latest"
   }
 }
