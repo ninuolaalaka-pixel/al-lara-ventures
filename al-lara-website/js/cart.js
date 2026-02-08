@@ -255,7 +255,7 @@ if (checkoutUaeBtn) {
       const data = await response.json();
 
       if (data.success) {
-        window.location.href = data.url; // redirect to Stripe
+        window.location.href = data.url; // redirect to Ziina checkout
       } else {
         alert("Checkout error.");
       }
