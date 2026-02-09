@@ -356,8 +356,10 @@ form textarea {
     width: 100%;
     text-align: center;
   }
+}
 
-
+.cart-table-wrapper {
+  overflow-x: auto;
 }
 
 /* Make section titles clickable without changing their appearance */
