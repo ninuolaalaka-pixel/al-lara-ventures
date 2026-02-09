@@ -259,8 +259,9 @@ h3 {
 }
 
 .section2-img {
-  width: 560px;
-  height: 300px;
+  width: 100%;
+  max-width: 560px;
+  height: auto;
   border-radius: 10px;
   box-shadow: 0 3px 10px rgba(0,0,0,0.1);
   object-fit: cover;
