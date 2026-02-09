@@ -292,27 +292,6 @@ form textarea {
   color: #2e7d32;
 }
 
-@media (max-width: 768px) {
-  .hero-inner {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .hero-text {
-    text-align: center;
-  }
-}
-
-@media (max-width: 768px) {
-  h1 {
-    font-size: 28px;
-  }
-
-  h2 {
-    font-size: 24px;
-  }
-}
-
 
 /* Make section titles clickable without changing their appearance */
 .section-link,
