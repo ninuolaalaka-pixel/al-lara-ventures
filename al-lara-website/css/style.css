@@ -77,6 +77,12 @@ header nav div {
   color: #2e7d32;
 }
 
+.cart-img {
+  width: 60px;
+  height: auto;
+  object-fit: cover;
+}
+
 .cart-link {
   color: #2e7d32;
   font-size: 18px;
@@ -330,6 +336,11 @@ form textarea {
   h2 {
     font-size: 24px;
   }
+
+  .cart-img {
+    width: 45px;
+  }
+
 
 }
 
