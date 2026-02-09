@@ -298,6 +298,11 @@ form textarea {
   color: #2e7d32;
 }
 
+.checkout-buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
 
 @media (max-width: 768px) {
   header nav {
@@ -339,6 +344,17 @@ form textarea {
 
   .cart-img {
     width: 45px;
+  }
+
+  .checkout-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .checkout-buttons button,
+  .checkout-buttons a {
+    width: 100%;
+    text-align: center;
   }
 
 
