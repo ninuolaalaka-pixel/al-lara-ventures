@@ -308,9 +308,7 @@ form textarea {
   .nav-link {
     font-size: 14px;
   }
-}
 
-@media (max-width: 768px) {
   .hero-inner {
     flex-direction: column;
     text-align: center;
@@ -320,18 +318,20 @@ form textarea {
     text-align: center;
     margin: 0 auto;
   }
-}
 
-@media (max-width: 768px) {
-  h1 {
+   .hero-img {
+    max-width: 100%;
+    }
+
+   h1 {
     font-size: 28px;
   }
 
   h2 {
     font-size: 24px;
   }
-}
 
+}
 
 /* Make section titles clickable without changing their appearance */
 .section-link,
