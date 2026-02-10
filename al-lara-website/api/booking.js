@@ -17,8 +17,8 @@ export default async function handler(req, res) {
 
   //booking
 await resend.emails.send({
-  from: "AL LARA VENTURES <onboarding@resend.dev>",
-  to: "ninuolaalaka@gmail.com",
+  from: "AL LARA VENTURES <contact@allaraventures.com>",
+  to: "contact@allaraventures.com",
   subject: "New Cleaning Booking",
   html: `
     <h2>New Booking Request</h2>
