@@ -150,7 +150,6 @@ if (sendMessaggeBtn) {
       const data = await response.json();
 
       if (response.ok) {
-        alert("Your message has been sent (backend received it).");
         nameInput.value = "";
         emailInput.value = "";
         telInput.value = "";
@@ -221,7 +220,7 @@ if (submitBookingBtn) {
       const data = await response.json();
 
       if (response.ok) {
-        alert("Booking submitted successfully!");
+         window.location.href = "/booking-success.html";
       } else {
         alert("Something went wrong.");
       }
