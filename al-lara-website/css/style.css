@@ -362,6 +362,14 @@ form textarea {
   overflow-x: auto;
 }
 
+.product-img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+
+
 /* Make section titles clickable without changing their appearance */
 .section-link,
 .section-link:link,
