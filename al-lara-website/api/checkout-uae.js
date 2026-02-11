@@ -28,7 +28,7 @@ console.log("TOTAL AMOUNT IN FILS:", totalAmount);
         amount: totalAmount,
         currency_code: "AED",
         message: `Order from ${customer.name}`,
-        test: true, // Set to false in production
+        test: false, // Set to false in production
 
         // CUSTOM REDIRECTS (your pages)
         success_url: "https://al-lara-ventures.vercel.app/checkout-success",
