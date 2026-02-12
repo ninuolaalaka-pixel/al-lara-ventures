@@ -20,8 +20,8 @@ export default async function handler(req, res) {
         amount: Math.round(amount * 100), // AED → fils
         currency_code: "AED",
         message: message || `Booking for ${customerName}`,
-        success_url: "https://al-lara-ventures.vercel.app/checkout-success",
-        cancel_url: "https://al-lara-ventures.vercel.app/checkout-cancelled",
+        success_url: "https://www.allaraventures.com/checkout-success",
+        cancel_url: "https://www.allaraventures.com/checkout-cancelled",
         metadata: {
           customerName,
           customerEmail
