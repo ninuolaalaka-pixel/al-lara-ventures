@@ -30,8 +30,8 @@ console.log("TOTAL AMOUNT IN FILS:", totalAmount);
         message: `Order from ${customer.name}`,
 
         // CUSTOM REDIRECTS (your pages)
-        success_url: "https://al-lara-ventures.vercel.app/checkout-success",
-        cancel_url: "https://al-lara-ventures.vercel.app/checkout-cancelled",
+        success_url: "https://www.allaraventures.com/checkout-success",
+        cancel_url: "https://www.allaraventures.com/checkout-cancelled",
 
         metadata: {
           customerEmail: customer.email,
