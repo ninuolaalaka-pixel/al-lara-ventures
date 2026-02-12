@@ -30,8 +30,8 @@ console.log("TOTAL AMOUNT IN FILS:", totalAmount);
         message: `Order from ${customer.name}`,
 
         // CUSTOM REDIRECTS (your pages)
-        success_url: "https://www.allaraventures.com/checkout-success",
-        cancel_url: "https://www.allaraventures.com/checkout-cancelled",
+        success_url: "https://www.allaraventures.com/checkout-success.html",
+        cancel_url: "https://www.allaraventures.com/checkout-cancelled.html",
 
         metadata: {
           customerEmail: customer.email,
