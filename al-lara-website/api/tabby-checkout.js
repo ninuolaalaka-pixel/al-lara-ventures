@@ -3,6 +3,13 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
+  const rawPhone = customer.phone || "";
+  const cleanPhone = rawPhone.replace(/\D/g, "");
+  const finalPhone = cleanPhone.startsWith("971")
+    ? cleanPhone
+    : "971" + cleanPhone.replace(/^0+/, "");
+
+
   const { cartItems, customer } = req.body || {};
 
   if (!cartItems || !Array.isArray(cartItems)) {
@@ -48,10 +55,6 @@ export default async function handler(req, res) {
       })
     });
 
-    
-    const cleanPhone = customer.tel.replace(/\D/g, ''); 
-
-    const finalPhone = cleanPhone.startsWith('971') ? cleanPhone : '971' + cleanPhone.replace(/^0+/, '');
     const data = await response.json();
 
     const checkoutUrl =
