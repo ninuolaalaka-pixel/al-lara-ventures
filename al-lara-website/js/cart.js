@@ -294,3 +294,28 @@ if (checkoutNgBtn) {
   });
 }
 
+
+//order//
+async function saveOrder(order) {
+  try {
+    const response = await fetch("/api/orders", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ order })
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      console.log("Order saved!");
+    } else {
+      console.log("Order save error.");
+    }
+  } catch (err) {
+    console.log("Network error.");
+  }
+}
+
+// Initialize
+updateCartCount();
+renderCart();
