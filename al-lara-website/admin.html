@@ -10,13 +10,16 @@
 
   <style>
     body {
-      font-family: 'Poppins', sans-serif;
-      background: #fafafa;
-      padding: 40px;
-      max-width: 500px;
-      margin: auto;
-      color: #222;
-    }
+  font-family: 'Poppins', sans-serif;
+  background: #fafafa;
+  color: #222;
+}
+
+.admin-wrapper {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
 
     h2 {
       text-align: center;
@@ -127,6 +130,7 @@
     </div>
   </header>
 
+  <div class="admin-wrapper">
   <!-- PASSWORD SCREEN -->
   <div id="lockscreen">
     <h3>Admin Access</h3>
@@ -146,6 +150,7 @@
     <button id="generate">Generate Payment Link</button>
 
     <div id="result"></div>
+  </div>
   </div>
 
   <script>
@@ -190,6 +195,7 @@
       }
     };
   </script>
+  
 
 </body>
 </html>
