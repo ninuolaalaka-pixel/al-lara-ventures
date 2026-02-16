@@ -1,4 +1,4 @@
-import { checkCORS, checkRateLimit, checkBot } from "./_security";
+import { checkCORS, checkRateLimit, checkBot } from "./_security.js";
 export default async function handler(req, res) {
     if (!checkCORS(req, res)) return;
     if (!(await checkRateLimit(req, res))) return;
