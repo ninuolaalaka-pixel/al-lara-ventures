@@ -9,7 +9,6 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Invalid cart" });
   }
 
-  // Calculate total amount
   const totalAmount = cartItems.reduce((sum, item) => {
     return sum + item.price * item.quantity;
   }, 0);
@@ -23,7 +22,7 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         payment: {
-          amount: totalAmount.toFixed(2),
+          amount: Number(totalAmount.toFixed(2)),
           currency: "AED",
           description: `Order from ${customer.name}`
         },
@@ -37,7 +36,7 @@ export default async function handler(req, res) {
           items: cartItems.map(item => ({
             title: item.name,
             quantity: item.quantity,
-            unit_price: item.price.toFixed(2)
+            unit_price: Number(item.price.toFixed(2))
           }))
         },
         merchant_urls: {
