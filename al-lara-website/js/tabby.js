@@ -22,15 +22,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    const token = document.querySelector('[name="cf-turnstile-response"]').value;
-
     const response = await fetch("/api/tabby-checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         cartItems,
-        customer,
-        "cf-turnstile-response": token   // ⭐ SEND TOKEN HERE
+        customer
       })
     });
 
