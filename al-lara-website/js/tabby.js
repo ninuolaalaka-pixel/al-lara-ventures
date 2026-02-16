@@ -12,11 +12,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const customer = {
       name: document.getElementById("customer-name").value,
-      email: document.getElementById("customer-email").value
+      email: document.getElementById("customer-email").value,
+      tel: document.getElementById("customer-tel").value
     };
 
-    if (!customer.name || !customer.email) {
-      alert("Please enter your name and email before checkout.");
+    if (!customer.name || !customer.email || !customer.tel) {
+      alert("Please enter your name, email, and phone number before checkout.");
       return;
     }
 
