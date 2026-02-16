@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   tabbyBtn.addEventListener("click", async () => {
-    console.log("Tabby button clicked!");
 
     const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
 
