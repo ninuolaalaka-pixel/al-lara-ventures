@@ -1,7 +1,9 @@
-import { checkCORS, checkRateLimit } from "./_security.js";
+import { checkCORS, checkRateLimit, checkBot } from "./_security.js";
 export default async function handler(req, res) {
   if (!checkCORS(req, res)) return;
   if (!(await checkRateLimit(req, res))) return;
+  if (!(await checkBot(req, res))) return;
+  
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }

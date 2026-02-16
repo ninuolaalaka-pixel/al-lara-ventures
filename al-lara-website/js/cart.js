@@ -240,6 +240,10 @@ if (checkoutUaeBtn) {
       const nameInput = document.getElementById("customer-name").value;
      const emailInput = document.getElementById("customer-email").value;
       const telInput = document.getElementById("customer-tel").value;
+
+
+      const token = document.querySelector('[name="cf-turnstile-response"]').value;
+      
       const response = await fetch("/api/checkout-uae", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -249,7 +253,8 @@ if (checkoutUaeBtn) {
              email: emailInput,
             name: nameInput,
             tel: telInput
-          }
+          },
+          "cf-turnstile-response": token
         })
       });
 
@@ -263,6 +268,7 @@ if (checkoutUaeBtn) {
     } catch (err) {
       alert("Network error.");
     }
+
   });
 }
 
