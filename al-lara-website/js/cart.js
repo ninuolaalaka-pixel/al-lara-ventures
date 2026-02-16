@@ -239,6 +239,7 @@ if (checkoutUaeBtn) {
     try {
       const nameInput = document.getElementById("customer-name").value;
      const emailInput = document.getElementById("customer-email").value;
+      const telInput = document.getElementById("customer-tel").value;
       const response = await fetch("/api/checkout-uae", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -246,7 +247,8 @@ if (checkoutUaeBtn) {
           cartItems: cart,
           customer: {
              email: emailInput,
-            name: nameInput
+            name: nameInput,
+            tel: telInput
           }
         })
       });
