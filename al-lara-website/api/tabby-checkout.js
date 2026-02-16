@@ -24,7 +24,7 @@ export default async function handler(req, res) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.TABBY_SECRET_KEY_TEST}`
+        "Authorization": `Bearer ${process.env.TABBY_SECRET_KEY_TEST}`,
       },
       body: JSON.stringify({
         payment: {
