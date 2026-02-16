@@ -26,11 +26,12 @@ export default async function handler(req, res) {
           currency: "AED",
           description: `Order from ${customer.name}`
         },
-        buyer: {
-          email: customer.email,
-          phone: customer.phone || "",
-          name: customer.name
-        },
+      
+     buyer: {
+         email: customer.email,
+         phone: customer.tel, 
+         name: customer.name
+       },
         order: {
           reference_id: "ORDER-" + Date.now(),
           items: cartItems.map(item => ({
@@ -50,7 +51,7 @@ export default async function handler(req, res) {
     const data = await response.json();
 
     const checkoutUrl =
-      data?.configuration?.available_products?.installments?.web_url;
+     data?.configuration?.available_products?.installments?.[0]?.web_url;
 
     if (!checkoutUrl) {
       return res.status(500).json({ error: "Tabby checkout failed", details: data });
