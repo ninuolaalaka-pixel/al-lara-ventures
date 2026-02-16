@@ -29,7 +29,7 @@ export default async function handler(req, res) {
       
      buyer: {
          email: customer.email,
-         phone: customer.tel, 
+         phone: finalPhone, 
          name: customer.name
        },
         order: {
@@ -37,7 +37,7 @@ export default async function handler(req, res) {
           items: cartItems.map(item => ({
             title: item.name,
             quantity: item.quantity,
-            unit_price: Number(item.price.toFixed(2))
+            unit_price: item.price.toFixed(2)
           }))
         },
         merchant_urls: {
@@ -48,13 +48,22 @@ export default async function handler(req, res) {
       })
     });
 
+    
+    const cleanPhone = customer.tel.replace(/\D/g, ''); 
+
+    const finalPhone = cleanPhone.startsWith('971') ? cleanPhone : '971' + cleanPhone.replace(/^0+/, '');
     const data = await response.json();
 
     const checkoutUrl =
      data?.configuration?.available_products?.installments?.[0]?.web_url;
 
     if (!checkoutUrl) {
-      return res.status(500).json({ error: "Tabby checkout failed", details: data });
+        console.error("Tabby API Error Details:", data);
+    return res.status(response.status).json({ 
+        success: false, 
+        message: "Tabby rejected the request", 
+        details: data
+      });
     }
 
     return res.status(200).json({ success: true, url: checkoutUrl });
