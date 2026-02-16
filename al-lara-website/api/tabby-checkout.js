@@ -3,18 +3,17 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const rawPhone = customer.phone || "";
-  const cleanPhone = rawPhone.replace(/\D/g, "");
-  const finalPhone = cleanPhone.startsWith("971")
-    ? cleanPhone
-    : "971" + cleanPhone.replace(/^0+/, "");
-
-
   const { cartItems, customer } = req.body || {};
 
   if (!cartItems || !Array.isArray(cartItems)) {
     return res.status(400).json({ error: "Invalid cart" });
   }
+
+   const rawPhone = customer.phone || "";
+  const cleanPhone = rawPhone.replace(/\D/g, "");
+  const finalPhone = cleanPhone.startsWith("971")
+    ? cleanPhone
+    : "971" + cleanPhone.replace(/^0+/, "");
 
   const totalAmount = cartItems.reduce((sum, item) => {
     return sum + item.price * item.quantity;
