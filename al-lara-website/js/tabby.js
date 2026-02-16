@@ -21,10 +21,16 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    const token = document.querySelector('[name="cf-turnstile-response"]').value;
+    if (!token) {
+      alert("Please complete the security check.");
+      return;
+    }
+
     const response = await fetch("/api/tabby-checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ cartItems, customer })
+      body: JSON.stringify({ cartItems, customer, "cf-turnstile-response": token })
     });
 
     const data = await response.json();
