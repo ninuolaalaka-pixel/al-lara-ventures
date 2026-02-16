@@ -12,12 +12,12 @@ export const ratelimit = new Ratelimit({
 });
 
 // Allowed domain
-export const allowedOrigin = "https://www.allaraventures.com";
+export const allowedOrigin = ["https://www.allaraventures.com", "https://allaraventures.com"];
 
 // CORS check
 export function checkCORS(req, res) {
   const origin = req.headers.origin;
-  if (origin !== allowedOrigin) {
+  if (!allowedOrigin.includes(origin)) {
     res.status(403).json({ error: "Forbidden" });
     return false;
   }
@@ -33,34 +33,5 @@ export async function checkRateLimit(req, res) {
     res.status(429).json({ error: "Too many requests" });
     return false;
   }
-  return true;
-}
-
-// Bot protection (Turnstile)
-export async function checkBot(req, res) {
-  const token = req.body["cf-turnstile-response"];
-  if (!token) {
-    res.status(403).json({ error: "Missing bot token" });
-    return false;
-  }
-
-  const verify = await fetch(
-    "https://challenges.cloudflare.com/turnstile/v0/siteverify",
-    {
-      method: "POST",
-      body: new URLSearchParams({
-        secret: process.env.TURNSTILE_SECRET_KEY,
-        response: token,
-      }),
-    }
-  );
-
-  const outcome = await verify.json();
-
-  if (!outcome.success) {
-    res.status(403).json({ error: "Bot verification failed" });
-    return false;
-  }
-
   return true;
 }
