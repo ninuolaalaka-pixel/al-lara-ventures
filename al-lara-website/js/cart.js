@@ -73,9 +73,9 @@ function updateTotal() {
   if (snippet) {
     snippet.setAttribute("data-tabby-amount", total.toFixed(2));
 
-    if (window.TabbyPromo) {
-      window.TabbyPromo.refresh();
-    }
+ if (window.TabbyPromo && typeof window.TabbyPromo.refresh === "function") {
+    window.TabbyPromo.refresh();
+}
   }
 }
 

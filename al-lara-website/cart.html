@@ -165,7 +165,9 @@ function updateCartTotals() {
   const snippet = document.getElementById("tabby-cart-snippet");
   snippet.setAttribute("data-tabby-amount", total.toFixed(2));
 
-  if (window.TabbyPromo) window.TabbyPromo.refresh();
+  if (window.TabbyPromo && typeof window.TabbyPromo.refresh === "function") {
+    window.TabbyPromo.refresh();
+}
 }
 
 document.addEventListener("DOMContentLoaded", updateCartTotals);
