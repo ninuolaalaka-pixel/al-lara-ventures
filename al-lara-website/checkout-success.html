@@ -3,27 +3,88 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <link rel="stylesheet" href="css/style.css">
-  <meta name="description" content="AL LARA VENTURES provides premium cleaning services and high‑quality cleaning products across the UAE. Book professional cleaners or shop our products online.">
-  <title> Payment Successful | AL LARA VENTURES UAE</title>
+  <link rel="stylesheet" href="css/style.css">
+  <meta name="description" content="AL LARA VENTURES provides premium cleaning services and high‑quality cleaning products across the UAE.">
+  <title>Payment Successful | AL LARA VENTURES UAE</title>
+
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Arial', sans-serif;
       text-align: center;
       padding: 80px 20px;
     }
-    h1 {
-      color: #0a8a0a;
-      margin-bottom: 20px;
+    .page-wrapper {
+      max-width: 700px;
+      margin: 0 auto;
+      animation: fadeInUp 0.6s ease-out;
     }
-    a {
+    h1 {
+      font-size: 44px;
+      font-weight: 800;
+      color: #0a8a0a;
+      margin-bottom: 16px;
+    }
+    p.subtitle {
+      font-size: 18px;
+      margin-bottom: 30px;
+    }
+    .buttons {
+      margin-top: 24px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    a.button {
       display: inline-block;
-      margin-top: 20px;
-      padding: 12px 20px;
+      padding: 14px 24px;
       background: black;
       color: white;
       text-decoration: none;
       border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .note {
+      margin-top: 16px;
+      font-size: 14px;
+      color: #555;
+    }
+    .order-summary {
+      margin: 30px auto 10px;
+      text-align: left;
+      max-width: 600px;
+      border: 1px solid #eee;
+      border-radius: 10px;
+      padding: 20px;
+      background: #fafafa;
+    }
+    .order-summary h2 {
+      font-size: 22px;
+      margin-bottom: 12px;
+    }
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-size: 15px;
+    }
+    .order-total {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid #ddd;
+      font-weight: 700;
+      font-size: 16px;
+    }
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
@@ -33,21 +94,18 @@
   <header>
     <div class="container">
       <nav style="display:flex; justify-content:space-between; align-items:center;">
-        
-      <!-- Logo + Text Container -->
-       <div style="display:flex; align-items:center; gap:10px;">
-  
-  <!-- Logo Image -->
-  <a href="index.html">
-    <img src="images\Service Business Logo AL LARA VENTURES.png" alt="AL LARA VENTURES Logo" style="height:40px; width:auto;">
-  </a>
 
-  <!-- Text -->
-  <strong style="color:#2e7d32; font-size:22px; font-weight:800;">
-    <a href="index.html" class="logo-link">AL LARA VENTURES</a>
-  </strong>
-</div>
+        <!-- Logo -->
+        <div style="display:flex; align-items:center; gap:10px;">
+          <a href="index.html">
+            <img src="images/Service Business Logo AL LARA VENTURES.png" alt="AL LARA VENTURES Logo" style="height:40px;">
+          </a>
+          <strong style="color:#2e7d32; font-size:22px; font-weight:800;">
+            <a href="index.html" class="logo-link">AL LARA VENTURES</a>
+          </strong>
+        </div>
 
+        <!-- Nav -->
         <div style="display:flex; gap:20px; align-items:center;">
           <a href="index.html" class="nav-link">Home</a>
           <a href="uae-store.html" class="nav-link">Foodstuff (UAE)</a>
@@ -55,19 +113,69 @@
           <a href="coming-soon.html" class="nav-link">Nigeria Store</a>
           <a href="index.html#about" class="nav-link">About</a>
           <a href="index.html#contact" class="nav-link">Contact</a>
-
-          <a href="cart.html" class="cart-link">
-            🛒 <span id="cart-count">0</span>
-          </a>
+          <a href="cart.html" class="cart-link">🛒 <span id="cart-count">0</span></a>
         </div>
 
       </nav>
     </div>
   </header>
-  
-  <h1>Payment Successful</h1>
-  <p>Thank you for your purchase. Your order has been received.</p>
 
-  <a href="index.html">Return Home</a>
+  <main class="page-wrapper">
+    <h1>Payment Successful</h1>
+    <p class="subtitle">Thank you for your purchase. Your order has been received.</p>
+
+    <section class="order-summary" id="order-summary">
+      <h2>Order Summary</h2>
+      <div id="order-items"></div>
+      <div class="order-total" id="order-total"></div>
+    </section>
+
+    <div class="buttons">
+      <a href="index.html" class="button">Return Home</a>
+      <a href="uae-store.html" class="button">Continue Shopping</a>
+    </div>
+
+    <p class="note">You’ll be redirected to the homepage in 5 seconds…</p>
+  </main>
+
+  <script>
+    // Load order summary from localStorage cart
+    (function () {
+      const itemsContainer = document.getElementById("order-items");
+      const totalEl = document.getElementById("order-total");
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+      if (!cart.length) {
+        itemsContainer.innerHTML = "<p>No items found for this order.</p>";
+        totalEl.textContent = "";
+        return;
+      }
+
+      let total = 0;
+      itemsContainer.innerHTML = "";
+      cart.forEach(item => {
+        const lineTotal = (item.price || 0) * (item.quantity || 1);
+        total += lineTotal;
+
+        const div = document.createElement("div");
+        div.className = "order-item";
+        div.innerHTML = `
+          <span>${item.name} × ${item.quantity}</span>
+          <span>AED ${lineTotal.toFixed(2)}</span>
+        `;
+        itemsContainer.appendChild(div);
+      });
+
+      totalEl.textContent = "Total: AED " + total.toFixed(2);
+
+      // Clear cart after successful order
+      localStorage.removeItem("cart");
+    })();
+
+    // Auto redirect after 5 seconds
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 5000);
+  </script>
 </body>
 </html>
