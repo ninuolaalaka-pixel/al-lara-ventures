@@ -24,39 +24,44 @@ export default async function handler(req, res) {
   }, 0);
 
   try {
-    const response = await fetch("https://api.tabby.ai/api/v2/checkout", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.TABBY_SECRET_KEY_TEST}`,
-      },
-      body: JSON.stringify({
-        payment: {
-          amount: Number(totalAmount.toFixed(2)),
-          currency: "AED",
-          description: `Order from ${customer.name}`
+  const response = await fetch("https://api.tabby.ai/api/v2/checkout", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${process.env.TABBY_SECRET_KEY_TEST}`,
+    },
+    body: JSON.stringify({
+      merchant_code: process.env.TABBY_MERCHANT_CODE,   
+
+      payment: {
+        amount: Number(totalAmount.toFixed(2)),
+        currency: "AED",
+        description: `Order from ${customer.name}`,
+
+        buyer: {
+          email: customer.email,
+          phone: finalPhone,
+          name: customer.name
         },
-      
-     buyer: {
-         email: customer.email,
-         phone: finalPhone, 
-         name: customer.name
-       },
+
         order: {
           reference_id: "ORDER-" + Date.now(),
           items: cartItems.map(item => ({
             title: item.name,
             quantity: item.quantity,
-            unit_price: item.price.toFixed(2)
+            unit_price: Number(item.price.toFixed(2)),
+            category: item.category || "general"   
           }))
-        },
-        merchant_urls: {
-          success: "https://www.allaraventures.com/checkout-success.html",
-          cancel: "https://www.allaraventures.com/checkout-cancelled.html",
-          failure: "https://www.allaraventures.com/checkout-cancelled.html"
         }
-      })
-    });
+      },
+
+      merchant_urls: {
+        success: "https://www.allaraventures.com/checkout-success.html",
+        cancel: "https://www.allaraventures.com/checkout-cancelled.html",
+        failure: "https://www.allaraventures.com/checkout-cancelled.html"
+      }
+    })
+  });
 
     const data = await response.json();
 
