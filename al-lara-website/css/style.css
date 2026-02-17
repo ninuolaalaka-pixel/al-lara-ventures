@@ -370,6 +370,38 @@ form textarea {
   }
 
 
+  /* This makes the snippets smaller and centers them nicely */
+[id^="tabby-product-1"] {
+  margin: 10px 0 !important;
+  font-size: 12px !important; /* Smaller text looks better in grids */
+  max-width: 90%;
+  display: inline-block;
+}
+
+/* This makes the snippets smaller and centers them nicely */
+[id^="tabby-product-2"] {
+  margin: 10px 0 !important;
+  font-size: 12px !important; /* Smaller text looks better in grids */
+  max-width: 90%;
+  display: inline-block;
+}
+
+/* This makes the snippets smaller and centers them nicely */
+[id^="tabby-product-3"] {
+  margin: 10px 0 !important;
+  font-size: 12px !important; /* Smaller text looks better in grids */
+  max-width: 90%;
+  display: inline-block;
+}
+
+/* This makes the snippets smaller and centers them nicely */
+[id^="tabby-product-4"] {
+  margin: 10px 0 !important;
+  font-size: 12px !important; /* Smaller text looks better in grids */
+  max-width: 90%;
+  display: inline-block;
+}
+
 /* Make section titles clickable without changing their appearance */
 .section-link,
 .section-link:link,
