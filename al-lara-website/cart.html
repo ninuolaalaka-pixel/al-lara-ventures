@@ -175,14 +175,25 @@ function updateCartTotals() {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-  // 1. Initialize Tabby first
+  // 1. Create the Promo object directly
   if (window.TabbyPromo) {
-    window.TabbyPromo.initialize({
-      publicKey: window._tabbyPublicKey,
-      merchantCode: 'ALVIF'
-    });
+    try {
+      new TabbyPromo({
+        selector: '#tabby-cart-snippet', // Matches your ID
+        currency: 'AED',
+        price: document.getElementById("cart-total").textContent || '0.00',
+        installmentsCount: 4,
+        lang: 'en',
+        source: 'cart',
+        publicKey: window._tabbyPublicKey,
+        merchantCode: 'ALVIF'
+      });
+    } catch (err) {
+      console.error("Tabby widget failed to load:", err);
+    }
   }
-  // 2. Then update the totals
+  
+  // 2. Update the totals
   updateCartTotals();
 });
 </script>

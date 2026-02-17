@@ -71,7 +71,7 @@
       ">
 
         <!-- PRODUCT CARD TEMPLATE -->
-        <div style="border:1px solid #eee; padding:20px; border-radius:12px; text-align:center; background:#fff;">
+        <div style="border:1px solid #eee; padding:20px; border-radius:12px; text-align:center; background:#fff;" id="tabby-product-1">
           <img src="images/productimgs/Guantam Rice.png"  class ="product-img">
           <h3 style="margin:15px 0;">Guatam Basmati Rice XXL 20KG</h3>
           <p style="color:#2e7d32; font-weight:700;">AED 140.50</p>
@@ -93,7 +93,7 @@
           ">Add to Cart</button>
         </div>
 
-        <div style="border:1px solid #eee; padding:20px; border-radius:12px; text-align:center; background:#fff;">
+        <div style="border:1px solid #eee; padding:20px; border-radius:12px; text-align:center; background:#fff;" id="tabby-product-2">
           <img src="images/productimgs/sinnara rice.png" class ="product-img">
           <h3 style="margin:15px 0;">Sinnara Whole Long Grain Basmati Rice 20KG</h3>
           <p style="color:#2e7d32; font-weight:700;">AED 165.75</p>
@@ -115,7 +115,7 @@
           ">Add to Cart</button>
         </div>
 
-        <div style="border:1px solid #eee; padding:20px; border-radius:12px; text-align:center; background:#fff;">
+        <div style="border:1px solid #eee; padding:20px; border-radius:12px; text-align:center; background:#fff;" id="tabby-product-3">
           <img src="images/productimgs/soona maasouri.png" class ="product-img">
           <h3 style="margin:15px 0;">PRAN Sona Masoori Rice 18KG</h3>
           <p style="color:#2e7d32; font-weight:700;">AED 80.50</p>
@@ -137,7 +137,7 @@
           ">Add to Cart</button>
         </div>
 
-         <div style="border:1px solid #eee; padding:20px; border-radius:12px; text-align:center; background:#fff;">
+         <div style="border:1px solid #eee; padding:20px; border-radius:12px; text-align:center; background:#fff;" id="tabby-product-4">
           <img src="images/productimgs/Biryani Rice.png"  class ="product-img">
           <h3 style="margin:15px 0;">Super Chef Basmati Rice 35KG</h3>
           <p style="color:#2e7d32; font-weight:700;">AED 150.50</p>
@@ -166,15 +166,30 @@
   <script src="js/cart.js"></script>
 
 
-  <script>
-  document.addEventListener("DOMContentLoaded", function() {
-    if (window.TabbyPromo) {
-      window.TabbyPromo.initialize({
-        publicKey: window._tabbyPublicKey, // Uses the key you defined in <head>
-        merchantCode: 'ALVIF' // Use your official merchant code
+ <script>
+document.addEventListener("DOMContentLoaded", function() {
+  const products = [
+    { id: '#tabby-product-1', price: '140.50' },
+    { id: '#tabby-product-2', price: '165.75' },
+    { id: '#tabby-product-3', price: '80.50' },
+    { id: '#tabby-product-4', price: '150.50' }
+  ];
+
+  if (window.TabbyPromo) {
+    products.forEach(prod => {
+      new TabbyPromo({
+        selector: prod.id,
+        currency: 'AED',
+        price: prod.price,
+        installmentsCount: 4,
+        lang: 'en',
+        source: 'product',
+        publicKey: window._tabbyPublicKey,
+        merchantCode: 'ALVIF'
       });
-    }
-  });
+    });
+  }
+});
 </script>
 
 </body>
