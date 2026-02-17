@@ -402,6 +402,20 @@ form textarea {
   display: inline-block;
 }
 
+/* This forces the Tabby box to stay small and not overlap */
+.tabby-wrapper {
+    display: block !important;
+    width: 100% !important;
+    min-height: 40px !important; /* Prevents it from collapsing to 0 */
+    margin-bottom: 10px !important;
+    clear: both; /* Ensures it doesn't float over text */
+}
+
+/* This targets the actual text inside the Tabby widget */
+.tabby-promo {
+    font-size: 11px !important; /* Makes the text smaller so it fits the card */
+}
+
 /* Make section titles clickable without changing their appearance */
 .section-link,
 .section-link:link,
