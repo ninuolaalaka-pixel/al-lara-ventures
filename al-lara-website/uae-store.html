@@ -165,5 +165,17 @@
 
   <script src="js/cart.js"></script>
 
+
+  <script>
+  document.addEventListener("DOMContentLoaded", function() {
+    if (window.TabbyPromo) {
+      window.TabbyPromo.initialize({
+        publicKey: window._tabbyPublicKey, // Uses the key you defined in <head>
+        merchantCode: 'ALVIF' // Use your official merchant code
+      });
+    }
+  });
+</script>
+
 </body>
 </html>

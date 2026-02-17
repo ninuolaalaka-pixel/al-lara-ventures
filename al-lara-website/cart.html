@@ -151,7 +151,7 @@
 
   <script src="js/cart.js"></script>
 
-  <script>
+ <script>
 function updateCartTotals() {
   const cart = JSON.parse(localStorage.getItem("cart")) || [];
   let total = 0;
@@ -160,17 +160,31 @@ function updateCartTotals() {
     total += (item.price || 0) * (item.quantity || 1);
   });
 
-  document.getElementById("cart-total").textContent = total.toFixed(2);
+  const totalStr = total.toFixed(2);
+  document.getElementById("cart-total").textContent = totalStr;
 
   const snippet = document.getElementById("tabby-cart-snippet");
-  snippet.setAttribute("data-tabby-amount", total.toFixed(2));
-
-  if (window.TabbyPromo && typeof window.TabbyPromo.refresh === "function") {
-    window.TabbyPromo.refresh();
+  if (snippet) {
+    snippet.setAttribute("data-tabby-amount", totalStr);
+    
+    // This part refreshes the widget whenever the cart total changes
+    if (window.TabbyPromo && typeof window.TabbyPromo.refresh === "function") {
+      window.TabbyPromo.refresh();
+    }
+  }
 }
-}
 
-document.addEventListener("DOMContentLoaded", updateCartTotals);
+document.addEventListener("DOMContentLoaded", function() {
+  // 1. Initialize Tabby first
+  if (window.TabbyPromo) {
+    window.TabbyPromo.initialize({
+      publicKey: window._tabbyPublicKey,
+      merchantCode: 'ALVIF'
+    });
+  }
+  // 2. Then update the totals
+  updateCartTotals();
+});
 </script>
 
 </body>
