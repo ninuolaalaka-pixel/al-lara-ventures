@@ -57,6 +57,13 @@ function renderCart() {
     `;
 
     cartTable.appendChild(row);
+
+    setTimeout(() => {
+  if (window.TabbyPromo && typeof window.TabbyPromo.refresh === "function") {
+    window.TabbyPromo.refresh();
+  }
+}, 300);
+
   });
 
   updateTotal();
