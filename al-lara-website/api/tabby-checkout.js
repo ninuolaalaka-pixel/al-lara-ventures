@@ -37,6 +37,7 @@ export default async function handler(req, res) {
         amount: Number(totalAmount.toFixed(2)),
         currency: "AED",
         description: `Order from ${customer.name}`,
+         lang: "en",
 
         buyer: {
           email: customer.email,
