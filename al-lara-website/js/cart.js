@@ -62,11 +62,21 @@ function renderCart() {
   updateTotal();
 }
 
-// Update total price
 function updateTotal() {
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
   const totalElement = document.getElementById("cart-total");
   if (totalElement) totalElement.textContent = total.toFixed(2);
+
+  // TABBY SNIPPET UPDATE
+  const snippet = document.getElementById("tabby-cart-snippet");
+  if (snippet) {
+    snippet.setAttribute("data-tabby-amount", total.toFixed(2));
+
+    if (window.TabbyPromo) {
+      window.TabbyPromo.refresh();
+    }
+  }
 }
 
 // Quantity buttons
