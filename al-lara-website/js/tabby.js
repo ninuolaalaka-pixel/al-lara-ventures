@@ -9,15 +9,25 @@ document.addEventListener("DOMContentLoaded", () => {
   tabbyBtn.addEventListener("click", async () => {
 
     const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+if (!localStorage.getItem("registered_since")) {
+  localStorage.setItem("registered_since", new Date().toISOString().split("T")[0]);
+}
+
+const registeredSince = localStorage.getItem("registered_since");
 
     const customer = {
       name: document.getElementById("customer-name").value,
       email: document.getElementById("customer-email").value,
-      tel: document.getElementById("customer-tel").value
+      phone: document.getElementById("customer-tel").value,
+      address: document.getElementById("customer-address").value,
+     city: document.getElementById("customer-city").value,
+     emirate: document.getElementById("customer-emirate").value,
+     registered_since: registeredSince
+
     };
 
-    if (!customer.name || !customer.email || !customer.tel) {
-      alert("Please enter your name, email, and phone number before checkout.");
+    if (!customer.name || !customer.email || !customer.phone || !customer.address || !customer.city || !customer.emirate) {
+      alert("Please enter your name, email, phone number, address, city and emirate before checkout.");
       return;
     }
 

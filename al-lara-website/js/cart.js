@@ -57,16 +57,16 @@ function renderCart() {
     `;
 
     cartTable.appendChild(row);
-
-    setTimeout(() => {
-  if (window.TabbyPromo && typeof window.TabbyPromo.refresh === "function") {
-    window.TabbyPromo.refresh();
-  }
-}, 300);
-
   });
 
   updateTotal();
+
+  // Correct place for Tabby refresh
+  setTimeout(() => {
+    if (window.TabbyPromo && typeof window.TabbyPromo.refresh === "function") {
+      window.TabbyPromo.refresh();
+    }
+  }, 300);
 }
 
 function updateTotal() {
@@ -75,16 +75,19 @@ function updateTotal() {
   const totalElement = document.getElementById("cart-total");
   if (totalElement) totalElement.textContent = total.toFixed(2);
 
-  // TABBY SNIPPET UPDATE
   const snippet = document.getElementById("tabby-cart-snippet");
   if (snippet) {
     snippet.setAttribute("data-tabby-amount", total.toFixed(2));
 
- if (window.TabbyPromo && typeof window.TabbyPromo.refresh === "function") {
-    window.TabbyPromo.refresh();
-}
+    //  Delay refresh so Tabby sees updated DOM.
+    setTimeout(() => {
+      if (window.TabbyPromo && typeof window.TabbyPromo.refresh === "function") {
+        window.TabbyPromo.refresh();
+      }
+    }, 300);
   }
 }
+
 
 // Quantity buttons
 document.addEventListener("click", e => {

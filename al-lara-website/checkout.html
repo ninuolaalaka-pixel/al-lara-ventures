@@ -127,28 +127,36 @@
   </header>
 
 </div>
-  
-  <div class="checkout-container">
-    <h2>Checkout</h2>
 
-    <label for="customer-name">Full Name</label>
-    <input id="customer-name" type="text" placeholder="Enter your name" required>
+<div class="checkout-container">
+  <h2>Checkout</h2>
 
-    <label for="customer-email">Email Address</label>
-    <input id="customer-email" type="email" placeholder="Enter your email" required>
-    
-    <label for="customer-tel">Phone Number</label>
-    <input id="customer-tel" type="tel" placeholder="Enter your phone number" required>
-    
-    <button id="checkout-uae-btn" class="checkout-btn">Pay Now</button>
-    <button id="pay-with-tabby" class="tabby-btn">
-      <img 
-  src="images\tabby-badge.png" 
-  style="height:20px; cursor: pointer;"
->
-    Continue with Tabby
-    </button>
-  </div>
+  <label for="customer-name">Full Name</label>
+  <input id="customer-name" type="text" placeholder="Enter your name" required>
+
+  <label for="customer-email">Email Address</label>
+  <input id="customer-email" type="email" placeholder="Enter your email" required>
+
+  <label for="customer-tel">Phone Number</label>
+  <input id="customer-tel" type="tel" placeholder="Enter your phone number" required>
+
+  <!-- SHIPPING FIELDS (REQUIRED BY TABBY) -->
+  <label for="customer-address">Address</label>
+  <input id="customer-address" type="text" placeholder="Street, Building, Villa" required>
+
+  <label for="customer-city">City</label>
+  <input id="customer-city" type="text" placeholder="Dubai, Sharjah, RAK..." required>
+
+  <label for="customer-emirate">Emirate</label>
+  <input id="customer-emirate" type="text" placeholder="Dubai, Abu Dhabi, Ajman..." required>
+
+  <button id="checkout-uae-btn" class="checkout-btn">Pay Now</button>
+
+  <button id="pay-with-tabby" class="tabby-btn">
+    <img src="images\tabby-badge.png" style="height:20px; cursor: pointer;">
+    Proceed to Pay later with Tabby
+  </button>
+</div>
 
 <script src="js/cart.js"></script>
 <script src="js/tabby.js"></script>

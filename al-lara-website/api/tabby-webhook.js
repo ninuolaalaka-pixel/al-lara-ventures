@@ -6,13 +6,15 @@ export default async function handler(req, res) {
   try {
     const event = req.body;
 
-    console.log("Tabby webhook received:", event);
+    console.log("🔔 Tabby webhook received:", event);
 
-    // Only handle authorized events
+    // Only handle "authorized" events (lowercase)
     if (event.status === "authorized" && event.id) {
       const paymentId = event.id;
 
-      // 1) Verify payment status
+      console.log("🔍 Verifying payment:", paymentId);
+
+      // 1) Retrieve payment details
       const verifyRes = await fetch(`https://api.tabby.ai/api/v2/payments/${paymentId}`, {
         method: "GET",
         headers: {
@@ -22,10 +24,12 @@ export default async function handler(req, res) {
       });
 
       const payment = await verifyRes.json();
-      console.log("Payment verification:", payment);
+      console.log("📄 Payment verification result:", payment);
 
-      // 2) Capture full amount
+      // 2) Check if payment is AUTHORIZED (uppercase)
       if (payment.status === "AUTHORIZED") {
+        console.log("💰 Payment authorized. Capturing...");
+
         const captureRes = await fetch(`https://api.tabby.ai/api/v2/payments/${paymentId}/captures`, {
           method: "POST",
           headers: {
@@ -38,13 +42,16 @@ export default async function handler(req, res) {
         });
 
         const captureData = await captureRes.json();
-        console.log("Capture response:", captureData);
+        console.log("✅ Capture response:", captureData);
+      } else {
+        console.log("⚠️ Payment NOT authorized. Status:", payment.status);
       }
     }
 
     res.status(200).json({ received: true });
+
   } catch (err) {
-    console.error("Webhook error:", err);
+    console.error("❌ Webhook error:", err);
     res.status(500).json({ error: "Webhook error" });
   }
 }

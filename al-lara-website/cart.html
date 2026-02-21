@@ -117,86 +117,12 @@
       </a>
     </div>
 
+    <script src="js/cart.js"></script>
 
-     <div class="checkout-buttons">
-      <a href="checkout.html" style="text-decoration: none;">
-      <button id="go-to-tabby-checkout" style="
-    width: 100%;
-    padding: 14px;
-    background: #1e9925; /* green */
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: 0.2s;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    font-family: 'Poppins', sans-serif; /* Change to your site's font */
-      font-size: 16px;
-      font-weight: 600;
-      font-family: inherit;
-      ">
-      <img 
-  src="/images/tabby-badge.png" 
-  style="height:20px; cursor: pointer;"
-      > Pay with Tabby
-      </button>
-      </a>
-    </div>
-  </section>
-
-  <script src="js/cart.js"></script>
-
- <script>
-function updateCartTotals() {
-  const cart = JSON.parse(localStorage.getItem("cart")) || [];
-  let total = 0;
-
-  cart.forEach(item => {
-    total += (item.price || 0) * (item.quantity || 1);
-  });
-
-  const totalStr = total.toFixed(2);
-  document.getElementById("cart-total").textContent = totalStr;
-
-  const snippet = document.getElementById("tabby-cart-snippet");
-  if (snippet) {
-    snippet.setAttribute("data-tabby-amount", totalStr);
-    
-    // This part refreshes the widget whenever the cart total changes
-    if (window.TabbyPromo && typeof window.TabbyPromo.refresh === "function") {
-      window.TabbyPromo.refresh();
-    }
-  }
-}
-
-document.addEventListener("DOMContentLoaded", function() {
-  // 1. Create the Promo object directly
-  if (window.TabbyPromo) {
-    try {
-      new TabbyPromo({
-        selector: '#tabby-cart-snippet', // Matches your ID
-        currency: 'AED',
-        price: document.getElementById("cart-total").textContent || '0.00',
-        installmentsCount: 4,
-        lang: 'en',
-        source: 'cart',
-        publicKey: window._tabbyPublicKey,
-        merchantCode: 'ALVIF'
-      });
-    } catch (err) {
-      console.error("Tabby widget failed to load:", err);
-    }
-  }
-  
-  // 2. Update the totals
-  updateCartTotals();
-});
-</script>
+    <script>
+     // Render cart on page load
+     renderCart();
+    </script>
 
 </body>
 </html>

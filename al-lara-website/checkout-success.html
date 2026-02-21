@@ -45,14 +45,9 @@
       font-size: 16px;
       font-weight: 600;
     }
-    .note {
-      margin-top: 16px;
-      font-size: 14px;
-      color: #555;
-    }
     .order-summary {
       margin: 30px auto 10px;
-      text-align: left;
+      text-align: center;
       max-width: 600px;
       border: 1px solid #eee;
       border-radius: 10px;
@@ -62,19 +57,6 @@
     .order-summary h2 {
       font-size: 22px;
       margin-bottom: 12px;
-    }
-    .order-item {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 6px;
-      font-size: 15px;
-    }
-    .order-total {
-      margin-top: 12px;
-      padding-top: 10px;
-      border-top: 1px solid #ddd;
-      font-weight: 700;
-      font-size: 16px;
     }
     @keyframes fadeInUp {
       from {
@@ -90,6 +72,7 @@
 </head>
 
 <body>
+
   <!-- HEADER -->
   <header>
     <div class="container">
@@ -124,10 +107,9 @@
     <h1>Payment Successful</h1>
     <p class="subtitle">Thank you for your purchase. Your order has been received.</p>
 
-    <section class="order-summary" id="order-summary">
-      <h2>Order Summary</h2>
-      <div id="order-items"></div>
-      <div class="order-total" id="order-total"></div>
+    <section class="order-summary">
+      <h2>Your order has been confirmed</h2>
+      <p>We will contact you shortly with delivery details.</p>
     </section>
 
     <div class="buttons">
@@ -135,47 +117,7 @@
       <a href="uae-store.html" class="button">Continue Shopping</a>
     </div>
 
-    <p class="note">You’ll be redirected to the homepage in 5 seconds…</p>
   </main>
 
-  <script>
-    // Load order summary from localStorage cart
-    (function () {
-      const itemsContainer = document.getElementById("order-items");
-      const totalEl = document.getElementById("order-total");
-      const cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-      if (!cart.length) {
-        itemsContainer.innerHTML = "<p>No items found for this order.</p>";
-        totalEl.textContent = "";
-        return;
-      }
-
-      let total = 0;
-      itemsContainer.innerHTML = "";
-      cart.forEach(item => {
-        const lineTotal = (item.price || 0) * (item.quantity || 1);
-        total += lineTotal;
-
-        const div = document.createElement("div");
-        div.className = "order-item";
-        div.innerHTML = `
-          <span>${item.name} × ${item.quantity}</span>
-          <span>AED ${lineTotal.toFixed(2)}</span>
-        `;
-        itemsContainer.appendChild(div);
-      });
-
-      totalEl.textContent = "Total: AED " + total.toFixed(2);
-
-      // Clear cart after successful order
-      localStorage.removeItem("cart");
-    })();
-
-    // Auto redirect after 5 seconds
-    setTimeout(() => {
-      window.location.href = "index.html";
-    }, 5000);
-  </script>
 </body>
 </html>

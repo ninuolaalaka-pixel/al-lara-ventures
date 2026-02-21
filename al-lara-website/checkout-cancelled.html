@@ -45,51 +45,15 @@
       font-size: 16px;
       font-weight: 600;
     }
-    .note {
-      margin-top: 16px;
-      font-size: 14px;
-      color: #555;
-    }
-    .order-summary {
-      margin: 30px auto 10px;
-      text-align: left;
-      max-width: 600px;
-      border: 1px solid #eee;
-      border-radius: 10px;
-      padding: 20px;
-      background: #fafafa;
-    }
-    .order-summary h2 {
-      font-size: 22px;
-      margin-bottom: 12px;
-    }
-    .order-item {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 6px;
-      font-size: 15px;
-    }
-    .order-total {
-      margin-top: 12px;
-      padding-top: 10px;
-      border-top: 1px solid #ddd;
-      font-weight: 700;
-      font-size: 16px;
-    }
     @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 
 <body>
+
   <!-- HEADER -->
   <header>
     <div class="container">
@@ -121,58 +85,32 @@
   </header>
 
   <main class="page-wrapper">
-    <h1>Payment Cancelled</h1>
-    <p class="subtitle">Your payment was not completed. You can try again anytime.</p>
-
-    <section class="order-summary" id="order-summary">
-      <h2>Your Cart</h2>
-      <div id="order-items"></div>
-      <div class="order-total" id="order-total"></div>
-    </section>
+    <h1 id="cancel-title">Payment Cancelled</h1>
+    <p class="subtitle" id="cancel-message">Your payment was not completed.</p>
 
     <div class="buttons">
       <a href="cart.html" class="button">Return to Cart</a>
       <a href="uae-store.html" class="button">Continue Shopping</a>
     </div>
-
-    <p class="note">You’ll be redirected back to your cart in 5 seconds…</p>
   </main>
 
   <script>
-    // Load cart summary from localStorage
-    (function () {
-      const itemsContainer = document.getElementById("order-items");
-      const totalEl = document.getElementById("order-total");
-      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    // Detect reason from URL
+    const params = new URLSearchParams(window.location.search);
+    const reason = params.get("reason");
 
-      if (!cart.length) {
-        itemsContainer.innerHTML = "<p>Your cart is currently empty.</p>";
-        totalEl.textContent = "";
-        return;
-      }
+    const title = document.getElementById("cancel-title");
+    const message = document.getElementById("cancel-message");
 
-      let total = 0;
-      itemsContainer.innerHTML = "";
-      cart.forEach(item => {
-        const lineTotal = (item.price || 0) * (item.quantity || 1);
-        total += lineTotal;
-
-        const div = document.createElement("div");
-        div.className = "order-item";
-        div.innerHTML = `
-          <span>${item.name} × ${item.quantity}</span>
-          <span>AED ${lineTotal.toFixed(2)}</span>
-        `;
-        itemsContainer.appendChild(div);
-      });
-
-      totalEl.textContent = "Total: AED " + total.toFixed(2);
-    })();
-
-    // Auto redirect after 5 seconds
-    setTimeout(() => {
-      window.location.href = "cart.html";
-    }, 5000);
+    if (reason === "cancel") {
+      title.textContent = "Payment Cancelled";
+      message.textContent = "You cancelled the payment. You can try again anytime.";
+    } 
+    else if (reason === "reject") {
+      title.textContent = "Payment Declined";
+      message.textContent = "Tabby could not approve your payment. Please try another method.";
+    }
   </script>
+
 </body>
 </html>
