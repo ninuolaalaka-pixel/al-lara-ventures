@@ -79,6 +79,16 @@ function updateTotal() {
   if (snippet) {
     snippet.setAttribute("data-tabby-amount", total.toFixed(2));
 
+    const tabbySnippet = document.getElementById("tabby-cart-snippet");
+  if (tabbySnippet) {
+    tabbySnippet.setAttribute("data-tabby-amount", total.toFixed(2));
+    
+    // Tell Tabby to re-read the new amount
+    if (window.TabbyPromo) {
+      window.TabbyPromo.render(); 
+    }
+  }
+
     //  Delay refresh so Tabby sees updated DOM.
     setTimeout(() => {
       if (window.TabbyPromo && typeof window.TabbyPromo.refresh === "function") {

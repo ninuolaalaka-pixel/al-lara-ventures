@@ -158,6 +158,18 @@
   </button>
 </div>
 
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    // 1. Clear the cart from storage
+    localStorage.removeItem("cart");
+    
+    // 2. (Optional) Clear the 'registered_since' if you want a fresh start
+    // localStorage.removeItem("registered_since");
+
+    console.log("Cart cleared after successful checkout.");
+  });
+</script>
+
 <script src="js/cart.js"></script>
 <script src="js/tabby.js"></script>
 </body>
