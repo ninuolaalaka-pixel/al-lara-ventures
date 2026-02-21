@@ -102,7 +102,18 @@ if (preScore?.status === "rejected") {
           },
 
           //  ORDER HISTORY
-          order_history: [],
+          order_history: [
+            {
+    purchased_at: new Date().toISOString(),
+    amount: "0.00",
+    status: "new",
+    address: {
+      address: customer.address,
+      city: customer.city,
+      emirate: customer.emirate || ""
+    }
+  }
+          ],
 
           //  ORDER DETAILS
           order: {
@@ -126,6 +137,7 @@ if (preScore?.status === "rejected") {
     });
 
     const data = await response.json();
+    console.log("TABBY RESPONSE:", JSON.stringify(data, null, 2));
 
     const checkoutUrl =
       data?.configuration?.available_products?.installments?.[0]?.web_url;
