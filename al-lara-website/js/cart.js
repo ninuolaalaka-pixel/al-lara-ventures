@@ -69,33 +69,27 @@ function renderCart() {
   }, 300);
 }
 
+function updateTabbySnippet(amount) {
+  const snippet = document.getElementById("tabby-cart-snippet");
+  if (!snippet) return;
+
+  snippet.setAttribute("data-tabby-amount", amount.toFixed(2));
+
+  const waitForTabby = setInterval(() => {
+    if (window.TabbyPromo && typeof window.TabbyPromo.refresh === "function") {
+      window.TabbyPromo.refresh();
+      clearInterval(waitForTabby);
+    }
+  }, 200);
+}
+
 function updateTotal() {
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   const totalElement = document.getElementById("cart-total");
   if (totalElement) totalElement.textContent = total.toFixed(2);
 
-  const snippet = document.getElementById("tabby-cart-snippet");
-  if (snippet) {
-    snippet.setAttribute("data-tabby-amount", total.toFixed(2));
-
-    const tabbySnippet = document.getElementById("tabby-cart-snippet");
-  if (tabbySnippet) {
-    tabbySnippet.setAttribute("data-tabby-amount", total.toFixed(2));
-    
-    // Tell Tabby to re-read the new amount
-    if (window.TabbyPromo) {
-      window.TabbyPromo.render(); 
-    }
-  }
-
-    //  Delay refresh so Tabby sees updated DOM.
-    setTimeout(() => {
-      if (window.TabbyPromo && typeof window.TabbyPromo.refresh === "function") {
-        window.TabbyPromo.refresh();
-      }
-    }, 300);
-  }
+  updateTabbySnippet(total);
 }
 
 
