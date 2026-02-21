@@ -44,7 +44,8 @@ export default async function handler(req, res) {
   if (preScore?.status === "rejected") {
     return res.status(400).json({
       success: false,
-      message: "Tabby pre-scoring rejected this customer."
+      message: "Tabby pre-scoring rejected this customer.",
+      details: preScore
     });
   }
 
