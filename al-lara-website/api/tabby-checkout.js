@@ -45,6 +45,7 @@ const preScoreResponse = await fetch("https://api.tabby.ai/api/v2/pre-scores", {
 });
 
 // Check if the response is actually JSON before parsing
+/*
 const preScoreText = await preScoreResponse.text(); 
 let preScore;
 try {
@@ -60,7 +61,8 @@ if (preScore?.status === "rejected") {
     message: "Tabby pre-scoring rejected this customer.",
     details: preScore
   });
-}
+}//
+*/
 
   // CREATE CHECKOUT SESSION
   try {
