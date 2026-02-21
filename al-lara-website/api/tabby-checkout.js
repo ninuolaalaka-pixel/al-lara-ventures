@@ -98,7 +98,7 @@ if (preScore?.status === "rejected") {
           //  BUYER HISTORY
           buyer_history: {
             loyalty_level: 0,
-            registered_since: customer.registered_since
+            registered_since: new Date(customer.registered_since).toISOString()
           },
 
           //  ORDER HISTORY
