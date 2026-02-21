@@ -1,7 +1,9 @@
 import { checkCORS, checkRateLimit } from "./_security.js";
-console.log("RAW BODY:", req.body);
 
 export default async function handler(req, res) {
+
+  console.log("RAW BODY:", req.body);
+  
   if (!checkCORS(req, res)) return;
   if (!(await checkRateLimit(req, res))) return;
 
