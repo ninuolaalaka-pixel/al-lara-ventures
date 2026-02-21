@@ -83,6 +83,9 @@ function updateTabbySnippet(amount) {
   }, 200);
 }
 
+console.log("TabbyPromo:", window.TabbyPromo);
+
+
 function updateTotal() {
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
