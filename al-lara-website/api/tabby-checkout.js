@@ -3,7 +3,7 @@ import { checkCORS, checkRateLimit } from "./_security.js";
 export default async function handler(req, res) {
 
   console.log("RAW BODY:", req.body);
-  
+
   if (!checkCORS(req, res)) return;
   if (!(await checkRateLimit(req, res))) return;
 
@@ -30,27 +30,37 @@ export default async function handler(req, res) {
   }, 0);
   const totalAmountStr = totalAmount.toFixed(2);
 
-  // PRE-SCORING CHECK (REQUIRED)
-  const preScore = await fetch("https://api.tabby.ai/api/v2/pre-scores", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${process.env.TABBY_SECRET_KEY_TEST}`,
-    },
-    body: JSON.stringify({
-      phone: finalPhone,
-      amount: totalAmountStr,
-      currency: "AED"
-    })
-  }).then(r => r.json());
+ // PRE-SCORING CHECK
+const preScoreResponse = await fetch("https://api.tabby.ai/api/v2/pre-scores", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${process.env.TABBY_SECRET_KEY_TEST}`,
+  },
+  body: JSON.stringify({
+    phone: finalPhone,
+    amount: totalAmountStr,
+    currency: "AED"
+  })
+});
 
-  if (preScore?.status === "rejected") {
-    return res.status(400).json({
-      success: false,
-      message: "Tabby pre-scoring rejected this customer.",
-      details: preScore
-    });
-  }
+// Check if the response is actually JSON before parsing
+const preScoreText = await preScoreResponse.text(); 
+let preScore;
+try {
+    preScore = JSON.parse(preScoreText);
+} catch (e) {
+    console.error("Tabby sent non-JSON response:", preScoreText);
+    return res.status(500).json({ error: "Tabby Pre-score API error", details: preScoreText });
+}
+
+if (preScore?.status === "rejected") {
+  return res.status(400).json({
+    success: false,
+    message: "Tabby pre-scoring rejected this customer.",
+    details: preScore
+  });
+}
 
   // CREATE CHECKOUT SESSION
   try {
@@ -73,6 +83,7 @@ export default async function handler(req, res) {
           shipping_address: {
             address: customer.address || "",
             city: customer.city || "",
+            emirates: customer.emirate || "",
             zip: "00000",
             country: "AE"
           },
@@ -99,8 +110,8 @@ export default async function handler(req, res) {
             items: cartItems.map(item => ({
               title: item.name,
               quantity: item.quantity,
-              unit_price: item.price.toFixed(2),
-              category: item.category || "groceries"
+              unit_price: String(item.price.toFixed(2)),
+              category: item.category || "Groceries"
             }))
           }
         },
