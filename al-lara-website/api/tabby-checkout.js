@@ -73,60 +73,54 @@ if (preScore?.status === "rejected") {
       body: JSON.stringify({
         merchant_code: process.env.TABBY_MERCHANT_CODE,
 
-        payment: {
-          amount: totalAmountStr,
-          currency: "AED",
-          description: `Order from ${customer.name}`,
-          lang: "en",
+       payment: {
+  amount: totalAmountStr,
+  currency: "AED",
+  description: `Order from ${customer.name}`,
+  lang: "en",
 
-          // SHIPPING ADDRESS
-          shipping_address: {
-            address: customer.address || "",
-            city: customer.city || "",
-            emirates: customer.emirate || "",
-            zip: "00000",
-            country: "AE"
-          },
+  shipping_address: {
+    address: customer.address || "",
+    city: customer.city || "",
+    subdivision: customer.emirate || "", // CHANGED FROM emirates
+    zip: "00000",
+    country: "AE"
+  },
 
-          //  BUYER
-          buyer: {
-            email: customer.email,
-            phone: finalPhone,
-            name: customer.name
-          },
+  buyer: {
+    email: customer.email,
+    phone: finalPhone,
+    name: customer.name
+  },
 
-          //  BUYER HISTORY
-          buyer_history: {
-            loyalty_level: 0,
-            registered_since: new Date(customer.registered_since).toISOString()
-          },
+  buyer_history: {
+    loyalty_level: 0,
+    registered_since: new Date(customer.registered_since).toISOString()
+  },
 
-          //  ORDER HISTORY
-          order_history: [
-            {
-    purchased_at: new Date().toISOString(),
-    amount: "0.00",
-    status: "new",
-    address: {
-      address: customer.address,
-      city: customer.city,
-      emirate: customer.emirate || ""
+  order_history: [
+    {
+      purchased_at: new Date().toISOString(),
+      amount: 0, // CHANGED TO NUMBER
+      status: "new",
+      buyer: {
+        name: customer.name,
+        phone: finalPhone,
+        email: customer.email
+      }
     }
+  ],
+
+  order: {
+    reference_id: "ORDER-" + Date.now(),
+    items: cartItems.map(item => ({
+      title: item.name,
+      quantity: item.quantity,
+      unit_price: String(item.price.toFixed(2)),
+      category: "Groceries"
+    }))
   }
-          ],
-
-          //  ORDER DETAILS
-          order: {
-            reference_id: "ORDER-" + Date.now(),
-            items: cartItems.map(item => ({
-              title: item.name,
-              quantity: item.quantity,
-              unit_price: String(item.price.toFixed(2)),
-              category: item.category || "Groceries"
-            }))
-          }
-        },
-
+},
         //  CORRECT MERCHANT URLS
         merchant_urls: {
           success: "https://www.allaraventures.com/checkout-success.html",
