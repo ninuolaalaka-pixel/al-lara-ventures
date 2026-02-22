@@ -100,18 +100,7 @@ if (preScore?.status === "rejected") {
     registered_since: new Date(customer.registered_since).toISOString()
   },
 
-  order_history: [
-    {
-      purchased_at: new Date().toISOString(),
-      amount: 0, // CHANGED TO NUMBER
-      status: "new",
-      buyer: {
-        name: customer.name,
-        phone: finalPhone,
-        email: customer.email
-      }
-    }
-  ],
+  order_history: [],
 
   order: {
     reference_id: "ORDER-" + Date.now(),
