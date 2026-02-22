@@ -24,6 +24,17 @@ export default async function handler(req, res) {
     ? cleanPhone
     : "971" + cleanPhone.replace(/^0+/, "");
 
+    let safeDate;
+try {
+    // Check if the customer has a date, otherwise use "now"
+    const regDate = customer.registered_since ? new Date(customer.registered_since) : new Date();
+    
+    // If the date is "Invalid Date", use "now"
+    safeDate = isNaN(regDate.getTime()) ? new Date().toISOString() : regDate.toISOString();
+} catch (e) {
+    safeDate = new Date().toISOString();
+}
+
  // PRE-SCORING CHECK
 const preScoreResponse = await fetch("https://api.tabby.ai/api/v2/pre-scores", {
   method: "POST",
@@ -91,7 +102,7 @@ if (preScore?.status === "rejected") {
 
   buyer_history: {
     loyalty_level: 0,
-    registered_since: new Date(customer.registered_since).toISOString()
+    registered_since: safeDate
   },
 
   order_history: [],

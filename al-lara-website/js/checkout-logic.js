@@ -64,7 +64,8 @@ document.addEventListener("DOMContentLoaded", () => {
             tel: document.getElementById("customer-tel").value,
             address: document.getElementById("customer-address").value,
             emirate: emirateSelect.value,
-            delivery_type: deliverySelect.value
+            delivery_type: deliverySelect.value,
+            registered_since: localStorage.getItem("registered_since") || new Date().toISOString()
         };
     }
 
