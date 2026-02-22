@@ -7,26 +7,26 @@ function updateTabbySnippet(amount) {
   const snippetElement = document.getElementById(snippetId);
   if (!snippetElement) return;
 
-  // CRITICAL: Wipe the div so Tabby can re-inject the new price
+  // 1. Update the data attribute first
+  snippetElement.setAttribute("data-tabby-amount", amount.toFixed(2));
+
+  // 2. Use ONLY refresh if it's available (This prevents disappearing)
   if (window.TabbyPromo && typeof window.TabbyPromo.refresh === 'function') {
       window.TabbyPromo.refresh();
-  }
-
-  if (window.TabbyPromo && typeof TabbyPromo === 'function') {
+  } 
+  // 3. Fallback: Only use the constructor if it's the very first load
+  else if (window.TabbyPromo && typeof TabbyPromo === 'function') {
     try {
-      // Small timeout ensures the DOM is ready for the new widget
-      setTimeout(() => {
-        new TabbyPromo({
-          selector: '#' + snippetId,
-          currency: 'AED',
-          price: amount.toFixed(2),
-          installmentsCount: 4,
-          lang: 'en',
-          source: 'cart',
-          publicKey: window._tabbyPublicKey || "pk_test_019c445e-ce8a-936c-9575-c76f91bed644",
-          merchantCode: 'ALVIF'
-        });
-      }, 50); 
+      new TabbyPromo({
+        selector: '#' + snippetId,
+        currency: 'AED',
+        price: amount.toFixed(2),
+        installmentsCount: 4,
+        lang: 'en',
+        source: 'cart',
+        publicKey: window._tabbyPublicKey || "pk_test_019c445e-ce8a-936c-9575-c76f91bed644",
+        merchantCode: 'ALVIF'
+      });
     } catch (err) {
       console.error("Tabby error:", err);
     }
@@ -69,7 +69,11 @@ document.querySelectorAll(".add-to-cart").forEach(button => {
 
     saveCart();
     updateCartCount();
-    alert(name + " added to cart!");
+    // Show custom toast instead of alert
+const toast = document.getElementById("toast");
+toast.textContent = name + " added to cart!";
+toast.className = "show";
+setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
   });
 });
 
