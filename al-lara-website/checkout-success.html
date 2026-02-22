@@ -117,10 +117,18 @@
       <a href="uae-store.html" class="button">Continue Shopping</a>
     </div>
 
-   <script>
-  localStorage.removeItem("cart");
-  console.log("Payment successful. Cart cleared.");
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    // 1. Clear the cart from storage
+    localStorage.removeItem("cart");
+    
+    // 2. (Optional) Clear the 'registered_since' if you want a fresh start
+    localStorage.removeItem("registered_since");
+
+    console.log("Cart cleared after successful checkout.");
+  });
 </script>
+
 
   </main>
 
