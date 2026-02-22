@@ -1,51 +1,47 @@
 // Load cart from localStorage
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-// 1. Unified Tabby Update (Handles Point 1 & 5.c of Mariia's feedback)
+// 1. Tabby Snippet Logic (Point 1 & 5.c)
 function updateTabbySnippet(amount) {
   const snippetId = 'tabby-cart-snippet';
   const snippetElement = document.getElementById(snippetId);
-  
   if (!snippetElement) return;
 
-  // Clear previous content to prevent the "double widget" bug
+  // CRITICAL: Wipe the div so Tabby can re-inject the new price
   snippetElement.innerHTML = '';
 
-  // Use the Constructor that works on your product page
   if (window.TabbyPromo && typeof TabbyPromo === 'function') {
     try {
-      new TabbyPromo({
-        selector: '#' + snippetId,
-        currency: 'AED',
-        price: amount.toFixed(2),
-        installmentsCount: 4,
-        lang: 'en',
-        source: 'cart',
-        publicKey: window._tabbyPublicKey || "pk_test_019c445e-ce8a-936c-9575-c76f91bed644",
-        merchantCode: 'ALVIF'
-      });
+      // Small timeout ensures the DOM is ready for the new widget
+      setTimeout(() => {
+        new TabbyPromo({
+          selector: '#' + snippetId,
+          currency: 'AED',
+          price: amount.toFixed(2),
+          installmentsCount: 4,
+          lang: 'en',
+          source: 'cart',
+          publicKey: window._tabbyPublicKey || "pk_test_019c445e-ce8a-936c-9575-c76f91bed644",
+          merchantCode: 'ALVIF'
+        });
+      }, 50); 
     } catch (err) {
-      console.error("Tabby construction error:", err);
+      console.error("Tabby error:", err);
     }
   }
 }
 
-
-// 2. Update Total and trigger Tabby (This keeps the price dynamic)
+// 2. Global Update Total
 function updateTotal() {
-  // Use 'cart' (the global variable)
   const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-
   const totalElement = document.getElementById("cart-total");
-  if (totalElement) {
-    totalElement.textContent = total.toFixed(2);
-  }
+  if (totalElement) totalElement.textContent = total.toFixed(2);
 
-  // Update the snippet
   updateTabbySnippet(total);
+  updateCartCount();
 }
 
-// 3. UI Helper functions
+// 3. UI Helpers
 function updateCartCount() {
   const count = cart.reduce((sum, item) => sum + item.quantity, 0);
   const countEl = document.getElementById("cart-count");
@@ -54,16 +50,33 @@ function updateCartCount() {
 
 function saveCart() {
   localStorage.setItem("cart", JSON.stringify(cart));
-  updateCartCount();
 }
 
-// 4. Rendering logic
+// 4. ADD TO CART LOGIC (Was missing from your last paste!)
+document.querySelectorAll(".add-to-cart").forEach(button => {
+  button.addEventListener("click", () => {
+    const name = button.dataset.name;
+    const price = parseFloat(button.dataset.price);
+
+    const existing = cart.find(item => item.name === name);
+    if (existing) {
+      existing.quantity++;
+    } else {
+      cart.push({ name, price, quantity: 1 });
+    }
+
+    saveCart();
+    updateCartCount();
+    alert(name + " added to cart!");
+  });
+});
+
+// 5. Render Cart Items
 function renderCart() {
   const cartTable = document.getElementById("cart-items");
   if (!cartTable) return;
 
   cartTable.innerHTML = "";
-  
   if (cart.length === 0) {
     cartTable.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px;">Your cart is empty.</td></tr>';
   }
@@ -89,19 +102,16 @@ function renderCart() {
   updateTotal();
 }
 
-// Quantity buttons
+// 6. Quantity/Remove Listeners
 document.addEventListener("click", e => {
   if (e.target.classList.contains("qty-btn")) {
     const index = e.target.dataset.index;
     const action = e.target.dataset.action;
-
     if (action === "plus") cart[index].quantity++;
     if (action === "minus" && cart[index].quantity > 1) cart[index].quantity--;
-
     saveCart();
     renderCart();
   }
-
   if (e.target.classList.contains("remove-btn")) {
     const index = e.target.dataset.index;
     cart.splice(index, 1);
@@ -110,6 +120,8 @@ document.addEventListener("click", e => {
   }
 });
 
+// Run count update on all pages
+updateCartCount();
 
 // CONTACT FORM → CALL BACKEND
 const sendMessaggeBtn = document.getElementById("send-messagge-btn");
