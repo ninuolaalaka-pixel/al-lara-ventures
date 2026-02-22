@@ -269,43 +269,52 @@ if (submitBookingBtn) {
 }
 
 // UAE CHECKOUT → SEND TO BACKEND
-const checkoutUaeBtn = document.getElementById("checkout-uae-btn");
+// --- ZIINA (CARD) PAYMENT LOGIC ---
+    const checkoutUaeBtn = document.getElementById("checkout-uae-btn");
+    
+    if (checkoutUaeBtn) {
+        checkoutUaeBtn.addEventListener("click", async function (event) {
+            event.preventDefault();
+            
+            const finalAmount = calculateFinalTotal(); // Get the total including delivery
 
-if (checkoutUaeBtn) {
-  checkoutUaeBtn.addEventListener("click", async function (event) {
-    event.preventDefault();// STOP PAGE REFRESH
-    try {
-      const nameInput = document.getElementById("customer-name").value;
-     const emailInput = document.getElementById("customer-email").value;
-      const telInput = document.getElementById("customer-tel").value;
-  
-      
-      const response = await fetch("/api/checkout-uae", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          cartItems: cart,
-          customer: {
-             email: emailInput,
-            name: nameInput,
-            tel: telInput
-          },
-        })
-      });
+            const customer = {
+                name: document.getElementById("customer-name").value,
+                email: document.getElementById("customer-email").value,
+                tel: document.getElementById("customer-tel").value,
+                address: document.getElementById("customer-address").value,
+                emirate: document.getElementById("emirate-select").value,
+                delivery_type: document.getElementById("delivery-type").value
+            };
 
-      const data = await response.json();
+            if (!customer.name || !customer.tel || !customer.emirate || finalAmount <= 0) {
+                alert("Please complete the form and select delivery options.");
+                return;
+            }
 
-      if (data.success) {
-        window.location.href = data.url; // redirect to Ziina checkout
-      } else {
-        alert("Checkout error.");
-      }
-    } catch (err) {
-      alert("Network error.");
+            try {
+                const response = await fetch("/api/checkout-uae", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        amount: finalAmount, // Send calculated total
+                        cartItems: cartItems,
+                        customer: customer
+                    })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    window.location.href = data.url;
+                } else {
+                    alert("Ziina checkout error.");
+                }
+            } catch (err) {
+                console.error("Ziina Fetch Error:", err);
+                alert("Network error.");
+            }
+        });
     }
-
-  });
-}
 
 // NIGERIA CHECKOUT → SEND TO BACKEND
 const checkoutNgBtn = document.getElementById("checkout-ng-btn");
