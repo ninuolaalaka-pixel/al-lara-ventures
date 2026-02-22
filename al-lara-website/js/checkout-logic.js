@@ -16,31 +16,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 2. Logic for Fees (Selection-based, not cumulative)
     function calculateFinalTotal() {
-        const emirate = emirateSelect ? emirateSelect.value : "";
-        const type = deliverySelect ? deliverySelect.value : "";
-        let fee = 0;
+    const emirate = emirateSelect ? emirateSelect.value : "";
+    const type = deliverySelect ? deliverySelect.value : "";
+    let fee = 0;
 
-        if (emirate && type) {
-            const groups = {
-                groupA: ['dubai', 'sharjah', 'ajman'],
-                groupB: ['uaq', 'rak', 'fujairah'],
-                groupC: ['abudhabi',  'alain']
-            };
+    // 1. Calculate Delivery Fee based on your latest rates
+    if (emirate && type) {
+        const groups = {
+            groupA: ['dubai', 'sharjah', 'ajman'],
+            groupB: ['uaq', 'rak', 'fujairah'],
+            groupC: ['abudhabi', 'alain']
+        };
 
-            if (groups.groupA.includes(emirate)) fee = (type === 'heavy') ? 25 : 10;
-            else if (groups.groupB.includes(emirate)) fee = (type === 'heavy') ? 30 : 15;
-            else if (groups.groupC.includes(emirate)) fee = (type === 'heavy') ? 48 : 30;
-        }
-
-        const finalTotal = cartTotal + fee;
-        if (deliveryFeeDisplay) deliveryFeeDisplay.textContent = fee.toFixed(2);
-        if (finalTotalDisplay) finalTotalDisplay.textContent = finalTotal.toFixed(2);
-        return finalTotal;
+        if (groups.groupA.includes(emirate)) fee = (type === 'heavy') ? 25 : 10;
+        else if (groups.groupB.includes(emirate)) fee = (type === 'heavy') ? 30 : 15;
+        else if (groups.groupC.includes(emirate)) fee = (type === 'heavy') ? 48 : 30;
     }
 
-    if (emirateSelect) emirateSelect.addEventListener("change", calculateFinalTotal);
-    if (deliverySelect) deliverySelect.addEventListener("change", calculateFinalTotal);
+    // 2. THE MATH PART
+    const subtotalWithDelivery = cartTotal + fee;
+    const vatAmount = subtotalWithDelivery * 0.05; // 5% VAT
+    const finalTotal = subtotalWithDelivery + vatAmount;
 
+    // 3. Update the UI displays
+    if (deliveryFeeDisplay) deliveryFeeDisplay.textContent = fee.toFixed(2);
+    
+    // Make sure you have an element with id="vat-display" in your HTML!
+    const vatDisplay = document.getElementById("vat-display");
+    if (vatDisplay) vatDisplay.textContent = vatAmount.toFixed(2);
+
+    if (finalTotalDisplay) finalTotalDisplay.textContent = finalTotal.toFixed(2);
+    
+    return finalTotal;
+}
     // 3. Helper to get customer data
     function getCustomerData() {
         return {
