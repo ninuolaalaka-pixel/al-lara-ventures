@@ -1,209 +1,196 @@
-
 <!DOCTYPE html>
+<html lang="en"><!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Checkout | AL LARA VENTURES UAE</title>
-
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght:300;400;500;600;700&display=swap" rel="stylesheet">
-
-  <!-- Main CSS -->
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 
   <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: "Poppins", sans-serif;
-      background: #fff8ec;
-      color: #2e7d32;
+    /* --- THEME OVERRIDES --- */
+    body { 
+      margin: 0; padding: 0; 
+      font-family: "Poppins", sans-serif; 
+      background: #fffcf7; /* Warmer, premium cream */
+      color: #2e7d32; 
     }
 
-    .checkout-wrapper {
-      max-width: 600px;
-      margin: 60px auto;
+    /* --- PREMIUM HEADER --- */
+    header {
       background: #ffffff;
-      padding: 30px 24px;
-      border-radius: 14px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      position: sticky; top: 0; z-index: 1000;
+    }
+    .nav-link {
+      text-decoration: none; color: #355f3a;
+      font-weight: 500; font-size: 13px;
+      transition: color 0.3s;
+    }
+    .nav-link:hover { color: #2e7d32; }
+    .cart-link {
+      text-decoration: none; background: #2e7d32;
+      padding: 8px 16px; border-radius: 30px;
+      font-weight: 600; color: #fff; font-size: 14px;
+      box-shadow: 0 4px 10px rgba(46, 125, 50, 0.2);
     }
 
-    .checkout-wrapper h2 {
-      text-align: center;
-      font-size: 28px;
-      font-weight: 700;
-      margin-bottom: 25px;
-      color: #2e7d32;
+    /* --- CHECKOUT CONTAINER --- */
+    .checkout-wrapper { 
+      max-width: 550px; 
+      margin: 50px auto; 
+      background: #ffffff; 
+      padding: 40px; 
+      border-radius: 24px; 
+      box-shadow: 0 20px 50px rgba(0,0,0,0.05); 
+    }
+    .checkout-wrapper h2 { 
+      text-align: center; font-size: 32px; font-weight: 800; 
+      margin-bottom: 35px; color: #1b4d21; letter-spacing: -1px;
     }
 
-    label {
-      font-size: 14px;
-      font-weight: 500;
-      margin-bottom: 6px;
-      display: block;
-      color: #355f3a;
+    /* --- FORM FIELDS --- */
+    label { 
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      margin-bottom: 8px; display: block; color: #6d8c71; letter-spacing: 1px;
+    }
+    input, select { 
+      width: 100%; padding: 15px; border-radius: 12px; 
+      border: 1px solid #e2e8f0; margin-bottom: 20px; 
+      font-size: 15px; font-family: inherit; box-sizing: border-box;
+      background: #fcfcfc; transition: all 0.3s ease;
+    }
+    input:focus, select:focus {
+      outline: none; border-color: #2e7d32; 
+      background: #fff; box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.1);
+    }
+    
+    select { 
+      appearance: none; 
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232e7d32' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); 
+      background-repeat: no-repeat; background-position: right 1rem center; background-size: 1em; 
     }
 
-    input, select {
-      width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      margin-bottom: 18px;
-      font-size: 15px;
-      font-family: inherit;
+    .delivery-hint { 
+      font-size: 12px; color: #718096; 
+      margin: -15px 0 25px 0; font-style: italic; 
     }
 
-    .total-box {
-      background: #f3e8d7;
-      padding: 14px 16px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      font-size: 16px;
-      color: #2e4a32;
+    /* --- RECEIPT-STYLE TOTAL BOX --- */
+    .total-box { 
+      background: #f8fafc; padding: 25px; border-radius: 18px; 
+      margin-bottom: 30px; border: 1px solid #edf2f7; 
+    }
+    .total-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 15px; color: #4a5568; }
+    .total-row.final { 
+      margin-top: 15px; padding-top: 15px; 
+      border-top: 2px dashed #cbd5e0; 
+      font-size: 22px; font-weight: 800; color: #1a202c; 
     }
 
-    .checkout-btn, .tabby-btn {
-      width: 100%;
-      padding: 14px;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      margin-bottom: 12px;
-      border: none;
+    /* --- BUTTONS --- */
+    .checkout-btn { 
+      width: 100%; padding: 18px; border-radius: 14px; 
+      font-size: 16px; font-weight: 700; cursor: pointer; 
+      margin-bottom: 15px; border: none; background: #1a202c; color: #fff; 
+      transition: all 0.2s;
     }
-
-    .checkout-btn {
-      background: black;
-      color: white;
+    .tabby-btn { 
+      width: 100%; padding: 18px; border-radius: 14px; 
+      font-size: 16px; font-weight: 700; cursor: pointer; 
+      border: none; background: #3ec3ff; color: #000; /* Tabby Blue variant */
+      display: flex; justify-content: center; align-items: center; gap: 12px;
+      transition: all 0.2s;
     }
-
-    .checkout-btn:hover {
-      background: #333;
-    }
-
-    .tabby-btn {
-      background: #2e7d32;
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .tabby-btn:hover {
-      background: #256628;
-    }
-
-    .terms-line {
-      text-align: center;
-      font-size: 12px;
-      color: #4b6b4f;
-      margin-top: 10px;
-    }
-
-    .terms-line a {
-      color: #2e7d32;
-      text-decoration: underline;
-      font-weight: 500;
-    }
+    .checkout-btn:hover { background: #2d3748; transform: translateY(-1px); }
+    .tabby-btn:hover { background: #32b0e8; transform: translateY(-1px); }
+    
+    .terms-line { text-align: center; font-size: 12px; color: #718096; margin-top: 25px; }
   </style>
 </head>
-
 <body>
 
-  <!-- HEADER -->
   <header>
     <div class="container">
-      <nav style="display:flex; justify-content:space-between; align-items:center; padding:20px 0;">
-
-        <div style="display:flex; align-items:center; gap:10px;">
-          <a href="index.html">
-            <img src="images/Service Business Logo AL LARA VENTURES.png" alt="AL LARA VENTURES Logo" style="height:40px;">
-          </a>
-          <strong style="color:#2e7d32; font-size:22px; font-weight:800;">
-            <a href="index.html" class="logo-link">AL LARA VENTURES</a>
-          </strong>
+      <nav style="display:flex; justify-content:space-between; align-items:center; padding:15px 25px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <a href="index.html"><img src="images/Service Business Logo AL LARA VENTURES.png" alt="Logo" style="height:48px;"></a>
+          <strong style="color:#2e7d32; font-size:22px; font-weight:800;">AL LARA VENTURES</strong>
         </div>
-
         <div style="display:flex; gap:20px; align-items:center;">
           <a href="index.html" class="nav-link">Home</a>
-          <a href="uae-store.html" class="nav-link">Foodstuff (UAE)</a>
+          <a href="uae-store.html" class="nav-link">Foodstuff</a>
           <a href="cleaning.html" class="nav-link">Cleaning</a>
-          <a href="coming-soon.html" class="nav-link">Nigeria Store</a>
+          <a href="coming-soon.html" class="nav-link">Nigeria</a>
           <a href="index.html#about" class="nav-link">About</a>
           <a href="index.html#contact" class="nav-link">Contact</a>
           <a href="cart.html" class="cart-link">🛒 <span id="cart-count">0</span></a>
         </div>
-
       </nav>
     </div>
   </header>
 
-  <!-- CHECKOUT CARD -->
   <div class="checkout-wrapper">
     <h2>Checkout</h2>
 
     <label>Full Name</label>
-    <input id="customer-name" type="text" placeholder="Enter your name">
+    <input id="customer-name" type="text" placeholder="e.g. Iniolu Alaka">
 
     <label>Email Address</label>
-    <input id="customer-email" type="email" placeholder="Enter your email">
+    <input id="customer-email" type="email" placeholder="name@email.com">
 
     <label>Phone Number</label>
-    <input id="customer-tel" type="tel" placeholder="Enter your phone number">
+    <input id="customer-tel" type="tel" placeholder="05X XXX XXXX">
 
-    <label>Address</label>
-    <input id="customer-address" type="text" placeholder="Street, Building, Villa">
+    <label>Delivery Address</label>
+    <input id="customer-address" type="text" placeholder="Street, Building, Apartment No.">
 
-    <!-- EMIRATE DROPDOWN -->
-    <label>Select Emirate</label>
+    <label>Emirate</label>
     <select id="emirate-select">
-      <option value="">-- Select Emirate --</option>
+      <option value="">-- Select Your Emirate --</option>
       <option value="dubai">Dubai</option>
       <option value="sharjah">Sharjah</option>
       <option value="ajman">Ajman</option>
-      <option value="abudhabi">Abu Dhabi</option>
-      <option value="alain">Al Ain</option>
       <option value="uaq">Umm Al Quwain</option>
-      <option value="fujairah">Fujairah</option>
       <option value="rak">Ras Al Khaimah</option>
+      <option value="abudhabi">Abu Dhabi</option>
+      <option value="fujairah">Fujairah</option>
+      <option value="alain">Al Ain</option>
     </select>
 
-    <!-- DELIVERY TYPE -->
-    <label>Delivery Type</label>
+    <label>Delivery Method</label>
     <select id="delivery-type">
-      <option value="">-- Select Delivery Type --</option>
+      <option value="">-- Select Method --</option>
       <option value="standard">Standard Delivery</option>
-      <option value="heavy">Heavy Items Delivery</option>
+      <option value="heavy">Heavy Items (Rice 20kg+, Bulk Oils)</option>
     </select>
+    <p class="delivery-hint">Heavy fees apply to bulk bags or wholesale orders.</p>
 
-    <!-- TOTAL BOX -->
     <div class="total-box">
-      <strong>Cart Total:</strong> AED <span id="cart-total-display">0.00</span><br>
-      <strong>Delivery Fee:</strong> AED <span id="delivery-fee-display">0.00</span><br>
-      <strong>Final Total:</strong> AED <span id="final-total-display">0.00</span>
+      <div class="total-row"><span>Items Subtotal:</span><span>AED <span id="cart-total-display">0.00</span></span></div>
+      <div class="total-row"><span>Delivery Fee:</span><span>AED <span id="delivery-fee-display">0.00</span></span></div>
+      <div class="total-row final"><span>Total:</span><span>AED <span id="final-total-display">0.00</span></span></div>
     </div>
 
-    <button id="checkout-uae-btn" class="checkout-btn">Pay Now</button>
-
+    <button id="checkout-uae-btn" class="checkout-btn">Pay with Credit Card</button>
     <button id="pay-with-tabby" class="tabby-btn">
-      <img src="images/tabby-badge.png" style="height:20px;">
-      Proceed with Tabby
+      <img src="images/tabby-badge.png" style="height:22px;" alt="Tabby">
+      Split in 4 with Tabby
     </button>
 
-    <p class="terms-line">
-      By clicking <strong>“Pay Now”</strong> or <strong>“Proceed with Tabby”</strong>, you agree to our
-      <a href="terms-and-conditions.html">Terms & Conditions</a>.
-    </p>
+    <p class="terms-line">By proceeding, you agree to our <a href="terms-and-conditions.html" style="color: #2e7d32; font-weight:600;">Terms & Conditions</a>.</p>
   </div>
 
-  <script src="js/cart.js"></script>
-  <script src="js/tabby.js"></script>
   <script src="js/checkout-logic.js"></script>
-
+  <script>
+    function updateCartCount() {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const count = cart.reduce((total, item) => total + item.quantity, 0);
+        document.getElementById('cart-count').innerText = count;
+    }
+    updateCartCount();
+  </script>
 </body>
 </html>

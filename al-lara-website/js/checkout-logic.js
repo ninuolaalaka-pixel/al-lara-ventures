@@ -1,47 +1,70 @@
-// Emirate groups + delivery fees
-const deliveryFees = {
-  groupA: { standard: 20, heavy: 35 }, // Dubai, Sharjah, Ajman
-  groupB: { standard: 30, heavy: 45 }, // Abu Dhabi, Al Ain
-  groupC: { standard: 25, heavy: 40 }  // UAQ, Fujairah, RAK
-};
+document.addEventListener("DOMContentLoaded", () => {
+    const emirateSelect = document.getElementById("emirate-select");
+    const deliverySelect = document.getElementById("delivery-type");
+    const cartTotalDisplay = document.getElementById("cart-total-display");
+    const deliveryFeeDisplay = document.getElementById("delivery-fee-display");
+    const finalTotalDisplay = document.getElementById("final-total-display");
 
-// Map emirates to groups
-const emirateGroup = {
-  dubai: "groupA",
-  sharjah: "groupA",
-  ajman: "groupA",
+    const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+    const cartTotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    cartTotalDisplay.textContent = cartTotal.toFixed(2);
 
-  abudhabi: "groupB",
-  alain: "groupB",
+    function calculateFinalTotal() {
+        const emirate = emirateSelect.value;
+        const type = deliverySelect.value;
+        let fee = 0;
 
-  uaq: "groupC",
-  fujairah: "groupC",
-  rak: "groupC"
-};
+        if (emirate && type) {
+            const groups = {
+                groupA: ['dubai', 'sharjah', 'ajman'],
+                groupB: ['uaq', 'rak', 'fujairah'],
+                groupC: ['abudhabi', 'alain']
+            };
 
-let cartTotal = 0;
-let deliveryFee = 0;
+            // LOGIC: The fee is BASED on the choice, not added together.
+            if (groups.groupA.includes(emirate)) {
+                fee = (type === 'heavy') ? 35 : 15;
+            } else if (groups.groupB.includes(emirate)) {
+                fee = (type === 'heavy') ? 30 : 20;
+            } else if (groups.groupC.includes(emirate)) {
+                fee = (type === 'heavy') ? 48 : 35;
+            }
+        }
 
-// Load cart total from localStorage
-const cart = JSON.parse(localStorage.getItem("cart")) || [];
-cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        const finalTotal = cartTotal + fee;
+        deliveryFeeDisplay.textContent = fee.toFixed(2);
+        finalTotalDisplay.textContent = finalTotal.toFixed(2);
+        return finalTotal;
+    }
 
-// Update UI
-document.getElementById("cart-total-display").textContent = cartTotal.toFixed(2);
+    emirateSelect.addEventListener("change", calculateFinalTotal);
+    deliverySelect.addEventListener("change", calculateFinalTotal);
 
-// Handle emirate + delivery type selection
-function updateDeliveryFee() {
-  const emirate = document.getElementById("emirate-select").value;
-  const type = document.getElementById("delivery-type").value;
+    document.getElementById("pay-with-tabby").addEventListener("click", async () => {
+        const finalAmount = calculateFinalTotal();
+        
+        const customer = {
+            name: document.getElementById("customer-name").value,
+            email: document.getElementById("customer-email").value,
+            phone: document.getElementById("customer-tel").value,
+            address: document.getElementById("customer-address").value,
+            emirate: emirateSelect.value,
+            registered_since: localStorage.getItem("registered_since") || new Date().toISOString().split('T')[0]
+        };
 
-  if (!emirate || !type) return;
+        if (!customer.name || !customer.phone || !customer.emirate || !deliverySelect.value || finalAmount <= 0) {
+            alert("Please complete all fields, including delivery type.");
+            return;
+        }
 
-  const group = emirateGroup[emirate];
-  deliveryFee = deliveryFees[group][type];
+        const response = await fetch("/api/tabby-checkout", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ amount: finalAmount, cartItems, customer })
+        });
 
-  document.getElementById("delivery-fee-display").textContent = deliveryFee.toFixed(2);
-  document.getElementById("final-total-display").textContent = (cartTotal + deliveryFee).toFixed(2);
-}
-
-document.getElementById("emirate-select").addEventListener("change", updateDeliveryFee);
-document.getElementById("delivery-type").addEventListener("change", updateDeliveryFee);
+        const data = await response.json();
+        if (data.success) window.location.href = data.url;
+        else alert("Tabby Error: " + (data.message || "Session failed"));
+    });
+});
