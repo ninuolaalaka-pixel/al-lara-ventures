@@ -1,61 +1,69 @@
 // Load cart from localStorage
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
+// 1. Unified Tabby Update (Handles Point 1 & 5.c of Mariia's feedback)
 function updateTabbySnippet(amount) {
   const snippet = document.getElementById("tabby-cart-snippet");
   if (!snippet) return;
 
+  // Set the amount with 2 decimal places as a string
   snippet.setAttribute("data-tabby-amount", amount.toFixed(2));
 
-  // This is the version that worked earlier
-  setTimeout(() => {
-    if (window.TabbyPromo && typeof window.TabbyPromo.render === "function") {
-      window.TabbyPromo.render();
+  // Use a small interval to ensure Tabby is ready before calling refresh
+  let attempts = 0;
+  const maxAttempts = 10;
+  const waitForTabby = setInterval(() => {
+    attempts++;
+    if (window.TabbyPromo) {
+      // Try refresh first, then render as backup
+      if (typeof window.TabbyPromo.refresh === "function") {
+        window.TabbyPromo.refresh();
+        clearInterval(waitForTabby);
+      } else if (typeof window.TabbyPromo.render === "function") {
+        window.TabbyPromo.render();
+        clearInterval(waitForTabby);
+      }
     }
-  }, 300);
+    if (attempts >= maxAttempts) clearInterval(waitForTabby);
+  }, 200);
 }
 
-// Update cart count in header
+// 2. Update Total and trigger Tabby (This keeps the price dynamic)
+function updateTotal() {
+  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  const totalElement = document.getElementById("cart-total");
+  if (totalElement) totalElement.textContent = total.toFixed(2);
+
+  // This satisfy's Point 1: Snippet updates when price changes
+  updateTabbySnippet(total);
+}
+
+// 3. UI Helper functions
 function updateCartCount() {
   const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-  document.getElementById("cart-count").textContent = count;
+  const countEl = document.getElementById("cart-count");
+  if (countEl) countEl.textContent = count;
 }
 
-// Save cart to localStorage
 function saveCart() {
   localStorage.setItem("cart", JSON.stringify(cart));
   updateCartCount();
 }
 
-// Add to cart buttons
-document.querySelectorAll(".add-to-cart").forEach(button => {
-  button.addEventListener("click", () => {
-    const name = button.dataset.name;
-    const price = parseFloat(button.dataset.price);
-
-    const existing = cart.find(item => item.name === name);
-
-    if (existing) {
-      existing.quantity++;
-    } else {
-      cart.push({ name, price, quantity: 1 });
-    }
-
-    saveCart();
-    alert(name + " added to cart!");
-  });
-});
-
-// Render cart items on cart page
+// 4. Rendering logic
 function renderCart() {
   const cartTable = document.getElementById("cart-items");
   if (!cartTable) return;
 
   cartTable.innerHTML = "";
+  
+  if (cart.length === 0) {
+    cartTable.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px;">Your cart is empty.</td></tr>';
+  }
 
   cart.forEach((item, index) => {
     const row = document.createElement("tr");
-
     row.innerHTML = `
       <td style="padding:12px;">${item.name}</td>
       <td style="padding:12px;">AED ${item.price.toFixed(2)}</td>
@@ -69,46 +77,11 @@ function renderCart() {
         <button class="remove-btn" data-index="${index}">Remove</button>
       </td>
     `;
-
     cartTable.appendChild(row);
   });
 
   updateTotal();
-
-  // Correct place for Tabby refresh
-  setTimeout(() => {
-    if (window.TabbyPromo && typeof window.TabbyPromo.refresh === "function") {
-      window.TabbyPromo.refresh();
-    }
-  }, 300);
 }
-
-function updateTabbySnippet(amount) {
-  const snippet = document.getElementById("tabby-cart-snippet");
-  if (!snippet) return;
-
-  snippet.setAttribute("data-tabby-amount", amount.toFixed(2));
-
-  const waitForTabby = setInterval(() => {
-    if (window.TabbyPromo && typeof window.TabbyPromo.refresh === "function") {
-      window.TabbyPromo.refresh();
-      clearInterval(waitForTabby);
-    }
-  }, 200);
-}
-
-console.log("TabbyPromo:", window.TabbyPromo);
-
-
-function updateTotal() {
-  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
-  const totalElement = document.getElementById("cart-total");
-  if (totalElement) totalElement.textContent = total.toFixed(2);
-
-  updateTabbySnippet(total);
-}
-
 
 // Quantity buttons
 document.addEventListener("click", e => {
