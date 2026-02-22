@@ -1,6 +1,20 @@
 // Load cart from localStorage
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
+function updateTabbySnippet(amount) {
+  const snippet = document.getElementById("tabby-cart-snippet");
+  if (!snippet) return;
+
+  snippet.setAttribute("data-tabby-amount", amount.toFixed(2));
+
+  // This is the version that worked earlier
+  setTimeout(() => {
+    if (window.TabbyPromo && typeof window.TabbyPromo.render === "function") {
+      window.TabbyPromo.render();
+    }
+  }, 300);
+}
+
 // Update cart count in header
 function updateCartCount() {
   const count = cart.reduce((sum, item) => sum + item.quantity, 0);
