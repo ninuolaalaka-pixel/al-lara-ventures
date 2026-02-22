@@ -31,7 +31,7 @@ const registeredSince = localStorage.getItem("registered_since");
       return;
     }
 
-
+  
     const response = await fetch("/api/tabby-checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
