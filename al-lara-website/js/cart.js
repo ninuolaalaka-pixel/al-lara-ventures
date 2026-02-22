@@ -8,7 +8,9 @@ function updateTabbySnippet(amount) {
   if (!snippetElement) return;
 
   // CRITICAL: Wipe the div so Tabby can re-inject the new price
-  snippetElement.innerHTML = '';
+  if (window.TabbyPromo && typeof window.TabbyPromo.refresh === 'function') {
+      window.TabbyPromo.refresh();
+  }
 
   if (window.TabbyPromo && typeof TabbyPromo === 'function') {
     try {
