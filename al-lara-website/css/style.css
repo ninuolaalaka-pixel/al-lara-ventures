@@ -416,6 +416,12 @@ form textarea {
     font-size: 11px !important; /* Makes the text smaller so it fits the card */
 }
 
+.tabby-cart-snippet {
+    display: block !important;
+    width: 100%;
+    clear: both;
+}
+
 /* Make section titles clickable without changing their appearance */
 .section-link,
 .section-link:link,

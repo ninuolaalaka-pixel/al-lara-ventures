@@ -3,29 +3,37 @@ let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 // 1. Unified Tabby Update (Handles Point 1 & 5.c of Mariia's feedback)
 function updateTabbySnippet(amount) {
-  const snippet = document.getElementById("tabby-card-snippet");
-  if (!snippet) return;
+  const snippetId = 'tabby-cart-snippet';
+  const snippetElement = document.getElementById(snippetId);
+  
+  if (!snippetElement) {
+    console.error("Tabby container not found in HTML");
+    return;
+  }
 
-  // Set the amount with 2 decimal places as a string
-  snippet.setAttribute("data-tabby-amount", amount.toFixed(2));
+  // Clear previous content to prevent double-rendering
+  snippetElement.innerHTML = '';
 
-  // Use a small interval to ensure Tabby is ready before calling refresh
-  let attempts = 0;
-  const maxAttempts = 10;
-  const waitForTabby = setInterval(() => {
-    attempts++;
-    if (window.TabbyPromo) {
-      // Try refresh first, then render as backup
-      if (typeof window.TabbyPromo.refresh === "function") {
-        window.TabbyPromo.refresh();
-        clearInterval(waitForTabby);
-      } else if (typeof window.TabbyPromo.render === "function") {
-        window.TabbyPromo.render();
-        clearInterval(waitForTabby);
-      }
+  if (window.TabbyPromo) {
+    try {
+      // Use the 'new' constructor just like your product page does
+      new TabbyPromo({
+        selector: '#' + snippetId, // The ID must start with #
+        currency: 'AED',
+        price: amount.toFixed(2),
+        installmentsCount: 4,
+        lang: 'en',
+        source: 'cart', // Change source to 'cart'
+        publicKey: window._tabbyPublicKey,
+        merchantCode: 'ALVIF'
+      });
+      console.log("Tabby Cart Snippet initialized for amount:", amount);
+    } catch (err) {
+      console.error("Tabby Constructor failed:", err);
     }
-    if (attempts >= maxAttempts) clearInterval(waitForTabby);
-  }, 200);
+  } else {
+    console.warn("TabbyPromo library not loaded yet.");
+  }
 }
 
 // 2. Update Total and trigger Tabby (This keeps the price dynamic)
