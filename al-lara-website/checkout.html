@@ -93,13 +93,13 @@
     /* --- BUTTONS --- */
     .checkout-btn { 
       width: 100%; padding: 18px; border-radius: 14px; 
-      font-size: 16px; font-weight: 700; cursor: pointer; 
+      font-size: 16px; font-weight: 700; cursor: pointer; font-family: 'Poppins', sans-serif;
       margin-bottom: 15px; border: none; background: #324439; color: #fff; 
       transition: all 0.2s;
     }
     .tabby-btn { 
       width: 100%; padding: 18px; border-radius: 14px; 
-      font-size: 16px; font-weight: 700; cursor: pointer; 
+      font-size: 16px; font-weight: 700; cursor: pointer; font-family: 'Poppins', sans-serif;
       border: none; background:#2e7d32; color: #000; /* Tabby Blue variant */
       display: flex; justify-content: center; align-items: center; gap: 12px;
       transition: all 0.2s;
@@ -136,7 +136,7 @@
     <h2>Checkout</h2>
 
     <label>Full Name</label>
-    <input id="customer-name" type="text" placeholder="e.g. Iniolu Alaka">
+    <input id="customer-name" type="text" placeholder="e.g. John Doe">
 
     <label>Email Address</label>
     <input id="customer-email" type="email" placeholder="name@email.com">
@@ -164,9 +164,9 @@
     <select id="delivery-type">
       <option value="">-- Select Method --</option>
       <option value="standard">Standard Delivery</option>
-      <option value="heavy">Heavy Items (Rice 20kg+, Bulk Oils)</option>
+      <option value="heavy">Heavy Items (20kg+ items, Bulk Oils)</option>
     </select>
-    <p class="delivery-hint">Heavy fees apply to bulk bags or wholesale orders.</p>
+    <p class="delivery-hint">HeavyItems fees apply to bulk bags or wholesale orders. Please choose the correct option, for easy delivery processing.</p>
 
     <div class="total-box">
       <div class="total-row"><span>Items Subtotal:</span><span>AED <span id="cart-total-display">0.00</span></span></div>
@@ -174,13 +174,13 @@
       <div class="total-row final"><span>Total:</span><span>AED <span id="final-total-display">0.00</span></span></div>
     </div>
 
-    <button id="checkout-uae-btn" class="checkout-btn">Pay with Credit Card</button>
+    <button id="checkout-uae-btn" class="checkout-btn">Pay Now</button>
     <button id="pay-with-tabby" class="tabby-btn">
       <img src="images/tabby-badge.png" style="height:22px;" alt="Tabby">
-      Split in 4 with Tabby
+      Proceed to Pay with Tabby
     </button>
 
-    <p class="terms-line">By proceeding, you agree to our <a href="terms-and-conditions.html" style="color: #2e7d32; font-weight:600;">Terms & Conditions</a>.</p>
+    <p class="terms-line">By proceeding to <strong>Pay Now</strong> or <strong>Proceed with Tabby</strong> you agree to our <a href="terms-and-conditions.html" style="color: #2e7d32; font-weight:600;">Terms & Conditions</a>.</p>
   </div>
 
   <script src="js/checkout-logic.js"></script>
