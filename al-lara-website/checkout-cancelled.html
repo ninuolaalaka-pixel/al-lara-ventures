@@ -2,52 +2,62 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="css/style.css">
-  <meta name="description" content="AL LARA VENTURES provides premium cleaning services and high‑quality cleaning products across the UAE.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Payment Cancelled | AL LARA VENTURES UAE</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="css/style.css">
 
   <style>
     body {
-      font-family: 'Arial', sans-serif;
-      text-align: center;
+      margin: 0;
+      padding: 0;
+      font-family: "Poppins", sans-serif;
+      background: #fff8ec;
+      color: #2e7d32;
+    }
+
+    .cancel-hero {
       padding: 80px 20px;
+      text-align: center;
     }
-    .page-wrapper {
-      max-width: 700px;
-      margin: 0 auto;
-      animation: fadeInUp 0.6s ease-out;
-    }
-    h1 {
-      font-size: 44px;
-      font-weight: 800;
+
+    .cancel-hero h1 {
+      font-size: 40px;
+      font-weight: 700;
+      margin-bottom: 10px;
       color: #b30000;
-      margin-bottom: 16px;
     }
-    p.subtitle {
-      font-size: 18px;
+
+    .cancel-hero p {
+      font-size: 16px;
+      color: #4b6b4f;
       margin-bottom: 30px;
     }
-    .buttons {
-      margin-top: 24px;
+
+    .cancel-buttons {
+      margin-top: 30px;
       display: flex;
       justify-content: center;
-      gap: 12px;
+      gap: 14px;
       flex-wrap: wrap;
     }
-    a.button {
-      display: inline-block;
-      padding: 14px 24px;
-      background: black;
-      color: white;
+
+    .cancel-buttons a {
+      padding: 12px 24px;
+      background: #2e7d32;
+      color: #fff;
       text-decoration: none;
       border-radius: 8px;
-      font-size: 16px;
       font-weight: 600;
+      transition: 0.3s;
     }
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+
+    .cancel-buttons a:hover {
+      background: #256628;
     }
   </style>
 </head>
@@ -57,9 +67,8 @@
   <!-- HEADER -->
   <header>
     <div class="container">
-      <nav style="display:flex; justify-content:space-between; align-items:center;">
+      <nav style="display:flex; justify-content:space-between; align-items:center; padding:20px 0;">
 
-        <!-- Logo -->
         <div style="display:flex; align-items:center; gap:10px;">
           <a href="index.html">
             <img src="images/Service Business Logo AL LARA VENTURES.png" alt="AL LARA VENTURES Logo" style="height:40px;">
@@ -69,7 +78,6 @@
           </strong>
         </div>
 
-        <!-- Nav -->
         <div style="display:flex; gap:20px; align-items:center;">
           <a href="index.html" class="nav-link">Home</a>
           <a href="uae-store.html" class="nav-link">Foodstuff (UAE)</a>
@@ -84,18 +92,18 @@
     </div>
   </header>
 
-  <main class="page-wrapper">
+  <!-- CANCEL CONTENT -->
+  <section class="cancel-hero">
     <h1 id="cancel-title">Payment Cancelled</h1>
-    <p class="subtitle" id="cancel-message">Your payment was not completed.</p>
+    <p id="cancel-message">Your payment was not completed.</p>
 
-    <div class="buttons">
-      <a href="cart.html" class="button">Return to Cart</a>
-      <a href="uae-store.html" class="button">Continue Shopping</a>
+    <div class="cancel-buttons">
+      <a href="cart.html">Return to Cart</a>
+      <a href="uae-store.html">Continue Shopping</a>
     </div>
-  </main>
+  </section>
 
   <script>
-    // Detect reason from URL
     const params = new URLSearchParams(window.location.search);
     const reason = params.get("reason");
 
