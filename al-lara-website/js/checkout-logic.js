@@ -23,11 +23,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // LOGIC: The fee is BASED on the choice, not added together.
             if (groups.groupA.includes(emirate)) {
-                fee = (type === 'heavy') ? 35 : 15;
+                fee = (type === 'heavy') ? 35 : 20;
             } else if (groups.groupB.includes(emirate)) {
-                fee = (type === 'heavy') ? 30 : 20;
+                fee = (type === 'heavy') ? 30 : 15;
             } else if (groups.groupC.includes(emirate)) {
-                fee = (type === 'heavy') ? 48 : 35;
+                fee = (type === 'heavy') ? 48 : 30;
             }
         }
 
