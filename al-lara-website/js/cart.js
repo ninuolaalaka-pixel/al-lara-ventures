@@ -3,7 +3,7 @@ let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 // 1. Unified Tabby Update (Handles Point 1 & 5.c of Mariia's feedback)
 function updateTabbySnippet(amount) {
-  const snippet = document.getElementById("tabby-cart-snippet");
+  const snippet = document.getElementById("tabby-card-snippet");
   if (!snippet) return;
 
   // Set the amount with 2 decimal places as a string
