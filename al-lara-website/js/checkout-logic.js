@@ -1,55 +1,62 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Selectors
+    // 1. Selectors
     const emirateSelect = document.getElementById("emirate-select");
     const deliverySelect = document.getElementById("delivery-type");
     const cartTotalDisplay = document.getElementById("cart-total-display");
     const deliveryFeeDisplay = document.getElementById("delivery-fee-display");
+    const vatDisplay = document.getElementById("vat-display");
     const finalTotalDisplay = document.getElementById("final-total-display");
     const checkoutUaeBtn = document.getElementById("checkout-uae-btn");
     const tabbyBtn = document.getElementById("pay-with-tabby");
 
-    // 1. Initial Cart Load
+    // 2. Initial Cart Load
     const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
     const cartTotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     
     if (cartTotalDisplay) cartTotalDisplay.textContent = cartTotal.toFixed(2);
 
-    // 2. Logic for Fees (Selection-based, not cumulative)
+    // 3. Logic for Fees & VAT
     function calculateFinalTotal() {
-    const emirate = emirateSelect ? emirateSelect.value : "";
-    const type = deliverySelect ? deliverySelect.value : "";
-    let fee = 0;
+        const emirate = emirateSelect ? emirateSelect.value : "";
+        const type = deliverySelect ? deliverySelect.value : "";
+        let fee = 0;
 
-    // 1. Calculate Delivery Fee based on your latest rates
-    if (emirate && type) {
-        const groups = {
-            groupA: ['dubai', 'sharjah', 'ajman'],
-            groupB: ['uaq', 'rak', 'fujairah'],
-            groupC: ['abudhabi', 'alain']
-        };
+        if (emirate && type) {
+            const groups = {
+                groupA: ['dubai', 'sharjah', 'ajman'],
+                groupB: ['uaq', 'rak', 'fujairah'],
+                groupC: ['abudhabi', 'alain']
+            };
 
-        if (groups.groupA.includes(emirate)) fee = (type === 'heavy') ? 25 : 10;
-        else if (groups.groupB.includes(emirate)) fee = (type === 'heavy') ? 30 : 15;
-        else if (groups.groupC.includes(emirate)) fee = (type === 'heavy') ? 48 : 30;
+            if (groups.groupA.includes(emirate)) fee = (type === 'heavy') ? 25 : 10;
+            else if (groups.groupB.includes(emirate)) fee = (type === 'heavy') ? 30 : 15;
+            else if (groups.groupC.includes(emirate)) fee = (type === 'heavy') ? 48 : 30;
+        }
+
+        const subtotalWithDelivery = cartTotal + fee;
+        const vatAmount = subtotalWithDelivery * 0.05; 
+        const finalTotal = subtotalWithDelivery + vatAmount;
+
+        // Update UI
+        if (deliveryFeeDisplay) deliveryFeeDisplay.textContent = fee.toFixed(2);
+        if (vatDisplay) vatDisplay.textContent = vatAmount.toFixed(2);
+        if (finalTotalDisplay) finalTotalDisplay.textContent = finalTotal.toFixed(2);
+        
+        return finalTotal;
     }
 
-    // 2. THE MATH PART
-    const subtotalWithDelivery = cartTotal + fee;
-    const vatAmount = subtotalWithDelivery * 0.05; // 5% VAT
-    const finalTotal = subtotalWithDelivery + vatAmount;
+    // --- 4. THE MISSING LISTENERS (This fixes your issue) ---
+    if (emirateSelect) {
+        emirateSelect.addEventListener("change", calculateFinalTotal);
+    }
+    if (deliverySelect) {
+        deliverySelect.addEventListener("change", calculateFinalTotal);
+    }
 
-    // 3. Update the UI displays
-    if (deliveryFeeDisplay) deliveryFeeDisplay.textContent = fee.toFixed(2);
-    
-    // Make sure you have an element with id="vat-display" in your HTML!
-    const vatDisplay = document.getElementById("vat-display");
-    if (vatDisplay) vatDisplay.textContent = vatAmount.toFixed(2);
+    // Run math once immediately on load to show subtotal
+    calculateFinalTotal();
 
-    if (finalTotalDisplay) finalTotalDisplay.textContent = finalTotal.toFixed(2);
-    
-    return finalTotal;
-}
-    // 3. Helper to get customer data
+    // 5. Helper to get customer data
     function getCustomerData() {
         return {
             name: document.getElementById("customer-name").value,
@@ -57,14 +64,12 @@ document.addEventListener("DOMContentLoaded", () => {
             tel: document.getElementById("customer-tel").value,
             address: document.getElementById("customer-address").value,
             emirate: emirateSelect.value,
-            delivery_type: deliverySelect.value,
-            registered_since: localStorage.getItem("registered_since") || new Date().toISOString().split('T')[0]
+            delivery_type: deliverySelect.value
         };
     }
 
     // --- ZIINA (PAY NOW) BUTTON ---
     if (checkoutUaeBtn) {
-        console.log("Ziina button found and linked."); // Check your browser console for this!
         checkoutUaeBtn.addEventListener("click", async (e) => {
             e.preventDefault();
             const finalAmount = calculateFinalTotal();
@@ -79,17 +84,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 const response = await fetch("/api/checkout-uae", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        amount: finalAmount,
-                        cartItems: cartItems,
-                        customer: customer
-                    })
+                    body: JSON.stringify({ amount: finalAmount, cartItems, customer })
                 });
                 const data = await response.json();
                 if (data.success) window.location.href = data.url;
-                else alert("Ziina Error: " + (data.details?.message || "Checkout failed"));
+                else alert("Checkout Error");
             } catch (err) {
-                alert("Network error. Check connection.");
+                alert("Network error.");
             }
         });
     }
@@ -101,7 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const finalAmount = calculateFinalTotal();
             const customer = getCustomerData();
 
-            if (!customer.name || !customer.tel || !customer.emirate || finalAmount <= 0) {
+            if (!customer.name || !customer.tel || !customer.emirate) {
                 alert("Please fill in all fields.");
                 return;
             }
@@ -113,7 +114,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
             const data = await response.json();
             if (data.success) window.location.href = data.url;
-            else alert("Tabby Error: " + data.message);
         });
     }
 });
