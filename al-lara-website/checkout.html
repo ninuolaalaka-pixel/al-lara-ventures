@@ -3,111 +3,131 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="AL LARA VENTURES provides premium cleaning services and high‑quality cleaning products across the UAE. Book professional cleaners or shop our products online.">
-  <title>Checkout Section | AL LARA VENTURES UAE</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Checkout | AL LARA VENTURES UAE</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght:300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Main CSS -->
   <link rel="stylesheet" href="css/style.css">
+
   <style>
-  .checkout-container {
-    max-width: 450px;
-    margin: 80px auto;
-    padding: 30px;
-    border-radius: 12px;
-    background: #ffffff;
-    box-shadow: 0 0 20px rgba(0,0,0,0.08);
-    font-family: Arial, sans-serif;
-  }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Poppins", sans-serif;
+      background: #fff8ec;
+      color: #2e7d32;
+    }
 
-  .checkout-container h2 {
-    text-align: center;
-    margin-bottom: 25px;
-    font-weight: 600;
-  }
+    .checkout-wrapper {
+      max-width: 600px;
+      margin: 60px auto;
+      background: #ffffff;
+      padding: 30px 24px;
+      border-radius: 14px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+    }
 
-  .checkout-container label {
-    display: block;
-    margin-bottom: 6px;
-    font-size: 14px;
-    font-weight: 500;
-  }
+    .checkout-wrapper h2 {
+      text-align: center;
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 25px;
+      color: #2e7d32;
+    }
 
-  .checkout-container input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 18px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 15px;
-  }
+    label {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 6px;
+      display: block;
+      color: #355f3a;
+    }
 
-  /* Base button style TABBY BTN*/
-  .tabby-btn {
-    width: 100%;
-    padding: 14px;
-    background:#43a047; /* green */
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: 0.2s;
-    margin-bottom: 12px;
-  }
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-bottom: 18px;
+      font-size: 15px;
+      font-family: inherit;
+    }
 
-  .tabby-btn:hover {
-    background: #256628;
-  }
+    .total-box {
+      background: #f3e8d7;
+      padding: 14px 16px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-size: 16px;
+      color: #2e4a32;
+    }
 
-  /* BLACK BUTTON (Pay Now) */
-  .checkout-btn {
-    width: 100%;
-    padding: 14px;
-    background: black;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: 0.2s;
-    margin-bottom: 12px;
-  }
+    .checkout-btn, .tabby-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 12px;
+      border: none;
+    }
 
-  .checkout-btn:hover {
-    background: #333;
-  }
+    .checkout-btn {
+      background: black;
+      color: white;
+    }
 
-  /* Tabby button with logo */
-  #pay-with-tabby {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-  }
+    .checkout-btn:hover {
+      background: #333;
+    }
 
-  #pay-with-tabby img {
-    height: 20px;
-  }
-</style>
+    .tabby-btn {
+      background: #2e7d32;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tabby-btn:hover {
+      background: #256628;
+    }
+
+    .terms-line {
+      text-align: center;
+      font-size: 12px;
+      color: #4b6b4f;
+      margin-top: 10px;
+    }
+
+    .terms-line a {
+      color: #2e7d32;
+      text-decoration: underline;
+      font-weight: 500;
+    }
+  </style>
+</head>
+
 <body>
 
   <!-- HEADER -->
   <header>
     <div class="container">
-      <nav style="display:flex; justify-content:space-between; align-items:center;">
-        
-      <!-- Logo + Text Container -->
-       <div style="display:flex; align-items:center; gap:10px;">
-  
-  <!-- Logo Image -->
-  <a href="index.html">
-    <img src="images\Service Business Logo AL LARA VENTURES.png" alt="AL LARA VENTURES Logo" style="height:40px; width:auto;">
-  </a>
+      <nav style="display:flex; justify-content:space-between; align-items:center; padding:20px 0;">
 
-  <!-- Text -->
-  <strong style="color:#2e7d32; font-size:22px; font-weight:800;">
-    <a href="index.html" class="logo-link">AL LARA VENTURES</a>
-  </strong>
-</div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <a href="index.html">
+            <img src="images/Service Business Logo AL LARA VENTURES.png" alt="AL LARA VENTURES Logo" style="height:40px;">
+          </a>
+          <strong style="color:#2e7d32; font-size:22px; font-weight:800;">
+            <a href="index.html" class="logo-link">AL LARA VENTURES</a>
+          </strong>
+        </div>
 
         <div style="display:flex; gap:20px; align-items:center;">
           <a href="index.html" class="nav-link">Home</a>
@@ -116,60 +136,74 @@
           <a href="coming-soon.html" class="nav-link">Nigeria Store</a>
           <a href="index.html#about" class="nav-link">About</a>
           <a href="index.html#contact" class="nav-link">Contact</a>
-
-          <a href="cart.html" class="cart-link">
-            🛒 <span id="cart-count">0</span>
-          </a>
+          <a href="cart.html" class="cart-link">🛒 <span id="cart-count">0</span></a>
         </div>
 
       </nav>
     </div>
   </header>
 
-</div>
+  <!-- CHECKOUT CARD -->
+  <div class="checkout-wrapper">
+    <h2>Checkout</h2>
 
-<div class="checkout-container">
-  <h2>Checkout</h2>
+    <label>Full Name</label>
+    <input id="customer-name" type="text" placeholder="Enter your name">
 
-  <label for="customer-name">Full Name</label>
-  <input id="customer-name" type="text" placeholder="Enter your name" required>
+    <label>Email Address</label>
+    <input id="customer-email" type="email" placeholder="Enter your email">
 
-  <label for="customer-email">Email Address</label>
-  <input id="customer-email" type="email" placeholder="Enter your email" required>
+    <label>Phone Number</label>
+    <input id="customer-tel" type="tel" placeholder="Enter your phone number">
 
-  <label for="customer-tel">Phone Number</label>
-  <input id="customer-tel" type="tel" placeholder="Enter your phone number" required>
+    <label>Address</label>
+    <input id="customer-address" type="text" placeholder="Street, Building, Villa">
 
-  <!-- SHIPPING FIELDS (REQUIRED BY TABBY) -->
-  <label for="customer-address">Address</label>
-  <input id="customer-address" type="text" placeholder="Street, Building, Villa" required>
+    <!-- EMIRATE DROPDOWN -->
+    <label>Select Emirate</label>
+    <select id="emirate-select">
+      <option value="">-- Select Emirate --</option>
+      <option value="dubai">Dubai</option>
+      <option value="sharjah">Sharjah</option>
+      <option value="ajman">Ajman</option>
+      <option value="abudhabi">Abu Dhabi</option>
+      <option value="alain">Al Ain</option>
+      <option value="uaq">Umm Al Quwain</option>
+      <option value="fujairah">Fujairah</option>
+      <option value="rak">Ras Al Khaimah</option>
+    </select>
 
-  <label for="customer-city">City</label>
-  <input id="customer-city" type="text" placeholder="Dubai, Sharjah, RAK..." required>
+    <!-- DELIVERY TYPE -->
+    <label>Delivery Type</label>
+    <select id="delivery-type">
+      <option value="">-- Select Delivery Type --</option>
+      <option value="standard">Standard Delivery</option>
+      <option value="heavy">Heavy Items Delivery</option>
+    </select>
 
-  <label for="customer-emirate">Emirate</label>
-  <input id="customer-emirate" type="text" placeholder="Dubai, Abu Dhabi, Ajman..." required>
+    <!-- TOTAL BOX -->
+    <div class="total-box">
+      <strong>Cart Total:</strong> AED <span id="cart-total-display">0.00</span><br>
+      <strong>Delivery Fee:</strong> AED <span id="delivery-fee-display">0.00</span><br>
+      <strong>Final Total:</strong> AED <span id="final-total-display">0.00</span>
+    </div>
 
-  <button id="checkout-uae-btn" class="checkout-btn">Pay Now</button>
+    <button id="checkout-uae-btn" class="checkout-btn">Pay Now</button>
 
-  <button id="pay-with-tabby" class="tabby-btn">
-    <img src="images\tabby-badge.png" style="height:20px; cursor: pointer;">
-    Proceed to Pay later with Tabby
-  </button>
-</div>
+    <button id="pay-with-tabby" class="tabby-btn">
+      <img src="images/tabby-badge.png" style="height:20px;">
+      Proceed with Tabby
+    </button>
 
-<p style="text-align: center; color: #666; font-size: 14px; margin-top: 15px; font-style: italic;">
-  🚚 Delivery within 2 to 3 business days across the UAE.
-</p>
+    <p class="terms-line">
+      By clicking <strong>“Pay Now”</strong> or <strong>“Proceed with Tabby”</strong>, you agree to our
+      <a href="terms-and-conditions.html">Terms & Conditions</a>.
+    </p>
+  </div>
 
-<p style="font-size:12px; color:#4b6b4f; margin-top:10px;">
-  By clicking <strong>“Pay Now”</strong> or <strong>“Proceed with Tabby”</strong>, you confirm that you have read and agree to our
-  <a href="terms-and-conditions.html" style="color:#2e7d32; text-decoration:underline; font-weight:500;">
-    Terms & Conditions
-  </a>.
-</p>
+  <script src="js/cart.js"></script>
+  <script src="js/tabby.js"></script>
+  <script src="js/checkout-logic.js"></script>
 
-<script src="js/cart.js"></script>
-<script src="js/tabby.js"></script>
 </body>
 </html>

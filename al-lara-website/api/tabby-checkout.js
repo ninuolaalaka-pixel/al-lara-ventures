@@ -11,7 +11,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { cartItems, customer } = req.body || {};
+  const { amount, cartItems, customer } = req.body || {};
 
   if (!cartItems || !Array.isArray(cartItems)) {
     return res.status(400).json({ error: "Invalid cart" });
@@ -24,12 +24,6 @@ export default async function handler(req, res) {
     ? cleanPhone
     : "971" + cleanPhone.replace(/^0+/, "");
 
-  // TOTAL AMOUNT AS STRING
-  const totalAmount = cartItems.reduce((sum, item) => {
-    return sum + item.price * item.quantity;
-  }, 0);
-  const totalAmountStr = totalAmount.toFixed(2);
-
  // PRE-SCORING CHECK
 const preScoreResponse = await fetch("https://api.tabby.ai/api/v2/pre-scores", {
   method: "POST",
@@ -39,7 +33,7 @@ const preScoreResponse = await fetch("https://api.tabby.ai/api/v2/pre-scores", {
   },
   body: JSON.stringify({
     phone: finalPhone,
-    amount: totalAmountStr,
+    amount: amount.toFixed(2),
     currency: "AED"
   })
 });
@@ -76,14 +70,14 @@ if (preScore?.status === "rejected") {
         merchant_code: process.env.TABBY_MERCHANT_CODE,
 
        payment: {
-  amount: totalAmountStr,
+  amount: amount.toFixed(2),
   currency: "AED",
   description: `Order from ${customer.name}`,
   lang: "en",
 
   shipping_address: {
     address: customer.address || "",
-    city: customer.city || "",
+    city: customer.emirate || "",
     subdivision: customer.emirate || "", // CHANGED FROM emirates
     zip: "00000",
     country: "AE"
