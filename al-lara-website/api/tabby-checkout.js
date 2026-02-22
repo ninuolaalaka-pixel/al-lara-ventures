@@ -103,7 +103,7 @@ if (preScore?.status === "rejected") {
   order_history: [
     {
       purchased_at: new Date().toISOString(),
-      amount: 0, // CHANGED TO NUMBER
+      amount: 0.00, // CHANGED TO NUMBER
       status: "new",
       buyer: {
         name: customer.name,
