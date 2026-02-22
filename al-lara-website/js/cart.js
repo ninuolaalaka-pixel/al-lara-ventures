@@ -6,44 +6,42 @@ function updateTabbySnippet(amount) {
   const snippetId = 'tabby-cart-snippet';
   const snippetElement = document.getElementById(snippetId);
   
-  if (!snippetElement) {
-    console.error("Tabby container not found in HTML");
-    return;
-  }
+  if (!snippetElement) return;
 
-  // Clear previous content to prevent double-rendering
+  // Clear previous content to prevent the "double widget" bug
   snippetElement.innerHTML = '';
 
-  if (window.TabbyPromo) {
+  // Use the Constructor that works on your product page
+  if (window.TabbyPromo && typeof TabbyPromo === 'function') {
     try {
-      // Use the 'new' constructor just like your product page does
       new TabbyPromo({
-        selector: '#' + snippetId, // The ID must start with #
+        selector: '#' + snippetId,
         currency: 'AED',
         price: amount.toFixed(2),
         installmentsCount: 4,
         lang: 'en',
-        source: 'cart', // Change source to 'cart'
-        publicKey: window._tabbyPublicKey,
+        source: 'cart',
+        publicKey: window._tabbyPublicKey || "pk_test_019c445e-ce8a-936c-9575-c76f91bed644",
         merchantCode: 'ALVIF'
       });
-      console.log("Tabby Cart Snippet initialized for amount:", amount);
     } catch (err) {
-      console.error("Tabby Constructor failed:", err);
+      console.error("Tabby construction error:", err);
     }
-  } else {
-    console.warn("TabbyPromo library not loaded yet.");
   }
 }
 
+
 // 2. Update Total and trigger Tabby (This keeps the price dynamic)
 function updateTotal() {
-  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  // Use 'cart' (the global variable)
+  const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
   const totalElement = document.getElementById("cart-total");
-  if (totalElement) totalElement.textContent = total.toFixed(2);
+  if (totalElement) {
+    totalElement.textContent = total.toFixed(2);
+  }
 
-  // This satisfy's Point 1: Snippet updates when price changes
+  // Update the snippet
   updateTabbySnippet(total);
 }
 
