@@ -10,24 +10,14 @@ export default async function handler(req, res) {
 
   const { amount, cartItems, customer } = req.body || {};
 
-  // --- CHANGE 1: THE PHONE LOGIC (Fixed for UAE standards) ---
-  // WHY: Tabby is strict. UAE numbers MUST be 971 + 9 digits (total 12).
-  // Your previous log showed 11 digits (97150000001). This logic ensures 
-  // we always land on a valid 12-digit format.
+  // 1. IMPROVED PHONE CLEANING (Docs show +971 format)
   const rawPhone = customer.phone || customer.tel || "";
   let cleanPhone = rawPhone.replace(/\D/g, ""); 
+  if (cleanPhone.startsWith("0")) cleanPhone = cleanPhone.substring(1);
+  if (cleanPhone.startsWith("971")) cleanPhone = cleanPhone.substring(3);
+  const finalPhone = "+971" + cleanPhone; 
 
-  if (cleanPhone.startsWith("0")) {
-    cleanPhone = cleanPhone.substring(1);
-  }
-  // Remove 971 if it's already there to re-add it cleanly
-  if (cleanPhone.startsWith("971")) {
-    cleanPhone = cleanPhone.substring(3);
-  }
-  const finalPhone = "971" + cleanPhone;
-  console.log("FINAL PHONE FOR TABBY:", finalPhone);
-
-  // --- CHANGE 2: SAFE DATE LOGIC ---
+  // 2. SAFE DATE LOGIC
   let safeDate;
   try {
     const regDate = customer.registered_since ? new Date(customer.registered_since) : new Date();
@@ -37,43 +27,9 @@ export default async function handler(req, res) {
   }
 
   try {
-    // --- CHANGE 3: THE "ANTI-CRASH" PRE-SCORING ---
-    // WHY: You were using .json() immediately. If Tabby sends text, you get a 500 error.
-    // We now use .text() first, then try to parse it. This prevents SyntaxErrors.
-    // --- UPDATED PRE-SCORING CHECK ---
-    const preScoreResponse = await fetch("https://api.tabby.ai/api/v2/pre-scores", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.TABBY_SECRET_KEY_TEST}`,
-      },
-      body: JSON.stringify({
-        phone: finalPhone,
-        amount: amount.toFixed(2),
-        currency: "AED"
-      })
-    });
-
-    const preScoreText = await preScoreResponse.text();
-    let preScore = {};
-    try {
-        preScore = preScoreText ? JSON.parse(preScoreText) : {};
-    } catch (e) {
-        console.error("Non-JSON Pre-score:", preScoreText);
-    }
-
-    console.log("DEBUG: Pre-score Status is:", preScore.status);
-
-    // FIX: Some Sandbox responses wrap the status or use different casing
-    if (preScore.status === "rejected" || preScore.result === "rejected") {
-      return res.status(400).json({
-        success: false,
-        message: "Tabby is unable to approve this purchase at the moment. Please try another payment method.", // <--- THIS SHOULD SHOW NOW
-        details: preScore
-      });
-    }
-
-    // --- CREATE CHECKOUT SESSION ---
+    // --- CONSOLIDATED CHECKOUT SESSION (Covers Eligibility & Creation) ---
+    // According to docs: Use this endpoint for both. 
+    // Status "created" = Eligible | Status "rejected" = Ineligible
     const response = await fetch("https://api.tabby.ai/api/v2/checkout", {
       method: "POST",
       headers: {
@@ -86,14 +42,6 @@ export default async function handler(req, res) {
           amount: amount.toFixed(2),
           currency: "AED",
           description: `Order from ${customer.name}`,
-          lang: "en",
-          shipping_address: {
-            address: customer.address || "",
-            city: customer.emirate || "",
-            subdivision: customer.emirate || "",
-            zip: "00000",
-            country: "AE"
-          },
           buyer: {
             email: customer.email,
             phone: finalPhone,
@@ -102,6 +50,13 @@ export default async function handler(req, res) {
           buyer_history: {
             loyalty_level: 0,
             registered_since: safeDate
+          },
+          shipping_address: {
+            address: customer.address || "",
+            city: customer.emirate || "",
+            subdivision: customer.emirate || "",
+            zip: "00000",
+            country: "AE"
           },
           order: {
             reference_id: "ORDER-" + Date.now(),
@@ -113,6 +68,7 @@ export default async function handler(req, res) {
             }))
           }
         },
+        lang: "en",
         merchant_urls: {
           success: "https://www.allaraventures.com/checkout-success.html",
           cancel: "https://www.allaraventures.com/checkout-cancelled.html?reason=cancel",
@@ -122,20 +78,37 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
-    const checkoutUrl = data?.configuration?.available_products?.installments?.[0]?.web_url;
+    console.log("TABBY API RESPONSE STATUS:", data.status);
 
-    if (!checkoutUrl) {
+    // --- LOGIC FROM THE DOCS ---
+    // 1. Check for explicit rejection
+    // 2. Check for missing web_url
+    const installmentProduct = data?.configuration?.available_products?.installments?.[0];
+    const checkoutUrl = installmentProduct?.web_url;
+    const rejectionReason = installmentProduct?.rejection_reason;
+
+    if (data.status === "rejected" || !checkoutUrl) {
+      let userMessage = "Sorry, Tabby is unable to approve this purchase. Please use an alternative payment method.";
+      
+      // Bonus: Map the rejection reasons from the docs
+      if (rejectionReason === "order_amount_too_high") {
+        userMessage = "This purchase is above your current spending limit with Tabby. Try a smaller cart.";
+      } else if (rejectionReason === "order_amount_too_low") {
+        userMessage = "The purchase amount is below the minimum required to use Tabby.";
+      }
+
       return res.status(400).json({
         success: false,
-        message: "Tabby is unable to approve this purchase. Please try another payment method.",
+        message: userMessage,
         details: data
       });
     }
 
+    // --- SUCCESS ---
     return res.status(200).json({ success: true, url: checkoutUrl });
 
   } catch (error) {
     console.error("Tabby Integration Error:", error);
-    return res.status(500).json({ success: false, error: "Internal Server Error during Tabby Checkout" });
+    return res.status(500).json({ success: false, message: "Tabby server error. Please try again." });
   }
 }
