@@ -97,37 +97,73 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // --- TABBY BUTTON ---
-    if (tabbyBtn) {
-        tabbyBtn.addEventListener("click", async (e) => {
-            e.preventDefault();
-            const finalAmount = calculateFinalTotal();
-            const customer = getCustomerData();
+    if (!tabbyBtn) return; // Stop if the button isn't on this page
 
-            if (!customer.name || !customer.tel || !customer.emirate) {
-               window.showCustomAlertt("Please fill in all fields.");
+    tabbyBtn.addEventListener("click", async (e) => {
+        e.preventDefault(); // Stop the page from refreshing
+
+        // 1. Collect Data
+        const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+        
+        // Handle "Registered Since" for Tabby requirements
+        if (!localStorage.getItem("registered_since")) {
+            localStorage.setItem("registered_since", new Date().toISOString());
+        }
+        const registeredSince = localStorage.getItem("registered_since");
+
+        const customer = {
+            name: document.getElementById("customer-name")?.value,
+            email: document.getElementById("customer-email")?.value,
+            phone: document.getElementById("customer-tel")?.value,
+            address: document.getElementById("customer-address")?.value,
+            emirate: document.getElementById("emirate-select")?.value,
+            delivery_type: document.getElementById("delivery-type")?.value,
+            registered_since: registeredSince
+        };
+
+        // 2. Validation
+        if (!customer.name || !customer.email || !customer.phone || !customer.address || !customer.emirate) {
+            window.showCustomAlert("Please fill in all fields before checking out.");
+            return;
+        }
+
+        // 3. Calculate Totals
+        const cartTotal = parseFloat(document.getElementById("cart-total-display")?.textContent || 0);
+        const deliveryFee = parseFloat(document.getElementById("delivery-fee-display")?.textContent || 0);
+        const finalTotal = cartTotal + deliveryFee;
+
+        // 4. Send to API
+        try {
+            const response = await fetch("/api/tabby-checkout", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    amount: finalTotal,
+                    cartItems,
+                    customer
+                })
+            });
+
+            // Handle the "Whitespace/JSON" error from Vercel
+            const text = await response.text(); 
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch (err) {
+                console.error("Server sent non-JSON response:", text);
+                window.showCustomAlert("Server error. Please try again later.");
                 return;
             }
 
-            try {
-                const response = await fetch("/api/tabby-checkout", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ amount: finalAmount, cartItems, customer })
-                });
-                
-                const data = await response.json();
-
-                if (data.success) {
-                    window.location.href = data.url;
-                } else {
-                    // --- CHANGE: BETTER ERROR HANDLING ---
-                    // Why: If 'Pre-scoring' rejects the user, this alert 
-                    // will show the message we sent from the API.
-                    window.showCustomAlert(data.message || "Tabby is unable to approve this purchase at this time. Please try another payment method");
-                }
-            } catch (err) {
-                window.showCustomAlert("Network error. Please try again.");
+            if (data.success) {
+                window.location.href = data.url;
+            } else {
+                // Show the specific rejection message (Pre-scoring)
+                window.showCustomAlert(data.message || "Tabby is unable to approve this purchase.");
             }
-        });
-    }
+        } catch (err) {
+            console.error("Network error:", err);
+            window.showCustomAlert("Network error. Please check your connection.");
+        }
+    });
 });
