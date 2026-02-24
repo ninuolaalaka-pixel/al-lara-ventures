@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const tabbyBtn = document.getElementById("pay-with-tabby");
 
   if (!tabbyBtn) {
-    console.log("Tabby button not found");
+    window.showCustomAlert("Tabby button not found");
     return;
   }
 
@@ -28,7 +28,7 @@ const registeredSince = localStorage.getItem("registered_since");
     };
 
     if (!customer.name || !customer.email || !customer.phone || !customer.address || !customer.emirate || !customer.delivery_type) {
-      alert("Please enter your name, email, phone number, address, emirate and delivery type before checkout.");
+      window.showCustomAlert("Please enter your name, email, phone number, address, emirate and delivery type before checkout.");
       return;
     }
 
@@ -52,7 +52,7 @@ const registeredSince = localStorage.getItem("registered_since");
     if (data.success) {
       window.location.href = data.url;
     } else {
-      alert("Tabby checkout failed.");
+      window.showCustomAlert(data.message || "Tabby checkout failed.");
       console.log(data);
     }
   });

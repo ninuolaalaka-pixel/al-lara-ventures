@@ -70,10 +70,8 @@ document.querySelectorAll(".add-to-cart").forEach(button => {
     saveCart();
     updateCartCount();
     // Show custom toast instead of alert
-const toast = document.getElementById("toast");
-toast.textContent = name + " added to cart!";
-toast.className = "show";
-setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
+    // USE THIS
+    window.showToast(name + " added to cart!");
   });
 });
 
@@ -146,32 +144,32 @@ if (sendMessaggeBtn) {
     const message = messageInput?.value.trim();
 
     if (!name || !email || !tel || !message) {
-      alert("Please fill in all fields.");
+      window.showCustomAlert("Please fill in all fields.");
       return;
     }
     // VALIDATION
     if (!name || name.length < 2) {
-      alert("Enter a valid full name.");
+      window.showCustomAlert("Enter a valid full name.");
       return;
     }
 
     if (!/^\d{7,15}$/.test(tel)) {
-      alert("Enter a valid phone number (digits only).");
+      window.showCustomAlert("Enter a valid phone number (digits only).");
       return;
     }
 
     if (!email.includes("@") || email.length < 5) {
-      alert("Enter a valid email address.");
+      window.showCustomAlert("Enter a valid email address.");
       return;
     }
 
      if (!message || message.length < 10) {
-      alert("Your message must be at least 10 characters.");
+      window.showCustomAlert("Your message must be at least 10 characters.");
       return;
     }
 
     if (message.length > 1000) {
-      alert("Your message is too long. Max 1000 characters.");
+      window.showCustomAlert("Your message is too long. Max 1000 characters.");
       return;
     }
 
@@ -194,11 +192,11 @@ if (sendMessaggeBtn) {
         messageInput.value = "";
       } else {
         console.error(data);
-        alert("Something went wrong. Please try again later.");
+        window.showCustomAlert("Something went wrong. Please try again later.");
       }
     } catch (err) {
       console.error(err);
-      alert("Network error. Please try again later.");
+      window.showCustomAlert("Network error. Please try again later.");
     }
   });
 }
@@ -218,33 +216,33 @@ if (submitBookingBtn) {
 
     // VALIDATION
     if (!name || name.length < 2) {
-      alert("Enter a valid full name.");
+      window.showCustomAlert("Enter a valid full name.");
       return;
     }
 
     if (!/^\d{7,15}$/.test(phone)) {
-      alert("Enter a valid phone number (digits only).");
+      window.showCustomAlert("Enter a valid phone number (digits only).");
       return;
     }
 
     if (!email.includes("@") || email.length < 5) {
-      alert("Enter a valid email address.");
+      window.showCustomAlert("Enter a valid email address.");
       return;
     }
 
     if (!date) {
-      alert("Select a preferred date.");
+      window.showCustomAlert("Select a preferred date.");
       return;
     }
 
     if (!address || address.length < 5) {
-      alert("Enter a valid address.");
+      window.showCustomAlert("Enter a valid address.");
       return;
     }
 
 
     if (!name || !phone || !date || !service || !email || !address ) {
-      alert("Please fill in all fields.");
+      window.showCustomAlert("Please fill in all fields.");
       return;
     }
 
@@ -260,10 +258,10 @@ if (submitBookingBtn) {
       if (response.ok) {
          window.location.href = "/booking-success.html";
       } else {
-        alert("Something went wrong.");
+        window.showCustomAlert("Something went wrong.");
       }
     } catch (err) {
-      alert("Network error.");
+      window.showCustomAlert("Network error.");
     }
   });
 }
@@ -288,7 +286,7 @@ if (submitBookingBtn) {
             };
 
             if (!customer.name || !customer.tel || !customer.emirate || finalAmount <= 0) {
-                alert("Please complete the form and select delivery options.");
+                window.showCustomAlert("Please complete the form and select delivery options.");
                 return;
             }
 
@@ -307,11 +305,11 @@ if (submitBookingBtn) {
                 if (data.success) {
                     window.location.href = data.url;
                 } else {
-                    alert("Ziina checkout error.");
+                    window.showCustomAlert("Ziina checkout error.");
                 }
             } catch (err) {
                 console.error("Ziina Fetch Error:", err);
-                alert("Network error.");
+                window.showCustomAlert("Network error.");
             }
         });
     }

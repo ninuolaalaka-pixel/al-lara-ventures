@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return {
             name: document.getElementById("customer-name").value,
             email: document.getElementById("customer-email").value,
-            tel: document.getElementById("customer-tel").value,
+            tel: document.getElementById("customer-tel").value, // Matches 'tel' in your API
             address: document.getElementById("customer-address").value,
             emirate: emirateSelect.value,
             delivery_type: deliverySelect.value,
@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const customer = getCustomerData();
 
             if (!customer.name || !customer.tel || !customer.emirate || finalAmount <= 0) {
-                alert("Please fill in all fields and select delivery options.");
+                window.showCustomAlert("Please fill in all fields and select delivery options.");
                 return;
             }
 
@@ -89,9 +89,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
                 const data = await response.json();
                 if (data.success) window.location.href = data.url;
-                else alert("Checkout Error");
+                else window.showCustomAlert("Checkout Error");
             } catch (err) {
-                alert("Network error.");
+                window.showCustomAlert("Network error.");
             }
         });
     }
@@ -108,13 +108,26 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            const response = await fetch("/api/tabby-checkout", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ amount: finalAmount, cartItems, customer })
-            });
-            const data = await response.json();
-            if (data.success) window.location.href = data.url;
+            try {
+                const response = await fetch("/api/tabby-checkout", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ amount: finalAmount, cartItems, customer })
+                });
+                
+                const data = await response.json();
+
+                if (data.success) {
+                    window.location.href = data.url;
+                } else {
+                    // --- CHANGE: BETTER ERROR HANDLING ---
+                    // Why: If 'Pre-scoring' rejects the user, this alert 
+                    // will show the message we sent from the API.
+                    window.showCustomAlert(data.message || "Tabby is unable to approve this purchase at this time. Please try another payment method");
+                }
+            } catch (err) {
+                window.showCustomAlert("Network error. Please try again.");
+            }
         });
     }
 });
