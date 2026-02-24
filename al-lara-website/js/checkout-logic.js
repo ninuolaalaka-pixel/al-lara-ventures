@@ -104,6 +104,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // 1. Collect Data
         const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+
+        // ... inside your tabbyBtn listener ...
+
+// 1. Collect Data
+const phoneInput = document.getElementById("customer-tel")?.value || "";
+
+// 2. Validation (Add a specific check for phone length)
+if (!customer.name || !customer.email || phoneInput.length < 9 || !customer.address || !customer.emirate) {
+    window.showCustomAlert("Please fill in all fields with a valid phone number.");
+    return;
+}
+
+// 3. Calculate Totals (Ensuring they are actual numbers)
+const cartTotal = parseFloat(document.getElementById("cart-total-display")?.textContent) || 0;
+const deliveryFee = parseFloat(document.getElementById("delivery-fee-display")?.textContent) || 0;
+const vatAmount = parseFloat(document.getElementById("vat-display")?.textContent) || 0; 
+const finalTotal = cartTotal + deliveryFee + vatAmount; // Include VAT in the Tabby total!
+
+// 4. Send to API
+// ... rest of your fetch code ...
         
         // Handle "Registered Since" for Tabby requirements
         if (!localStorage.getItem("registered_since")) {
@@ -126,11 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
             window.showCustomAlert("Please fill in all fields before checking out.");
             return;
         }
-
-        // 3. Calculate Totals
-        const cartTotal = parseFloat(document.getElementById("cart-total-display")?.textContent || 0);
-        const deliveryFee = parseFloat(document.getElementById("delivery-fee-display")?.textContent || 0);
-        const finalTotal = cartTotal + deliveryFee;
+        
 
         // 4. Send to API
         try {
