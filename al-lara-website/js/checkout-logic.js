@@ -1,4 +1,20 @@
 document.addEventListener("DOMContentLoaded", () => {
+
+window.addEventListener("pageshow", (event) => {
+    // Check if the page was loaded from the browser's back/forward cache
+    if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
+        console.log("Back button detected. Resetting checkout state...");
+        
+        // 1. Clear sensitive fields if you want them to re-enter info
+        // document.getElementById("customer-tel").value = ""; 
+
+        // 2. IMPORTANT: Re-run your math to ensure fees are fresh
+        if (typeof calculateFinalTotal === "function") {
+            calculateFinalTotal();
+        }
+    }
+});
+
     // 1. Selectors
     const emirateSelect = document.getElementById("emirate-select");
     const deliverySelect = document.getElementById("delivery-type");
