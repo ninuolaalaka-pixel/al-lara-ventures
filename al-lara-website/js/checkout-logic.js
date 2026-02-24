@@ -97,58 +97,42 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // --- TABBY BUTTON ---
-    if (!tabbyBtn) return; // Stop if the button isn't on this page
-
+    // --- TABBY BUTTON ---
+if (tabbyBtn) {
     tabbyBtn.addEventListener("click", async (e) => {
-        e.preventDefault(); // Stop the page from refreshing
+        e.preventDefault();
 
-        // 1. Collect Data
+        // 1. COLLECT DATA FIRST (Fixes the "Initialization" Error)
         const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
-
-        // ... inside your tabbyBtn listener ...
-
-// 1. Collect Data
-const phoneInput = document.getElementById("customer-tel")?.value || "";
-
-// 2. Validation (Add a specific check for phone length)
-if (!customer.name || !customer.email || phoneInput.length < 9 || !customer.address || !customer.emirate) {
-    window.showCustomAlert("Please fill in all fields with a valid phone number.");
-    return;
-}
-
-// 3. Calculate Totals (Ensuring they are actual numbers)
-const cartTotal = parseFloat(document.getElementById("cart-total-display")?.textContent) || 0;
-const deliveryFee = parseFloat(document.getElementById("delivery-fee-display")?.textContent) || 0;
-const vatAmount = parseFloat(document.getElementById("vat-display")?.textContent) || 0; 
-const finalTotal = cartTotal + deliveryFee + vatAmount; // Include VAT in the Tabby total!
-
-// 4. Send to API
-// ... rest of your fetch code ...
+        const phoneInput = document.getElementById("customer-tel")?.value || "";
         
-        // Handle "Registered Since" for Tabby requirements
         if (!localStorage.getItem("registered_since")) {
             localStorage.setItem("registered_since", new Date().toISOString());
         }
-        const registeredSince = localStorage.getItem("registered_since");
 
         const customer = {
             name: document.getElementById("customer-name")?.value,
             email: document.getElementById("customer-email")?.value,
-            phone: document.getElementById("customer-tel")?.value,
+            phone: phoneInput,
             address: document.getElementById("customer-address")?.value,
             emirate: document.getElementById("emirate-select")?.value,
             delivery_type: document.getElementById("delivery-type")?.value,
-            registered_since: registeredSince
+            registered_since: localStorage.getItem("registered_since")
         };
 
-        // 2. Validation
-        if (!customer.name || !customer.email || !customer.phone || !customer.address || !customer.emirate) {
-            window.showCustomAlert("Please fill in all fields before checking out.");
+        // 2. VALIDATION (Now 'customer' exists, so this won't crash)
+        if (!customer.name || !customer.email || phoneInput.length < 9 || !customer.address || !customer.emirate) {
+            window.showCustomAlert("Please fill in all fields with a valid UAE phone number.");
             return;
         }
-        
 
-        // 4. Send to API
+        // 3. CALCULATE TOTALS
+        const cartTotal = parseFloat(document.getElementById("cart-total-display")?.textContent) || 0;
+        const deliveryFee = parseFloat(document.getElementById("delivery-fee-display")?.textContent) || 0;
+        const vatAmount = parseFloat(document.getElementById("vat-display")?.textContent) || 0; 
+        const finalTotal = cartTotal + deliveryFee + vatAmount;
+
+        // 4. SEND TO API
         try {
             const response = await fetch("/api/tabby-checkout", {
                 method: "POST",
@@ -160,13 +144,12 @@ const finalTotal = cartTotal + deliveryFee + vatAmount; // Include VAT in the Ta
                 })
             });
 
-            // Handle the "Whitespace/JSON" error from Vercel
             const text = await response.text(); 
             let data;
             try {
                 data = JSON.parse(text);
             } catch (err) {
-                console.error("Server sent non-JSON response:", text);
+                console.error("Server sent non-JSON:", text);
                 window.showCustomAlert("Server error. Please try again later.");
                 return;
             }
@@ -174,12 +157,13 @@ const finalTotal = cartTotal + deliveryFee + vatAmount; // Include VAT in the Ta
             if (data.success) {
                 window.location.href = data.url;
             } else {
-                // Show the specific rejection message (Pre-scoring)
-                window.showCustomAlert(data.message || "Tabby is unable to approve this purchase at the moment, Please Try a different Payment method.");
+                // If Pre-scoring rejects, this shows the alert with the blur
+                window.showCustomAlert(data.message || "Tabby is unable to approve this purchase.");
             }
         } catch (err) {
             console.error("Network error:", err);
-            window.showCustomAlert("Network error. Please check your connection.");
+            window.showCustomAlert("Connection error. Please try again.");
         }
     });
+}
 });
