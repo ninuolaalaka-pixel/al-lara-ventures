@@ -61,8 +61,8 @@ window.showToast = function(message) {
     const toast = document.createElement('div');
     toast.id = "global-toast";
     toast.style = `
-        background: #ffffff; 
-        color: #2e7d32; 
+        background: #2e7d32; 
+        color: #ffffff; 
         padding: 18px 35px; 
         position: fixed; 
         z-index: 10001; 
@@ -72,8 +72,8 @@ window.showToast = function(message) {
         font-family: 'Poppins', sans-serif; 
         font-weight: 700; 
         font-size: 16px;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.15); 
-        border: 3px solid #2e7d32; /* The heavy green border you liked */
+        box-shadow: 0 15px 40px rgba(32, 54, 43, 0.15); 
+        border: 1px solid #2e7d32; /* The heavy green border you liked */
         border-radius: 15px;
         animation: toastSlideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     `;
