@@ -159,7 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 window.location.href = data.url;
             } else {
                 // Show the specific rejection message (Pre-scoring)
-                window.showCustomAlert(data.message || "Tabby is unable to approve this purchase.");
+                window.showCustomAlert(data.message || "Tabby is unable to approve this purchase at the moment, Please Try a different Payment method.");
             }
         } catch (err) {
             console.error("Network error:", err);
