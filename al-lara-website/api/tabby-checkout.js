@@ -40,6 +40,7 @@ export default async function handler(req, res) {
     // --- CHANGE 3: THE "ANTI-CRASH" PRE-SCORING ---
     // WHY: You were using .json() immediately. If Tabby sends text, you get a 500 error.
     // We now use .text() first, then try to parse it. This prevents SyntaxErrors.
+    // --- UPDATED PRE-SCORING CHECK ---
     const preScoreResponse = await fetch("https://api.tabby.ai/api/v2/pre-scores", {
       method: "POST",
       headers: {
@@ -56,15 +57,18 @@ export default async function handler(req, res) {
     const preScoreText = await preScoreResponse.text();
     let preScore = {};
     try {
-      preScore = preScoreText ? JSON.parse(preScoreText) : {};
+        preScore = preScoreText ? JSON.parse(preScoreText) : {};
     } catch (e) {
-      console.error("Tabby sent non-JSON pre-score response:", preScoreText);
+        console.error("Non-JSON Pre-score:", preScoreText);
     }
 
-    if (preScore?.status === "rejected") {
+    console.log("DEBUG: Pre-score Status is:", preScore.status);
+
+    // FIX: Some Sandbox responses wrap the status or use different casing
+    if (preScore.status === "rejected" || preScore.result === "rejected") {
       return res.status(400).json({
         success: false,
-        message: "Tabby is unable to approve this purchase. Please try another payment method.",
+        message: "Tabby is unable to approve this purchase at the moment. Please try another payment method.", // <--- THIS SHOULD SHOW NOW
         details: preScore
       });
     }
@@ -123,7 +127,7 @@ export default async function handler(req, res) {
     if (!checkoutUrl) {
       return res.status(400).json({
         success: false,
-        message: "Tabby installments are not available for this transaction.",
+        message: "Tabby is unable to approve this purchase. Please try another payment method.",
         details: data
       });
     }
