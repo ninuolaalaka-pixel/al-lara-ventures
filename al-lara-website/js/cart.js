@@ -88,16 +88,18 @@ function renderCart() {
   cart.forEach((item, index) => {
     const row = document.createElement("tr");
     row.innerHTML = `
-      <td style="padding:12px;">${item.name}</td>
-      <td style="padding:12px;">AED ${item.price.toFixed(2)}</td>
-      <td style="padding:12px;">
-        <button class="qty-btn" data-index="${index}" data-action="minus">-</button>
-        ${item.quantity}
-        <button class="qty-btn" data-index="${index}" data-action="plus">+</button>
+      <td style="padding:16px; font-weight: 500;">${item.name}</td>
+      <td style="padding:16px; color: #2e7d32;">AED ${item.price.toFixed(2)}</td>
+      <td style="padding:16px;">
+        <div class="quantity-controls">
+          <button class="qty-btn" data-index="${index}" data-action="minus">−</button>
+          <span class="qty-number">${item.quantity}</span>
+          <button class="qty-btn" data-index="${index}" data-action="plus">+</button>
+        </div>
       </td>
-      <td style="padding:12px;">AED ${(item.price * item.quantity).toFixed(2)}</td>
-      <td style="padding:12px;">
-        <button class="remove-btn" data-index="${index}">Remove</button>
+      <td style="padding:16px; font-weight: 600; color: #2e7d32;">AED ${(item.price * item.quantity).toFixed(2)}</td>
+      <td style="padding:16px;">
+        <button class="remove-btn-link" data-index="${index}">Remove</button>
       </td>
     `;
     cartTable.appendChild(row);

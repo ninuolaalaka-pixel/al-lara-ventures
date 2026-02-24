@@ -346,6 +346,61 @@ form textarea {
     width: 45px;
   }
 
+
+  /* Wrapper for the Qty section */
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: #f1f5f9; /* Light grey background pill */
+    padding: 5px 10px;
+    border-radius: 50px;
+    width: fit-content;
+}
+
+/* The Plus/Minus Buttons */
+.qty-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid #2e7d32; /* AL LARA Green */
+    background: white;
+    color: #2e7d32;
+    font-weight: bold;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    padding: 0;
+    line-height: 1;
+}
+
+.qty-btn:hover {
+    background: #2e7d32;
+    color: white;
+}
+
+/* The actual number */
+.qty-number {
+    font-weight: 700;
+    color: #1a202c;
+    min-width: 20px;
+    text-align: center;
+}
+
+/* Clean up the Remove button */
+.remove-btn-link {
+    background: none;
+    border: none;
+    color: #e53e3e; /* Red for remove */
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+    text-decoration: underline;
+}
+
   .checkout-buttons {
     flex-direction: column;
     gap: 10px;
