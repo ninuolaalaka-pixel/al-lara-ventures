@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const customer = getCustomerData();
 
             if (!customer.name || !customer.tel || !customer.emirate) {
-                alert("Please fill in all fields.");
+               window.showCustomAlertt("Please fill in all fields.");
                 return;
             }
 

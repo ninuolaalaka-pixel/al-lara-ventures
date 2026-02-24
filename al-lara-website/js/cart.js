@@ -110,6 +110,7 @@ function renderCart() {
 
 // 6. Quantity/Remove Listeners
 document.addEventListener("click", e => {
+  // 1. Handle Plus/Minus
   if (e.target.classList.contains("qty-btn")) {
     const index = e.target.dataset.index;
     const action = e.target.dataset.action;
@@ -118,7 +119,9 @@ document.addEventListener("click", e => {
     saveCart();
     renderCart();
   }
-  if (e.target.classList.contains("remove-btn")) {
+  
+  // 2. Handle Remove (FIXED CLASS NAME HERE)
+  if (e.target.classList.contains("remove-btn-link")) {
     const index = e.target.dataset.index;
     cart.splice(index, 1);
     saveCart();

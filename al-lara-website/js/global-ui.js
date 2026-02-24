@@ -17,7 +17,7 @@ if (!document.getElementById('global-ui-styles')) {
 }
 
 // --- PREMIUM CUSTOM ALERT (Center Notice) ---
-window.showCustomAlert = function(message, _type = 'error') {
+window.showCustomAlert = function(message) {
     const existing = document.getElementById('custom-alert-overlay');
     if (existing) existing.remove();
 
@@ -25,37 +25,32 @@ window.showCustomAlert = function(message, _type = 'error') {
     overlay.id = 'custom-alert-overlay';
     overlay.style = `
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(13, 82, 17, 0.7); backdrop-filter: blur(4px);
+        background: rgba(0, 0, 0, 0.6); /* Neutral dark overlay, no green */
+        backdrop-filter: blur(8px); /* Standard clean blur */
         display: flex; align-items: center; justify-content: center; z-index: 10000;
         font-family: 'Poppins', sans-serif;
     `;
 
     const card = document.createElement('div');
-    // Updated style: White background with green border/text
     card.style = `
-        background: #ffffff; padding: 35px; border-radius: 24px; max-width: 420px;
-        width: 90%; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.15);
-        border-top: 6px solid #2e7d32; 
-        animation: alertFadeIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        background: #ffffff; padding: 40px; border-radius: 24px; max-width: 450px;
+        width: 90%; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        border-top: 8px solid #2e7d32; /* Keeping the signature green ONLY on the border */
+        animation: alertFadeIn 0.4s ease-out;
     `;
 
     card.innerHTML = `
-        <h3 style="margin-top:0; color:#2e7d32; font-size: 24px; font-weight: 700;">Notice</h3>
-        <p style="color: #2e7d32; line-height:1.6; font-size: 16px; margin-bottom: 25px; font-weight: 500;">${message}</p>
+        <h3 style="margin-top:0; color:#1a202c; font-size: 26px; font-weight: 700;">Notice</h3>
+        <p style="color:#4a5568; line-height:1.6; font-size: 16px; margin-bottom: 30px;">${message}</p>
         <button id="close-alert" style="
-            background: #2e7d32; color: #fff; border: none; padding: 14px 40px;
-            border-radius: 12px; font-weight: 600; cursor: pointer; transition: 0.2s;
+            background: #2e7d32; color: #fff; border: none; padding: 14px 45px;
+            border-radius: 12px; font-weight: 600; cursor: pointer; font-size: 16px;
         ">Understood</button>
     `;
 
     overlay.appendChild(card);
     document.body.appendChild(overlay);
-
-    document.getElementById('close-alert').onclick = () => {
-        overlay.style.opacity = "0";
-        overlay.style.transition = "0.3s";
-        setTimeout(() => overlay.remove(), 300);
-    };
+    document.getElementById('close-alert').onclick = () => overlay.remove();
 };
 
 // --- GLOBAL TOAST (Bottom Notification) ---
@@ -65,15 +60,22 @@ window.showToast = function(message) {
 
     const toast = document.createElement('div');
     toast.id = "global-toast";
-    // Updated style: White background, green border, green text
     toast.style = `
-        background-color: #ffffff; color: #2e7d32; text-align: center; 
-        border-radius: 12px; padding: 16px 24px; position: fixed; z-index: 10001; 
-        left: 50%; bottom: 30px; transform: translateX(-50%); 
-        font-family: 'Poppins', sans-serif; font-weight: 600;
-        box-shadow: 0 10px 30px rgba(13, 82, 17, 0.7); 
-        border: 2px solid #2e7d32;
-        animation: toastFadeUp 0.5s ease-out;
+        background: #ffffff; 
+        color: #2e7d32; 
+        padding: 18px 35px; 
+        position: fixed; 
+        z-index: 10001; 
+        left: 50%; 
+        bottom: 40px; 
+        transform: translateX(-50%); 
+        font-family: 'Poppins', sans-serif; 
+        font-weight: 700; 
+        font-size: 16px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.15); 
+        border: 3px solid #2e7d32; /* The heavy green border you liked */
+        border-radius: 15px;
+        animation: toastSlideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     `;
 
     toast.textContent = message;
@@ -81,7 +83,8 @@ window.showToast = function(message) {
 
     setTimeout(() => { 
         toast.style.opacity = "0";
-        toast.style.transition = "opacity 0.5s ease";
-        setTimeout(() => { if(toast) toast.remove(); }, 500);
+        toast.style.transition = "all 0.5s ease";
+        toast.style.transform = "translateX(-50%) translateY(20px)";
+        setTimeout(() => { if(toast.parentNode) toast.remove(); }, 500);
     }, 3000);
 };
