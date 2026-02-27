@@ -186,7 +186,7 @@ document.addEventListener("DOMContentLoaded", function() {
           lang: 'en',
           source: 'product',
           publicKey: window._tabbyPublicKey,
-          merchantCode: 'ALVIF'
+          merchantCode: TABBY_MERCHANT_CODE, // Ensure this is defined in your global-ui.js or inline before this script
         });
       });
       console.log("Store snippets initialized independently of cart logic.");
