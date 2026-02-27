@@ -78,13 +78,6 @@
           <p style="color:#2e7d32; font-weight:700;">AED 140.50</p>
 
           <div class="tabby-widget-container" data-price="140.50" style="margin: 10px 0; min-height: 40px;"></div>
-
-      <span
-       class="tabby-promo"
-  data-tabby-amount="140.50"
-  data-tabby-currency="AED"
-  data-tabby-lang="en">
-</span>
           <button class="add-to-cart" data-name="Guatam Basmati Rice XXL 20KG" data-price="140.50" style="
             margin-top:10px;
             padding:10px 20px;
@@ -101,13 +94,6 @@
           <h3 style="margin:15px 0;">Sinnara Whole Long Grain Basmati Rice 20KG</h3>
           <p style="color:#2e7d32; font-weight:700;">AED 165.75</p>
           <div class="tabby-widget-container" data-price="165.75" style="margin: 10px 0; min-height: 40px;"></div>
-
-<span
-  class="tabby-promo"
-  data-tabby-amount="165.75"
-  data-tabby-currency="AED"
-  data-tabby-lang="en">
-</span>
           <button class="add-to-cart" data-name="Sinnara Whole Long Grain Basmati Rice 20KG" data-price="165.75" style="
             margin-top:10px;
             padding:10px 20px;
@@ -124,13 +110,6 @@
           <h3 style="margin:15px 0;">PRAN Sona Masoori Rice 18KG</h3>
           <p style="color:#2e7d32; font-weight:700;">AED 45.50</p>
           <div class="tabby-widget-container" data-price="45.50" style="margin: 10px 0; min-height: 40px;"></div>
-
-<span
-  class="tabby-promo"
-  data-tabby-amount="45.50"
-  data-tabby-currency="AED"
-  data-tabby-lang="en">
-</span>
           <button class="add-to-cart" data-name="PRAN Sona Masoori Rice 18KG" data-price="45.50" style="
             margin-top:10px;
             padding:10px 20px;
@@ -147,13 +126,6 @@
           <h3 style="margin:15px 0;">Super Chef Basmati Rice 35KG</h3>
           <p style="color:#2e7d32; font-weight:700;">AED 150.50</p>
           <div class="tabby-widget-container" data-price="150.50" style="margin: 10px 0; min-height: 40px;"></div>
-
-<span
-  class="tabby-promo"
-  data-tabby-amount="150.50"
-  data-tabby-currency="AED"
-  data-tabby-lang="en">
-</span>
           <button class="add-to-cart" data-name="Super Chef Basmati Rice 35KG" data-price="150.50" style="
             margin-top:10px;
             padding:10px 20px;
@@ -171,13 +143,6 @@
           <h3 style="margin:15px 0;">Cartolli Macaroni (Elbow) 400g x 20pcs Carton</h3>
           <p style="color:#2e7d32; font-weight:700;">AED 26.50</p>
           <div class="tabby-widget-container" data-price="26.50" style="margin: 10px 0; min-height: 40px;"></div>
-
-<span
-  class="tabby-promo"
-  data-tabby-amount="26.50"
-  data-tabby-currency="AED"
-  data-tabby-lang="en">
-</span>
           <button class="add-to-cart" data-name="Cartolli Macaroni (Elbow) 400g x 20pcs Carton" data-price="26.50" style="
             margin-top:10px;
             padding:10px 20px;
@@ -201,19 +166,25 @@
  <script>
 document.addEventListener("DOMContentLoaded", function() {
   if (window.TabbyPromo) {
-    // This finds EVERY product on the page with this class automatically
-    document.querySelectorAll('.tabby-widget-container').forEach(element => {
+    const containers = document.querySelectorAll('.tabby-widget-container');
+    
+    containers.forEach(el => {
+      const price = el.getAttribute('data-price');
+      console.log("Loading Tabby for price:", price); // This helps you debug!
+
       new TabbyPromo({
-        selector: element, // Pass the element directly
+        selector: el, 
         currency: 'AED',
-        price: element.getAttribute('data-price'), // Pulls the price from the HTML
+        price: price,
         installmentsCount: 4,
         lang: 'en',
         source: 'product',
         publicKey: window._tabbyPublicKey,
-        merchantCode: 'ALVIF'
+        merchantCode: 'ALVIF' // Your Merchant Code
       });
     });
+  } else {
+    console.error("Tabby SDK not found! Check your <script> src link.");
   }
 });
 </script>

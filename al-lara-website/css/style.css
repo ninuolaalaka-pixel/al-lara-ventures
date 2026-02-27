@@ -369,6 +369,13 @@ form textarea {
     border-radius: 10px;
   }
 
+  .tabby-widget-container {
+    margin: 10px 0;
+    min-height: 80px; /* Increased height for the widget to load */
+    display: block;
+    width: 100%;
+}
+
 
   .promo-badge {
   position: absolute;
