@@ -165,32 +165,33 @@
 
  <script>
 document.addEventListener("DOMContentLoaded", function() {
-  // Check if Tabby is loaded and we have a Public Key
-  if (window.TabbyPromo && window._tabbyPublicKey) {
-    
-    // Select all elements with the .tabby-promo class
-    const containers = document.querySelectorAll('.tabby-promo');
-    
-    containers.forEach(el => {
-      const price = el.getAttribute('data-price');
+  // Use a slight timeout to ensure window._tabbyPublicKey is ready
+  setTimeout(function() {
+    if (window.TabbyPromo) {
+      // 1. Find all your product snippets
+      const containers = document.querySelectorAll('.tabby-promo');
       
-      // We manually trigger the creation for total control
-      new TabbyPromo({
-        selector: el, 
-        currency: 'AED',
-        price: price,
-        installmentsCount: 4,
-        lang: 'en',
-        source: 'product',
-        publicKey: window._tabbyPublicKey,
-        merchantCode: 'ALVIF' 
+      containers.forEach(el => {
+        const price = el.getAttribute('data-price');
+        
+        // 2. Clear out any "loading" or empty states
+        el.innerHTML = ''; 
+
+        // 3. Simple, direct injection for each product
+        new TabbyPromo({
+          selector: el, 
+          currency: 'AED',
+          price: price,
+          installmentsCount: 4,
+          lang: 'en',
+          source: 'product',
+          publicKey: window._tabbyPublicKey,
+          merchantCode: 'ALVIF'
+        });
       });
-    });
-    
-    console.log(`Successfully initialized ${containers.length} Tabby widgets.`);
-  } else {
-    console.error("Tabby Setup Error: Check if SDK is loaded and Public Key is defined.");
-  }
+      console.log("Store snippets initialized independently of cart logic.");
+    }
+  }, 300); // 300ms is the 'sweet spot' for Tabby to be ready
 });
 </script>
 
