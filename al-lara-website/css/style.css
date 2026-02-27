@@ -369,16 +369,6 @@ form textarea {
     border-radius: 10px;
   }
 
- /* This forces the Tabby widget to be visible */
-.tabby-widget-container {
-    display: block !important;
-    min-height: 80px !important; /* Tabby needs at least 70-80px to show the text */
-    margin: 15px 0 !important;
-    clear: both;
-    overflow: visible !important;
-}
-
-.tabby-promo { border: 1px solid #2e7d32; min-height: 80px; }
 
 /* Ensure the promo badge for Cartolli looks good */
 .promo-badge {
@@ -396,7 +386,30 @@ form textarea {
   position: relative; /* Required for the badge to stay inside the card */
 }
 
+/* Make product images smaller and consistent */
+.product-img {
+    height: 150px; /* Reduced from default */
+    object-fit: contain;
+    margin-bottom: 10px;
+}
 
+/* Tighten the text and spacing */
+.product-card {
+    padding: 15px !important; /* Less padding inside the box */
+}
+
+.product-card h3 {
+    font-size: 16px; /* Smaller title */
+    margin: 8px 0 !important;
+    line-height: 1.2;
+    height: 40px; /* Keeps titles aligned even if one is longer */
+    overflow: hidden;
+}
+
+.product-card p {
+    font-size: 14px; /* Smaller price */
+    margin-bottom: 5px !important;
+}
 
   #toast {
   visibility: hidden;
