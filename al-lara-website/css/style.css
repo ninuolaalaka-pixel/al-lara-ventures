@@ -369,6 +369,25 @@ form textarea {
     border-radius: 10px;
   }
 
+
+  .promo-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #1fad0f;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  z-index: 10;
+}
+.product-card {
+  position: relative; /* Required for the badge to stay inside the card */
+}
+
+
+
   #toast {
   visibility: hidden;
   min-width: 250px;
