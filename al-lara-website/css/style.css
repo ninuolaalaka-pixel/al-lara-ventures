@@ -378,6 +378,8 @@ form textarea {
     overflow: visible !important;
 }
 
+.tabby-promo { border: 1px solid #2e7d32; min-height: 80px; }
+
 /* Ensure the promo badge for Cartolli looks good */
 .promo-badge {
     background-color: #25af23;

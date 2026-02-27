@@ -77,7 +77,7 @@
           <h3 style="margin:15px 0;">Guatam Basmati Rice XXL 20KG</h3>
           <p style="color:#2e7d32; font-weight:700;">AED 140.50</p>
 
-          <div class="tabby-widget-container" data-price="140.50"></div>
+          <div class="tabby-promo" data-price="140.50"></div>
           <button class="add-to-cart" data-name="Guatam Basmati Rice XXL 20KG" data-price="140.50" style="
             margin-top:10px;
             padding:10px 20px;
@@ -93,7 +93,7 @@
           <img src="images/productimgs/sinnara rice.png" class ="product-img">
           <h3 style="margin:15px 0;">Sinnara Whole Long Grain Basmati Rice 20KG</h3>
           <p style="color:#2e7d32; font-weight:700;">AED 165.75</p>
-          <div class="tabby-widget-container" data-price="165.75"></div>
+          <div class="tabby-promo" data-price="165.75"></div>
           <button class="add-to-cart" data-name="Sinnara Whole Long Grain Basmati Rice 20KG" data-price="165.75" style="
             margin-top:10px;
             padding:10px 20px;
@@ -109,7 +109,7 @@
           <img src="images/productimgs/soona maasouri.png" class ="product-img">
           <h3 style="margin:15px 0;">PRAN Sona Masoori Rice 18KG</h3>
           <p style="color:#2e7d32; font-weight:700;">AED 45.50</p>
-          <div class="tabby-widget-container" data-price="45.50"></div>
+          <div class="tabby-promo" data-price="45.50"></div>
           <button class="add-to-cart" data-name="PRAN Sona Masoori Rice 18KG" data-price="45.50" style="
             margin-top:10px;
             padding:10px 20px;
@@ -125,7 +125,7 @@
           <img src="images/productimgs/Biryani Rice.png"  class ="product-img">
           <h3 style="margin:15px 0;">Super Chef Basmati Rice 35KG</h3>
           <p style="color:#2e7d32; font-weight:700;">AED 150.50</p>
-          <div class="tabby-widget-container" data-price="150.50"></div>
+          <div class="tabby-promo" data-price="150.50"></div>
           <button class="add-to-cart" data-name="Super Chef Basmati Rice 35KG" data-price="150.50" style="
             margin-top:10px;
             padding:10px 20px;
@@ -142,7 +142,7 @@
           <img src="images/productimgs/Cartolli-macaroni-elbow 400g.jpg"  class ="product-img">
           <h3 style="margin:15px 0;">Cartolli Macaroni (Elbow) 400g x 20pcs Carton</h3>
           <p style="color:#2e7d32; font-weight:700;">AED 26.50</p>
-          <div class="tabby-widget-container" data-price="26.50"></div>
+          <div class="tabby-promo" data-price="26.50"></div>
           <button class="add-to-cart" data-name="Cartolli Macaroni (Elbow) 400g x 20pcs Carton" data-price="26.50" style="
             margin-top:10px;
             padding:10px 20px;
@@ -165,13 +165,16 @@
 
  <script>
 document.addEventListener("DOMContentLoaded", function() {
-  if (window.TabbyPromo) {
-    const containers = document.querySelectorAll('.tabby-widget-container');
+  // Check if Tabby is loaded and we have a Public Key
+  if (window.TabbyPromo && window._tabbyPublicKey) {
+    
+    // Select all elements with the .tabby-promo class
+    const containers = document.querySelectorAll('.tabby-promo');
     
     containers.forEach(el => {
       const price = el.getAttribute('data-price');
-      console.log("Loading Tabby for price:", price); // This helps you debug!
-
+      
+      // We manually trigger the creation for total control
       new TabbyPromo({
         selector: el, 
         currency: 'AED',
@@ -180,11 +183,13 @@ document.addEventListener("DOMContentLoaded", function() {
         lang: 'en',
         source: 'product',
         publicKey: window._tabbyPublicKey,
-        merchantCode: 'ALVIF' // Your Merchant Code
+        merchantCode: 'ALVIF' 
       });
     });
+    
+    console.log(`Successfully initialized ${containers.length} Tabby widgets.`);
   } else {
-    console.error("Tabby SDK not found! Check your <script> src link.");
+    console.error("Tabby Setup Error: Check if SDK is loaded and Public Key is defined.");
   }
 });
 </script>
