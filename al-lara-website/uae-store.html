@@ -142,7 +142,7 @@
           <img src="images/productimgs/Cartolli-macaroni-elbow 400g.jpg"  class ="product-img">
           <h3 style="margin:15px 0;">Cartolli Macaroni (Elbow) 400g x 20pcs Carton</h3>
           <p style="color:#2e7d32; font-weight:700;">AED 26.50</p>
-          <div class="tabby-promo" data-price="26.50"></div>
+          <div data-price="26.50"></div>
           <button class="add-to-cart" data-name="Cartolli Macaroni (Elbow) 400g x 20pcs Carton" data-price="26.50" style="
             margin-top:10px;
             padding:10px 20px;
@@ -165,33 +165,39 @@
 
  <script>
 document.addEventListener("DOMContentLoaded", function() {
-  // Use a slight timeout to ensure window._tabbyPublicKey is ready
+  // 1. Let everything settle (cart.js, global-ui, etc.)
   setTimeout(function() {
-    if (window.TabbyPromo) {
-      // 1. Find all your product snippets
-      const containers = document.querySelectorAll('.tabby-promo');
+    if (typeof TabbyPromo !== 'undefined') {
+      const products = document.querySelectorAll('.tabby-promo');
       
-      containers.forEach(el => {
+      products.forEach((el, index) => {
+        // 2. Generate a unique ID (Tabby often fails when injecting into objects directly)
+        const uniqueId = 'tabby-product-' + index;
+        el.id = uniqueId;
+        
         const price = el.getAttribute('data-price');
         
-        // 2. Clear out any "loading" or empty states
-        el.innerHTML = ''; 
-
-        // 3. Simple, direct injection for each product
-        new TabbyPromo({
-          selector: el, 
-          currency: 'AED',
-          price: price,
-          installmentsCount: 4,
-          lang: 'en',
-          source: 'product',
-          publicKey: window._tabbyPublicKey,
-          merchantCode: 'ALVIF', // Ensure this is defined in your global-ui.js or inline before this script
-        });
+        // 3. Force a fresh injection using the ID string
+        try {
+          new TabbyPromo({
+            selector: '#' + uniqueId, // Using the ID string just like your cart.js
+            currency: 'AED',
+            price: price,
+            installmentsCount: 4,
+            lang: 'en',
+            source: 'product',
+            publicKey: window._tabbyPublicKey,
+            merchantCode: 'ALVIF'
+          });
+        } catch (e) {
+          console.error("Failed to inject Tabby for product " + index, e);
+        }
       });
-      console.log("Store snippets initialized independently of cart logic.");
+      console.log("Store injection attempted for " + products.length + " items.");
+    } else {
+      console.error("TabbyPromo is still undefined after 500ms");
     }
-  }, 300); // 300ms is the 'sweet spot' for Tabby to be ready
+  }, 500);
 });
 </script>
 
