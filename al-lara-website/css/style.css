@@ -369,26 +369,27 @@ form textarea {
     border-radius: 10px;
   }
 
-  .tabby-widget-container {
-    margin: 10px 0;
-    min-height: 80px; /* Increased height for the widget to load */
-    display: block;
-    width: 100%;
+ /* This forces the Tabby widget to be visible */
+.tabby-widget-container {
+    display: block !important;
+    min-height: 80px !important; /* Tabby needs at least 70-80px to show the text */
+    margin: 15px 0 !important;
+    clear: both;
+    overflow: visible !important;
 }
 
-
-  .promo-badge {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background: #1fad0f;
-  color: white;
-  padding: 5px 10px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: bold;
-  z-index: 10;
+/* Ensure the promo badge for Cartolli looks good */
+.promo-badge {
+    background-color: #d32f2f;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 10px;
 }
+
 .product-card {
   position: relative; /* Required for the badge to stay inside the card */
 }
