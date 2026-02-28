@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 groupC: ['abudhabi', 'alain']
             };
 
-            if (groups.groupA.includes(emirate)) fee = (type === 'heavy') ? 25 : 5;
+            if (groups.groupA.includes(emirate)) fee = (type === 'heavy') ? 25 : 15;
             else if (groups.groupB.includes(emirate)) fee = (type === 'heavy') ? 30 : 15;
             else if (groups.groupC.includes(emirate)) fee = (type === 'heavy') ? 48 : 30;
         }
