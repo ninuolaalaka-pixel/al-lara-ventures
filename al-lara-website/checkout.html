@@ -111,7 +111,7 @@
    /* MAIN TAMARA BUTTON */
 .tamara-btn-premium {
     /* The Warmer Gradient */
-    background: linear-gradient(135deg, #a0e9ff 0%, #eec0ff 20%, #ffbe91 50%, #ffdd70 85%, #ffea9e 100%);
+    background: linear-gradient(135deg, #7cd9f1 0%, #d9a7f0 25%, #ff9a5c 55%, #ffc93c 85%, #ffb347 100%);
     width: 100%;
     padding: 18px;
     border-radius: 14px;
@@ -128,6 +128,14 @@
     transition: all 0.2s;
     margin-top: 10px;
 
+}
+
+.tamara-btn-premium img {
+    height: 32px; /* Increased from 20px to match Tabby's visual weight */
+    width: auto;
+    /* FIX FOR BLACK EDGES: This makes the black parts of the image transparent */
+    mix-blend-mode: multiply; 
+    filter: brightness(1.1); /* Makes the logo pop against the darker BG */
 }
 
 .tamara-btn-premium:hover {
