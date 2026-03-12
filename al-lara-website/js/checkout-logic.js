@@ -166,13 +166,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-    const tamaraBtn = document.getElementById("pay-with-tamara");
+const tamaraBtn = document.getElementById("pay-with-tamara");
 
 if (tamaraBtn) {
   tamaraBtn.addEventListener("click", async (e) => {
     e.preventDefault();
-    
-    const finalTotal = calculateFinalTotal(); 
+
+    const finalTotal = calculateFinalTotal();
     const customer = {
       name: document.getElementById("customer-name").value,
       email: document.getElementById("customer-email").value,
@@ -182,32 +182,36 @@ if (tamaraBtn) {
     };
 
     if (!customer.name || !customer.email || customer.tel.length < 9) {
-      alert("Please fill in your details correctly.");
+      window.showCustomAlert("Please fill in your details correctly.");
       return;
     }
 
-    // UPDATED UI: Spinner + Teal Background
-    tamaraBtn.style.backgroundColor = "#00b8aa"; 
-    tamaraBtn.innerHTML = '<span class="spinner"></span> Processing...';
+    // UI: show spinner
     tamaraBtn.disabled = true;
+    tamaraBtn.innerHTML = '<span class="spinner"></span> Processing...';
 
     try {
       const res = await fetch("/api/tamara-checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: finalTotal, cartItems: cartItems, customer }) 
+        body: JSON.stringify({
+          amount: finalTotal,
+          cartItems: cartItems,
+          customer
+        })
       });
-      
+
       const data = await res.json();
-      
+
       if (data.success && data.url) {
         localStorage.setItem("tamara_order_id", data.orderId);
         window.location.href = data.url;
       } else {
         throw new Error(data.message || "Declined");
       }
+
     } catch (err) {
-      alert("Tamara is currently unavailable: " + err.message);
+      window.showCustomAlert("Tamara is currently unavailable: " + err.message);
       tamaraBtn.disabled = false;
     }
   });

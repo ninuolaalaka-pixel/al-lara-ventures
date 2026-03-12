@@ -42,19 +42,14 @@ function updateTotal() {
   updateTabbySnippet(total);
 
   const tamaraSnippet = document.getElementById("tamara-cart-snippet");
-  if (tamaraSnippet && total > 0) {
-    tamaraSnippet.setAttribute("data-amount", total.toFixed(2));
-    
-    if (window.TamaraWidget) {
-      // Re-run the initialization to make sure AE context is active
-      window.TamaraWidget.init({ 
-        lang: 'en', 
-        country: 'AE', 
-        publicKey: "2026ad94-c028-4611-bda4-d8cebe604b8d" 
-      });
-      window.TamaraWidget.render(); 
-    }
+
+if (tamaraSnippet && total > 0) {
+  tamaraSnippet.setAttribute("data-amount", total.toFixed(2));
+
+  if (window.TamaraWidget && typeof window.TamaraWidget.refresh === "function") {
+    window.TamaraWidget.refresh();
   }
+}
   updateCartCount();
 }
 
@@ -146,6 +141,19 @@ document.addEventListener("click", e => {
 
 // Run count update on all pages
 updateCartCount();
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (window.TamaraWidget) {
+    window.TamaraWidget.init({
+      lang: "en",
+      country: "AE",
+      currency: "AED",
+      publicKey: "2026ad94-c028-4611-bda4-d8cebe604b8d"
+    });
+    window.TamaraWidget.render();
+  }
+});
+
 
 // CONTACT FORM → CALL BACKEND
 const sendMessaggeBtn = document.getElementById("send-messagge-btn");

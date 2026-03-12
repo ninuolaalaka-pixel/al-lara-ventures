@@ -8,27 +8,23 @@ export default async function handler(req, res) {
 
   const { amount, cartItems, customer } = req.body || {};
 
-  // Phone cleaning: Must be 971... without '+' or leading '0'
+  // --- PHONE CLEANING (UAE FORMAT REQUIRED BY TAMARA) ---
   let cleanPhone = (customer.tel || "").replace(/\D/g, "");
   if (cleanPhone.startsWith("0")) cleanPhone = cleanPhone.substring(1);
   if (cleanPhone.startsWith("971")) cleanPhone = cleanPhone.substring(3);
-  const finalPhone = "971" + cleanPhone;
+  const finalPhone = "+971" + cleanPhone;
 
-  // Format items and calculate subtotal to ensure it matches the 'amount'
-  const items = cartItems.map((item, index) => {
-    const unitP = parseFloat(item.price).toFixed(2);
-    const totalP = (parseFloat(item.price) * item.quantity).toFixed(2);
-    return {
-      name: item.name,
-      type: "Physical",
-      reference_id: String(index + 1),
-      quantity: item.quantity,
-      unit_price: { amount: unitP, currency: "AED" },
-      total_amount: { amount: totalP, currency: "AED" },
-      tax_amount: { amount: "0.00", currency: "AED" },
-      discount_amount: { amount: "0.00", currency: "AED" }
-    };
-  });
+  // --- ITEMS ---
+  const items = cartItems.map((item, index) => ({
+    name: item.name,
+    type: "Physical",
+    reference_id: String(index + 1),
+    quantity: item.quantity,
+    unit_price: { amount: item.price, currency: "AED" },
+    total_amount: { amount: item.price * item.quantity, currency: "AED" },
+    tax_amount: { amount: 0, currency: "AED" },
+    discount_amount: { amount: 0, currency: "AED" }
+  }));
 
   try {
     const response = await fetch(`${TAMARA_BASE_URL}/checkout`, {
@@ -39,48 +35,70 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         order_reference_id: "ALV-TAM-" + Date.now(),
-        total_amount: { amount: parseFloat(amount).toFixed(2), currency: "AED" },
+        total_amount: { amount, currency: "AED" },
+
+        // REQUIRED FIELDS FOR UAE
         currency: "AED",
         country_code: "AE",
+        locale: "en-AE",
         payment_type: "PAY_BY_INSTALMENTS",
+        instalments: { count: 3 },
+
         items,
+
         consumer: {
-          first_name: customer.name || "Customer",
-          last_name: "-",
-          phone_number: finalPhone,
-          email: customer.email,
-        },
-        shipping_address: {
           first_name: customer.name,
           last_name: "-",
-          line1: customer.address || "UAE Street",
-          city: customer.emirate || "Dubai",
-          country_code: "AE",
+          phone_number: finalPhone,
+          email: customer.email
         },
+
         billing_address: {
           first_name: customer.name,
           last_name: "-",
-          line1: customer.address || "UAE Street",
-          city: customer.emirate || "Dubai",
-          country_code: "AE",
+          line1: customer.address,
+          city: customer.emirate,
+          country_code: "AE"
         },
+
+        shipping_address: {
+          first_name: customer.name,
+          last_name: "-",
+          line1: customer.address,
+          city: customer.emirate,
+          country_code: "AE"
+        },
+
         merchant_url: {
           success: "https://allaraventures.com/checkout-success.html?pg=tamara",
           failure: "https://allaraventures.com/checkout-cancelled.html",
           cancel: "https://allaraventures.com/checkout-cancelled.html"
         },
+
         platform: "WEB"
       }),
     });
 
     const data = await response.json();
+
     if (!response.ok) {
-        console.error("TAMARA REJECTION:", data);
-        return res.status(400).json({ success: false, message: data.message || "Invalid Request" });
+      console.error("TAMARA REJECTION:", data);
+      return res.status(400).json({
+        success: false,
+        message: data.message || "Invalid Request"
+      });
     }
 
-    return res.status(200).json({ success: true, url: data.checkout_url, orderId: data.order_id });
+    return res.status(200).json({
+      success: true,
+      url: data.checkout_url,
+      orderId: data.order_id
+    });
+
   } catch (error) {
-    return res.status(500).json({ success: false, message: "Server connection error" });
+    return res.status(500).json({
+      success: false,
+      message: "Server connection error"
+    });
   }
 }

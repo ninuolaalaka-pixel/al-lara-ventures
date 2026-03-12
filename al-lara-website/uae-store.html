@@ -211,28 +211,27 @@ const tamaraProducts = document.querySelectorAll('.tamara-promo');
 const TAMARA_PUBLIC_KEY = "2026ad94-c028-4611-bda4-d8cebe604b8d";
 
 tamaraProducts.forEach((el) => {
-    const price = el.getAttribute('data-price');
-    // Ensure data-price is a clean number (e.g., 150.50)
-    el.innerHTML = `
-        <div class="tamara-product-widget" 
-             data-amount="${price}" 
-             data-currency="AED" 
-             data-country-code="AE"
-             data-color-type="default"
-             data-show-border="true"
-             data-pay-type="pay_by_inst_3">
-        </div>`;
+  const price = el.getAttribute('data-price');
+
+  el.innerHTML = `
+    <div class="tamara-product-widget"
+      data-amount="${price}"
+      data-currency="AED"
+      data-country-code="AE"
+      data-color-type="default"
+      data-show-border="true"
+      data-pay-type="pay_by_inst_3">
+    </div>`;
 });
 
-// The "Secret Sauce" - MUST include country: 'AE'
 if (window.TamaraWidget) {
-    window.TamaraWidget.init({ 
-        lang: 'en', 
-        publicKey: TAMARA_PUBLIC_KEY,
-        country: 'AE',  // CRITICAL: Tells the script to look for UAE installments
-        currency: 'AED' 
-    });
-    window.TamaraWidget.render(); 
+  window.TamaraWidget.init({
+    lang: 'en',
+    publicKey: TAMARA_PUBLIC_KEY,
+    country: 'AE',
+    currency: 'AED'
+  });
+  window.TamaraWidget.render();
 }
 });
 </script>
