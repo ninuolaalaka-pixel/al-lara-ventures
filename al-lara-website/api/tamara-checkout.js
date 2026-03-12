@@ -10,21 +10,27 @@ export default async function handler(req, res) {
 
   // --- PHONE CLEANING (UAE FORMAT REQUIRED BY TAMARA) ---
   let cleanPhone = (customer.tel || "").replace(/\D/g, "");
-  if (cleanPhone.startsWith("0")) cleanPhone = cleanPhone.substring(1);
-  if (cleanPhone.startsWith("971")) cleanPhone = cleanPhone.substring(3);
-  const finalPhone = "+971" + cleanPhone;
+if (cleanPhone.startsWith("0")) cleanPhone = cleanPhone.substring(1);
+if (cleanPhone.startsWith("971")) cleanPhone = cleanPhone.substring(3);
+const finalPhone = "971" + cleanPhone; // Changed from +971 to 971
 
   // --- ITEMS (ALL NUMBERS MUST BE REAL NUMBERS, NOT STRINGS) ---
-  const items = cartItems.map((item, index) => ({
+  const items = cartItems.map((item, index) => {
+  const unitPrice = parseFloat(item.price).toFixed(2);
+  const totalItemAmount = (parseFloat(item.price) * Number(item.quantity)).toFixed(2);
+  
+  return {
     name: item.name,
     type: "Physical",
     reference_id: String(index + 1),
     quantity: Number(item.quantity),
-    unit_price: { amount: Number(item.price), currency: "AED" },
-    total_amount: { amount: Number(item.price) * Number(item.quantity), currency: "AED" },
-    tax_amount: { amount: 0, currency: "AED" },
-    discount_amount: { amount: 0, currency: "AED" }
-  }));
+    unit_price: { amount: unitPrice, currency: "AED" },
+    total_amount: { amount: totalItemAmount, currency: "AED" },
+    tax_amount: { amount: "0.00", currency: "AED" },
+    discount_amount: { amount: "0.00", currency: "AED" }
+  };
+});
+
 
   try {
     const response = await fetch(`${TAMARA_BASE_URL}/checkout`, {
@@ -36,9 +42,10 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         order_reference_id: "ALV-TAM-" + Date.now(),
 
-        // MUST BE A NUMBER
-        total_amount: { amount: Number(amount), currency: "AED" },
-
+        total_amount: { 
+        amount: parseFloat(amount).toFixed(2), // Ensure string "351.75"
+        currency: "AED" 
+        },
         // REQUIRED FOR UAE
         currency: "AED",
         country_code: "AE",
