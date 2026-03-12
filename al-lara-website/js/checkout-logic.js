@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const checkoutUaeBtn = document.getElementById("checkout-uae-btn"); // ZIINA
     const tabbyBtn = document.getElementById("pay-with-tabby");         // TABBY
 
-    // --- 3. INITIAL CART LOAD ---
+    // --- 3. INITIAL CARTs LOAD ---
     const cartTotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     
     if (cartTotalDisplay) cartTotalDisplay.textContent = cartTotal.toFixed(2);
