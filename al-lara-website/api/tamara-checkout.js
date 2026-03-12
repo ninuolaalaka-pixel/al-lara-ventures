@@ -125,7 +125,7 @@ export default async function handler(req, res) {
     const data = await response.json();
 
     if (!response.ok) {
-      console.error("TAMARA REJECTION:", data);
+       console.error("TAMARA RAW ERROR:", data);
       return res.status(400).json({
         success: false,
         message: data.message || "Invalid Request"
