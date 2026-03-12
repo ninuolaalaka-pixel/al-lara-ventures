@@ -209,8 +209,6 @@ if (tamaraBtn) {
     } catch (err) {
       alert("Tamara is currently unavailable: " + err.message);
       tamaraBtn.disabled = false;
-      tamaraBtn.style.backgroundColor = "#00d1c1";
-      tamaraBtn.innerText = "Pay with Tamara";
     }
   });
 }

@@ -42,13 +42,17 @@ function updateTotal() {
   updateTabbySnippet(total);
 
   const tamaraSnippet = document.getElementById("tamara-cart-snippet");
-  if (tamaraSnippet) {
-    // Update the attribute Tamara looks for
+  if (tamaraSnippet && total > 0) {
     tamaraSnippet.setAttribute("data-amount", total.toFixed(2));
     
-    // Trigger Tamara's refresh so it re-calculates the "3 monthly payments"
-    if (window.TamaraWidget && typeof window.TamaraWidget.refresh === "function") {
-      window.TamaraWidget.refresh();
+    if (window.TamaraWidget) {
+      // Re-run the initialization to make sure AE context is active
+      window.TamaraWidget.init({ 
+        lang: 'en', 
+        country: 'AE', 
+        publicKey: "2026ad94-c028-4611-bda4-d8cebe604b8d" 
+      });
+      window.TamaraWidget.render(); 
     }
   }
   updateCartCount();
