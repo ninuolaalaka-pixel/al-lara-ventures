@@ -14,14 +14,14 @@ export default async function handler(req, res) {
   if (cleanPhone.startsWith("971")) cleanPhone = cleanPhone.substring(3);
   const finalPhone = "+971" + cleanPhone;
 
-  // --- ITEMS ---
+  // --- ITEMS (ALL NUMBERS MUST BE REAL NUMBERS, NOT STRINGS) ---
   const items = cartItems.map((item, index) => ({
     name: item.name,
     type: "Physical",
     reference_id: String(index + 1),
-    quantity: item.quantity,
-    unit_price: { amount: item.price, currency: "AED" },
-    total_amount: { amount: item.price * item.quantity, currency: "AED" },
+    quantity: Number(item.quantity),
+    unit_price: { amount: Number(item.price), currency: "AED" },
+    total_amount: { amount: Number(item.price) * Number(item.quantity), currency: "AED" },
     tax_amount: { amount: 0, currency: "AED" },
     discount_amount: { amount: 0, currency: "AED" }
   }));
@@ -35,9 +35,11 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         order_reference_id: "ALV-TAM-" + Date.now(),
-        total_amount: { amount, currency: "AED" },
 
-        // REQUIRED FIELDS FOR UAE
+        // MUST BE A NUMBER
+        total_amount: { amount: Number(amount), currency: "AED" },
+
+        // REQUIRED FOR UAE
         currency: "AED",
         country_code: "AE",
         locale: "en-AE",
@@ -47,26 +49,26 @@ export default async function handler(req, res) {
         items,
 
         consumer: {
-          first_name: customer.name,
+          first_name: customer.name || "Customer",
           last_name: "-",
           phone_number: finalPhone,
-          email: customer.email
-        },
-
-        billing_address: {
-          first_name: customer.name,
-          last_name: "-",
-          line1: customer.address,
-          city: customer.emirate,
-          country_code: "AE"
+          email: customer.email,
         },
 
         shipping_address: {
           first_name: customer.name,
           last_name: "-",
-          line1: customer.address,
-          city: customer.emirate,
-          country_code: "AE"
+          line1: customer.address || "UAE Street",
+          city: customer.emirate || "Dubai",
+          country_code: "AE",
+        },
+
+        billing_address: {
+          first_name: customer.name,
+          last_name: "-",
+          line1: customer.address || "UAE Street",
+          city: customer.emirate || "Dubai",
+          country_code: "AE",
         },
 
         merchant_url: {
