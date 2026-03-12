@@ -87,20 +87,23 @@ export default async function handler(req, res) {
         payment_type: "PAY_BY_INSTALMENTS",
         items,
 
-        consumer: {
-          first_name: customer?.name || "Customer",
-          last_name: "-",
-          phone_number: finalPhone,
-          email: customer?.email,
-        },
+        // ... inside JSON.stringify({
+  consumer: {
+    first_name: (customer?.name || "Customer").split(' ')[0], // Tamara prefers just the first name
+    last_name: (customer?.name || "Customer").split(' ').slice(1).join(' ') || "Guest", // Last name can't be just "-"
+    phone_number: finalPhone || "971500000000", // Fallback if phone cleaning failed
+    email: customer?.email || "customer@example.com",
+  },
 
-        shipping_address: {
-          first_name: customer?.name,
-          last_name: "-",
-          line1: customer?.address || "UAE Street",
-          city: customer?.emirate || "Dubai",
-          country_code: "AE",
-        },
+  shipping_address: {
+    first_name: (customer?.name || "Customer").split(' ')[0],
+    last_name: (customer?.name || "Customer").split(' ').slice(1).join(' ') || "Guest",
+    line1: customer?.address || "UAE Street",
+    city: customer?.emirate || "Dubai",
+    region: customer?.emirate || "Dubai", // ADD THIS: Tamara often requires region for UAE
+    country_code: "AE",
+  },
+// ...
 
         billing_address: {
           first_name: customer?.name,
