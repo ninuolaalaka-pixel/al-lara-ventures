@@ -18,50 +18,47 @@ export default async function handler(req, res) {
   if (cleanPhone.startsWith("971")) cleanPhone = cleanPhone.substring(3);
   const finalPhone = "971" + cleanPhone; // e.g. 9715XXXXXXXX
 
-  // --- ITEMS: ENSURE ALL NUMERIC FIELDS ARE REAL NUMBERS ---
+  // 1. Format the items - Ensure amount is a STRING with 2 decimals
   const items = (cartItems || []).map((item, index) => {
-    const priceNumber = Number(item.price);
-    const qtyNumber = Number(item.quantity);
-
-    const unitPrice = Number.isFinite(priceNumber) ? priceNumber : 0;
-    const totalItemAmount = Number.isFinite(priceNumber * qtyNumber)
-      ? priceNumber * qtyNumber
-      : 0;
-
+    const p = parseFloat(item.price) || 0;
+    const q = parseInt(item.quantity) || 1;
     return {
       name: item.name,
       type: "Physical",
       reference_id: String(index + 1),
-      quantity: qtyNumber, // number
-      unit_price: { amount: unitPrice, currency: "AED" }, // number
-      total_amount: { amount: totalItemAmount, currency: "AED" }, // number
-      tax_amount: { amount: 0, currency: "AED" }, // number
-      discount_amount: { amount: 0, currency: "AED" } // number
+      quantity: q,
+      unit_price: { amount: p.toFixed(2), currency: "AED" },
+      total_amount: { amount: (p * q).toFixed(2), currency: "AED" },
+      tax_amount: { amount: "0.00", currency: "AED" },
+      discount_amount: { amount: "0.00", currency: "AED" }
     };
   });
 
-  // --- TOP-LEVEL TOTAL: MUST BE A NUMBER ---
-  const totalAmountNumber = Number(amount);
+  // 2. THE RECONCILIATION (Ensures Sum of Items == Grand Total)
+  const totalAmountNumber = parseFloat(amount) || 0;
+  const itemsSubtotal = items.reduce((sum, item) => sum + parseFloat(item.total_amount.amount), 0);
+  const adjustment = totalAmountNumber - itemsSubtotal;
 
-  // Basic validation to avoid sending NaN / invalid payload to Tamara
-  if (!Number.isFinite(totalAmountNumber) || totalAmountNumber <= 0) {
-    return res.status(400).json({
-      success: false,
-      message: "Invalid total amount"
+  // Add VAT/Shipping as a service item so the math is perfect
+  if (adjustment > 0.01) {
+    items.push({
+      name: "VAT & Delivery (Included)",
+      type: "Service",
+      reference_id: "fees-01",
+      quantity: 1,
+      unit_price: { amount: adjustment.toFixed(2), currency: "AED" },
+      total_amount: { amount: adjustment.toFixed(2), currency: "AED" },
+      tax_amount: { amount: "0.00", currency: "AED" },
+      discount_amount: { amount: "0.00", currency: "AED" }
     });
   }
 
-  for (const item of items) {
-    if (
-      !Number.isFinite(item.unit_price.amount) ||
-      !Number.isFinite(item.total_amount.amount) ||
-      !Number.isFinite(item.quantity)
-    ) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid item price or quantity"
-      });
-    }
+  // 3. Simple Validation
+  if (isNaN(totalAmountNumber) || totalAmountNumber <= 0 || items.length === 0) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid order amount or empty cart"
+    });
   }
 
  // DEBUG LOGS — ADD HERE
@@ -79,19 +76,15 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         order_reference_id: "ALV-TAM-" + Date.now(),
 
-        // MUST BE A NUMBER, NOT STRING
-        total_amount: {
-          amount: totalAmountNumber,
+       total_amount: {
+          amount: parseFloat(amount).toFixed(2), // Fixes the 385.0875 error
           currency: "AED"
         },
 
         // REQUIRED FOR UAE
         currency: "AED",
         country_code: "AE",
-        locale: "en-AE",
         payment_type: "PAY_BY_INSTALMENTS",
-        instalments: { count: 3 },
-
         items,
 
         consumer: {
@@ -118,7 +111,7 @@ export default async function handler(req, res) {
         },
 
         merchant_url: {
-          success: "https://allaraventures.com/checkout-success.html?pg=tamara",
+          success: "https://allaraventures.com/checkout-success.html?pg=tamara&orderId={order_id}",
           failure: "https://allaraventures.com/checkout-cancelled.html",
           cancel: "https://allaraventures.com/checkout-cancelled.html"
         },

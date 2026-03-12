@@ -1,5 +1,12 @@
 import { checkCORS } from "./_security.js";
-import crypto from "crypto"; // This is built-in to Node.js!
+import crypto from "crypto";
+
+// Vercel/Node config to ensure we can read the raw body if needed
+export const config = {
+  api: {
+    bodyParser: true, // If you're using standard Vercel, this is fine for now
+  },
+};
 
 export default async function handler(req, res) {
   if (!checkCORS(req, res)) return;
@@ -8,42 +15,48 @@ export default async function handler(req, res) {
   const notificationToken = process.env.TAMARA_NOTIFICATION_TOKEN;
   const signature = req.headers["x-tamara-signature"];
 
-  // 1. Verify the signature
   if (!signature) {
-    return res.status(401).json({ success: false, message: "No signature provided" });
+    return res.status(401).json({ success: false, message: "No signature" });
   }
 
-  // The secret "handshake" check:
-  // We hash the raw body of the request using your secret Notification Token
-  const rawBody = JSON.stringify(req.body);
+  // Use the raw body if possible. 
+  // NOTE: If signature fails repeatedly, you may need to disable bodyParser.
+  const bodyString = JSON.stringify(req.body); 
   const expectedSignature = crypto
     .createHmac("sha256", notificationToken)
-    .update(rawBody)
+    .update(bodyString)
     .digest("hex");
 
-  // If the signature doesn't match, someone is trying to trick your server!
-  // Note: For initial testing, you can comment the next 3 lines out, 
-  // but keep them for your "Live" store.
+  // LOGS FOR DEBUGGING
+  console.log("Incoming Signature:", signature);
+  console.log("Expected Signature:", expectedSignature);
+
+  // For testing, we log the error but don't block yet
   if (signature !== expectedSignature) {
-     console.error("Invalid Tamara Signature detected!");
-     // return res.status(403).json({ success: false, message: "Invalid signature" });
+    console.error("Signature Mismatch!");
+    // return res.status(403).json({ success: false }); 
   }
 
-  const { order_id, status } = req.body;
+  const { order_id, status, event_type } = req.body;
 
   try {
-    if (status === "captured" || status === "approved") {
-      console.log(`SUCCESS: Order ${order_id} verified and paid.`);
-      // This is where you'd trigger your email or save to a spreadsheet
-      return res.status(200).json({ success: true });
-    } 
-    
-    else if (status === "canceled" || status === "declined") {
-      console.log(` FAILED: Order ${order_id} was ${status}.`);
-      return res.status(200).json({ success: true });
+    // Tamara usually sends 'order_approved' via webhook.
+    // You then need to call your 'Capture' API to actually take the money.
+    if (event_type === "order_approved" || status === "approved") {
+      console.log(`ORDER APPROVED: ${order_id}. Ready to capture.`);
+      
+      // LOGIC: Trigger your internal "Process Order" function here
+      // (e.g., Send confirmation email to Bolanle/Allara Ventures team)
+      
+      return res.status(200).send("OK");
     }
 
-    res.status(200).json({ success: true, message: "Webhook received" });
+    if (event_type === "order_captured") {
+      console.log(`ORDER CAPTURED: ${order_id}. Money is in the bank.`);
+      return res.status(200).send("OK");
+    }
+
+    res.status(200).send("OK");
   } catch (error) {
     console.error("Webhook Error:", error);
     res.status(500).json({ success: false });

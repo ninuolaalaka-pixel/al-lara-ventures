@@ -124,12 +124,60 @@
     </div>
   </section>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
+ <script>
+  document.addEventListener("DOMContentLoaded", async () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const orderId = urlParams.get('orderId');
+    const paymentGateway = urlParams.get('pg');
+    const statusText = document.querySelector('.success-card p');
+
+    // --- 1. TAMARA SPECIFIC LOGIC ---
+    // Inside your Tamara if-statement in success.html:
+
+if (paymentGateway === 'tamara' && orderId) {
+  // 1. Initial message while the server "handshakes" with Tamara
+  statusText.innerHTML = "Just a moment... we're finalizing your order details.";
+  
+  try {
+    const response = await fetch("/api/tamara-capture", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ orderId: orderId })
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      // 2. Success message
+      statusText.innerHTML = "Everything looks great! Your order is confirmed and we're getting it ready for delivery.";
+      clearOrderSession();
+    } else {
+      // 3. Fallback (reassuring them it's being handled manually)
+      statusText.innerHTML = "Your order has been received. Our team will verify the payment and contact you shortly.";
+      clearOrderSession(); // We still clear the cart because they did complete the Tamara checkout
+    }
+  } catch (err) {
+    // 4. Network error message
+    statusText.innerHTML = "Order received! If you don't receive a confirmation email soon, please reach out to our support team.";
+  }
+}
+    
+    // --- 2. ZIINA & TABBY & OTHERS ---
+    else {
+      // Your existing working logic for the other gateways
+      clearOrderSession();
+    }
+
+    // Helper to keep code clean
+    function clearOrderSession() {
       localStorage.removeItem("cart");
       localStorage.removeItem("registered_since");
-    });
-  </script>
+      const cartCount = document.getElementById("cart-count");
+      if (cartCount) cartCount.textContent = "0";
+    }
+  });
+</script>
+
 
 </body>
 </html>
