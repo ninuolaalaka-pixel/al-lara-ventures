@@ -1,0 +1,51 @@
+import { checkCORS } from "./_security.js";
+import crypto from "crypto"; // This is built-in to Node.js!
+
+export default async function handler(req, res) {
+  if (!checkCORS(req, res)) return;
+  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
+
+  const notificationToken = process.env.TAMARA_NOTIFICATION_TOKEN;
+  const signature = req.headers["x-tamara-signature"];
+
+  // 1. Verify the signature
+  if (!signature) {
+    return res.status(401).json({ success: false, message: "No signature provided" });
+  }
+
+  // The secret "handshake" check:
+  // We hash the raw body of the request using your secret Notification Token
+  const rawBody = JSON.stringify(req.body);
+  const expectedSignature = crypto
+    .createHmac("sha256", notificationToken)
+    .update(rawBody)
+    .digest("hex");
+
+  // If the signature doesn't match, someone is trying to trick your server!
+  // Note: For initial testing, you can comment the next 3 lines out, 
+  // but keep them for your "Live" store.
+  if (signature !== expectedSignature) {
+     console.error("Invalid Tamara Signature detected!");
+     // return res.status(403).json({ success: false, message: "Invalid signature" });
+  }
+
+  const { order_id, status } = req.body;
+
+  try {
+    if (status === "captured" || status === "approved") {
+      console.log(`SUCCESS: Order ${order_id} verified and paid.`);
+      // This is where you'd trigger your email or save to a spreadsheet
+      return res.status(200).json({ success: true });
+    } 
+    
+    else if (status === "canceled" || status === "declined") {
+      console.log(` FAILED: Order ${order_id} was ${status}.`);
+      return res.status(200).json({ success: true });
+    }
+
+    res.status(200).json({ success: true, message: "Webhook received" });
+  } catch (error) {
+    console.error("Webhook Error:", error);
+    res.status(500).json({ success: false });
+  }
+}

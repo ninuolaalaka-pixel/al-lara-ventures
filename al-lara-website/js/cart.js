@@ -40,6 +40,17 @@ function updateTotal() {
   if (totalElement) totalElement.textContent = total.toFixed(2);
 
   updateTabbySnippet(total);
+
+  const tamaraSnippet = document.getElementById("tamara-cart-snippet");
+  if (tamaraSnippet) {
+    // Update the attribute Tamara looks for
+    tamaraSnippet.setAttribute("data-amount", total.toFixed(2));
+    
+    // Trigger Tamara's refresh so it re-calculates the "3 monthly payments"
+    if (window.TamaraWidget && typeof window.TamaraWidget.refresh === "function") {
+      window.TamaraWidget.refresh();
+    }
+  }
   updateCartCount();
 }
 

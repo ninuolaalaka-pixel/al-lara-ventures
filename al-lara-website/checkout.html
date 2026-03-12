@@ -107,6 +107,15 @@
     }
     .checkout-btn:hover { background: #25653a; transform: translateY(-1px); }
     .tabby-btn:hover { background: #34a14b; transform: translateY(-1px); }
+
+    .tamara-btn-custom {
+    width: 100%; padding: 18px; border-radius: 14px;
+    font-size: 16px; font-weight: 700; cursor: pointer;
+    border: none; background: #ffca00; color: #000; /* Tamara Brand Yellow */
+    display: flex; justify-content: center; align-items: center; gap: 12px;
+    transition: all 0.2s; margin-top: 10px;
+  }
+  .tamara-btn-custom:hover { background: #ffd433; transform: translateY(-1px); }
     
     .terms-line { text-align: center; font-size: 12px; color: #718096; margin-top: 25px; }
   </style>
@@ -179,8 +188,12 @@
     <button id="checkout-uae-btn" class="checkout-btn">Pay Now</button>
     <button id="pay-with-tabby" class="tabby-btn">
       <img src="images/tabby-badge.png" style="height:22px;" alt="Tabby">
-      Proceed to Pay with Tabby
+      Proceed to Pay in 4 with Tabby
     </button>
+    <button id="pay-with-tamara" class="tamara-btn-custom">
+  <img src="images/productimgs/tamara-logo.jpeg" style="height:20px;" alt="Tamara">
+  Proceed to Pay in 3 with Tamara
+</button>
 
     <p class="terms-line">By proceeding to <strong>Pay Now</strong> or <strong>Proceed with Tabby</strong> you agree to our <a href="terms-and-conditions.html" style="color: #2e7d32; font-weight:600;">Terms & Conditions</a>.</p>
   </div>

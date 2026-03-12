@@ -4,7 +4,11 @@
     <script>
   window._tabbyPublicKey = "pk_019c445e-ce8a-936c-9575-c76ec14b961d";
 </script>
+<script>
+  window._tamaraPublicKey = "2026ad94-c028-4611-bda4-d8cebe604b8d";
+</script>
   <script src="https://checkout.tabby.ai/tabby-promo.js"></script>
+  <script src="https://cdn.tamara.co/widget/v2/tamara-widget.js"></script>
   <script src="js/global-ui.js"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -76,8 +80,8 @@
           <img src="images/productimgs/Guantam Rice.png"  class ="product-img">
           <h3 style="margin:15px 0;">Guatam Basmati Rice XXL 20KG</h3>
           <p style="color:#2e7d32; font-weight:700;">AED 140.50</p>
-
           <div class="tabby-promo" data-price="140.50"></div>
+          <div class="tamara-promo" data-price="140.50"></div>
           <button class="add-to-cart" data-name="Guatam Basmati Rice XXL 20KG" data-price="140.50" style="
             margin-top:10px;
             padding:10px 20px;
@@ -94,6 +98,7 @@
           <h3 style="margin:15px 0;">Sinnara Whole Long Grain Basmati Rice 20KG</h3>
           <p style="color:#2e7d32; font-weight:700;">AED 165.75</p>
           <div class="tabby-promo" data-price="165.75"></div>
+          <div class="tamara-promo" data-price="165.75"></div>
           <button class="add-to-cart" data-name="Sinnara Whole Long Grain Basmati Rice 20KG" data-price="165.75" style="
             margin-top:10px;
             padding:10px 20px;
@@ -110,6 +115,7 @@
           <h3 style="margin:15px 0;">PRAN Sona Masoori Rice 18KG</h3>
           <p style="color:#2e7d32; font-weight:700;">AED 45.50</p>
           <div class="tabby-promo" data-price="45.50"></div>
+          <div class="tamara-promo" data-price="45.50"></div>
           <button class="add-to-cart" data-name="PRAN Sona Masoori Rice 18KG" data-price="45.50" style="
             margin-top:10px;
             padding:10px 20px;
@@ -126,6 +132,7 @@
           <h3 style="margin:15px 0;">Super Chef Basmati Rice 35KG</h3>
           <p style="color:#2e7d32; font-weight:700;">AED 150.50</p>
           <div class="tabby-promo" data-price="150.50"></div>
+          <div class="tamara-promo" data-price="150.50"></div>
           <button class="add-to-cart" data-name="Super Chef Basmati Rice 35KG" data-price="150.50" style="
             margin-top:10px;
             padding:10px 20px;
@@ -198,8 +205,35 @@ document.addEventListener("DOMContentLoaded", function() {
       console.error("TabbyPromo is still undefined after 500ms");
     }
   }, 500);
+
+  // TAMARA INJECTION (similar approach to Tabby)
+// TAMARA INJECTION
+const tamaraProducts = document.querySelectorAll('.tamara-promo');
+const TAMARA_PUBLIC_KEY = "2026ad94-c028-4611-bda4-d8cebe604b8d"; // <--- PASTE YOUR PUBLIC KEY HERE
+
+tamaraProducts.forEach((el, index) => {
+    const uniqueId = 'tamara-product-' + index;
+    el.id = uniqueId;
+    const price = el.getAttribute('data-price');
+    
+    // We add data-public-key here so the Tamara script knows it's you
+    el.innerHTML = `
+        <div class="tamara-product-widget" 
+             data-amount="${price}" 
+             data-currency="AED" 
+             data-public-key="${TAMARA_PUBLIC_KEY}"
+             data-pay-type="pay_by_inst_3">
+        </div>`;
+});
+
+// Refresh Tamara
+if (window.TamaraWidget && typeof window.TamaraWidget.refresh === "function") {
+    window.TamaraWidget.refresh();
+}
 });
 </script>
+
+
 
 </body>
 </html>
