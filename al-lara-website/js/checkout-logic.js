@@ -1,3 +1,5 @@
+// Load cart for checkout page
+const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
 document.addEventListener("DOMContentLoaded", () => {
 
     // --- 1. BROWSER NAVIGATION HANDLING ---
@@ -21,7 +23,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const tabbyBtn = document.getElementById("pay-with-tabby");         // TABBY
 
     // --- 3. INITIAL CART LOAD ---
-    const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
     const cartTotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     
     if (cartTotalDisplay) cartTotalDisplay.textContent = cartTotal.toFixed(2);

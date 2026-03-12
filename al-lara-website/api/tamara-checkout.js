@@ -64,6 +64,11 @@ export default async function handler(req, res) {
     }
   }
 
+ // DEBUG LOGS — ADD HERE
+  console.log("DEBUG amount:", amount, Number(amount));
+  console.log("DEBUG cartItems:", cartItems);
+  console.log("DEBUG items:", items);
+
   try {
     const response = await fetch(`${TAMARA_BASE_URL}/checkout`, {
       method: "POST",
