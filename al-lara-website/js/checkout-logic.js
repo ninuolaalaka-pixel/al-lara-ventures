@@ -167,6 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 const tamaraBtn = document.getElementById("pay-with-tamara");
+let originalContent = tamaraBtn ? tamaraBtn.innerHTML : "";
 
 if (tamaraBtn) {
   tamaraBtn.addEventListener("click", async (e) => {
@@ -186,7 +187,6 @@ if (tamaraBtn) {
       return;
     }
 
-    // UI: show spinner
     tamaraBtn.disabled = true;
     tamaraBtn.innerHTML = '<span class="spinner"></span> Processing...';
 
@@ -195,8 +195,12 @@ if (tamaraBtn) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          amount: finalTotal,
-          cartItems: cartItems,
+          amount: Number(finalTotal),
+          cartItems: cartItems.map(item => ({
+            ...item,
+            price: Number(item.price),
+            quantity: Number(item.quantity)
+          })),
           customer
         })
       });
@@ -213,8 +217,7 @@ if (tamaraBtn) {
     } catch (err) {
       window.showCustomAlert("Tamara is currently unavailable: " + err.message);
       tamaraBtn.disabled = false;
-      tamaraBtn.disabled = false;
-      tamaraBtn.innerHTML = originalContent; // Reset to original button content
+      tamaraBtn.innerHTML = originalContent;
     }
   });
 }
