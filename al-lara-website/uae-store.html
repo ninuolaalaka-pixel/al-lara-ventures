@@ -206,29 +206,25 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }, 500);
 
-  // TAMARA INJECTION (similar approach to Tabby)
-// TAMARA INJECTION
+ // TAMARA INJECTION 
 const tamaraProducts = document.querySelectorAll('.tamara-promo');
-const TAMARA_PUBLIC_KEY = "2026ad94-c028-4611-bda4-d8cebe604b8d"; // <--- PASTE YOUR PUBLIC KEY HERE
+const TAMARA_PUBLIC_KEY = "2026ad94-c028-4611-bda4-d8cebe604b8d";
 
 tamaraProducts.forEach((el, index) => {
-    const uniqueId = 'tamara-product-' + index;
-    el.id = uniqueId;
     const price = el.getAttribute('data-price');
-    
-    // We add data-public-key here so the Tamara script knows it's you
+    // Simplified: Tamara only needs the class and data-amount if the script is loaded
     el.innerHTML = `
         <div class="tamara-product-widget" 
              data-amount="${price}" 
              data-currency="AED" 
-             data-public-key="${TAMARA_PUBLIC_KEY}"
              data-pay-type="pay_by_inst_3">
         </div>`;
 });
 
-// Refresh Tamara
-if (window.TamaraWidget && typeof window.TamaraWidget.refresh === "function") {
-    window.TamaraWidget.refresh();
+// The "Secret Sauce" to make them appear:
+if (window.TamaraWidget) {
+    window.TamaraWidget.init({ lang: 'en', publicKey: TAMARA_PUBLIC_KEY });
+    window.TamaraWidget.render(); 
 }
 });
 </script>

@@ -382,6 +382,22 @@ form textarea {
     margin-bottom: 10px;
 }
 
+/* Add this so your Tamara button looks professional while loading */
+.spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #ffffff;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 .product-card {
   position: relative; /* Required for the badge to stay inside the card */
 }

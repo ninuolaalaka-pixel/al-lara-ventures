@@ -172,7 +172,6 @@ if (tamaraBtn) {
   tamaraBtn.addEventListener("click", async (e) => {
     e.preventDefault();
     
-    // Assumes these functions exist in your global logic
     const finalTotal = calculateFinalTotal(); 
     const customer = {
       name: document.getElementById("customer-name").value,
@@ -187,23 +186,31 @@ if (tamaraBtn) {
       return;
     }
 
-    tamaraBtn.innerText = "Redirecting...";
+    // UPDATED UI: Spinner + Teal Background
+    tamaraBtn.style.backgroundColor = "#00b8aa"; 
+    tamaraBtn.innerHTML = '<span class="spinner"></span> Processing...';
     tamaraBtn.disabled = true;
 
     try {
       const res = await fetch("/api/tamara-checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: finalTotal, cartItems: cart, customer })
+        body: JSON.stringify({ amount: finalTotal, cartItems: cartItems, customer }) 
       });
+      
       const data = await res.json();
-      if (data.url) {
+      
+      if (data.success && data.url) {
         localStorage.setItem("tamara_order_id", data.orderId);
         window.location.href = data.url;
+      } else {
+        throw new Error(data.message || "Declined");
       }
     } catch (err) {
-      alert("Tamara is currently unavailable.");
+      alert("Tamara is currently unavailable: " + err.message);
       tamaraBtn.disabled = false;
+      tamaraBtn.style.backgroundColor = "#00d1c1";
+      tamaraBtn.innerText = "Pay with Tamara";
     }
   });
 }
