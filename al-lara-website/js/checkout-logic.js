@@ -213,6 +213,8 @@ if (tamaraBtn) {
     } catch (err) {
       window.showCustomAlert("Tamara is currently unavailable: " + err.message);
       tamaraBtn.disabled = false;
+      tamaraBtn.disabled = false;
+      tamaraBtn.innerHTML = originalContent; // Reset to original button content
     }
   });
 }
