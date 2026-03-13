@@ -27,49 +27,33 @@ export default async function handler(req, res) {
     const lineTotal = round2(p * q);
 
     return {
-  name: item.name,
-  description: item.name,
-  type: "Physical",
-  reference_id: String(index + 1),
-  quantity: q,
-  unit_price: { 
-    amount: p.toFixed(2), // Converts 165.75 to "165.75" (String)
-    currency: "AED" 
-  },
-  total_amount: { 
-    amount: lineTotal.toFixed(2), // Converts to String
-    currency: "AED" 
-  },
-  tax_amount: { amount: "0.00", currency: "AED" },
-  discount_amount: { amount: "0.00", currency: "AED" },
-};
+      name: item.name,
+      description: item.name, // Added: Often mandatory on Live
+      type: "Physical",
+      reference_id: String(index + 1),
+      quantity: q,
+      unit_price: { amount: p, currency: "AED" },
+      total_amount: { amount: lineTotal, currency: "AED" },
+      tax_amount: { amount: 0, currency: "AED" },
+      discount_amount: { amount: 0, currency: "AED" },
+    };
   });
 
-  // 2. RECONCILIATION
   const totalAmountNumber = round2(amount);
-  const itemsSubtotal = items.reduce(
-  (sum, item) => sum + round2(item.total_amount.amount),
-    0
-  );
+  const itemsSubtotal = items.reduce((sum, item) => sum + round2(item.total_amount.amount), 0);
   const adjustment = round2(totalAmountNumber - itemsSubtotal);
 
-  if (adjustment > 0.01) {
+  if (Math.abs(adjustment) > 0.01) {
     items.push({
-      name: "VAT & Delivery (Included)",
-      description: "Shipping and handling fees",  
-      type: "Physical",
+      name: "VAT and Delivery",
+      description: "Shipping and handling fees", // Added
+      type: "Physical", // Changed from Service to Physical for safety
       reference_id: "fees-01",
       quantity: 1,
-      unit_price: { 
-        amount: adjustment.toFixed(2), // FORCE STRING "33.34"
-        currency: "AED" 
-      },
-      total_amount: { 
-        amount: adjustment.toFixed(2), // FORCE STRING "33.34"
-        currency: "AED" 
-      },
-      tax_amount: { amount: "0.00", currency: "AED" }, // FORCE STRING
-      discount_amount: { amount: "0.00", currency: "AED" }, // FORCE STRING
+      unit_price: { amount: adjustment, currency: "AED" },
+      total_amount: { amount: adjustment, currency: "AED" },
+      tax_amount: { amount: 0, currency: "AED" },
+      discount_amount: { amount: 0, currency: "AED" },
     });
   }
 
