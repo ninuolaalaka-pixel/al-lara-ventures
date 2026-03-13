@@ -41,16 +41,16 @@ export default async function handler(req, res) {
 
   // Add VAT/Shipping as a service item so the math is perfect
   if (adjustment > 0.01) {
-    items.push({
-      name: "VAT & Delivery (Included)",
-      type: "Service",
-      reference_id: "fees-01",
-      quantity: 1,
-      unit_price: { amount: adjustment.toFixed(2), currency: "AED" },
-      total_amount: { amount: adjustment.toFixed(2), currency: "AED" },
-      tax_amount: { amount: "0.00", currency: "AED" },
-      discount_amount: { amount: "0.00", currency: "AED" }
-    });
+    iitems.push({
+  name: "VAT & Delivery (Included)",
+  type: "Service",
+  reference_id: "fees-01",
+  quantity: 1,
+  unit_price: { amount: adjustment, currency: "AED" },
+  total_amount: { amount: adjustment, currency: "AED" },
+  tax_amount: { amount: 0, currency: "AED" },
+  discount_amount: { amount: 0, currency: "AED" }
+});
   }
 
   // 3. Simple Validation
