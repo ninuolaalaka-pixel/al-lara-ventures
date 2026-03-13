@@ -28,6 +28,7 @@ export default async function handler(req, res) {
 
     return {
   name: item.name,
+  description: item.name,
   type: "Physical",
   reference_id: String(index + 1),
   quantity: q,
@@ -47,7 +48,7 @@ export default async function handler(req, res) {
   // 2. RECONCILIATION
   const totalAmountNumber = round2(amount);
   const itemsSubtotal = items.reduce(
-    (sum, item) => sum + round2(item.total_amount.amount),
+  (sum, item) => sum + round2(item.total_amount.amount),
     0
   );
   const adjustment = round2(totalAmountNumber - itemsSubtotal);
@@ -55,7 +56,8 @@ export default async function handler(req, res) {
   if (adjustment > 0.01) {
     items.push({
       name: "VAT & Delivery (Included)",
-      type: "Service",
+      description: "Shipping and handling fees",  
+      type: "Physical",
       reference_id: "fees-01",
       quantity: 1,
       unit_price: { 
@@ -94,8 +96,7 @@ export default async function handler(req, res) {
         Authorization: `Bearer ${process.env.TAMARA_API_TOKEN}`,
       },
       body: JSON.stringify({
-        order_reference_id: "ALV-TAM-" + Date.now(),
-
+        order_reference_id: "ALV-" + Date.now(),
        total_amount: {
        amount: totalAmountNumber.toFixed(2), // "385.09" (String)
       currency: "AED",
@@ -109,7 +110,7 @@ export default async function handler(req, res) {
         consumer: {
           first_name: firstName,
           last_name: lastName,
-          phone_number: String(finalPhone || "971500000000"),
+          phone_number: finalPhone.trim(),
           email: customer?.email || "customer@example.com",
         },
 
@@ -127,6 +128,7 @@ export default async function handler(req, res) {
           last_name: lastName,
           line1: customer?.address || "UAE Street",
           city: customer?.emirate || "Dubai",
+          region: customer?.emirate || "Dubai",
           country_code: "AE",
         },
 
@@ -136,6 +138,9 @@ export default async function handler(req, res) {
           failure: "https://allaraventures.com/checkout-cancelled.html",
           cancel: "https://allaraventures.com/checkout-cancelled.html",
         },
+
+        platform: "WEB",
+        is_guest_checkout: true
       }),
     });
 
