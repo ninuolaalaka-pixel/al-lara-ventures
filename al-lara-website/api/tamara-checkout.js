@@ -126,7 +126,7 @@ export default async function handler(req, res) {
     const data = await response.json();
 
     if (!response.ok) {
-       console.error("TAMARA RAW ERROR:", data);
+      console.error("TAMARA DETAILED ERROR:", JSON.stringify(data, null, 2));
       return res.status(400).json({
         success: false,
         message: data.message || "Invalid Request"
@@ -140,7 +140,7 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error("TAMARA ERROR:", error);
+    console.error("TAMARA DETAILED ERROR:", JSON.stringify(data, null, 2));
     return res.status(500).json({
       success: false,
       message: "Server connection error"
