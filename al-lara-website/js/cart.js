@@ -41,16 +41,23 @@ function updateTotal() {
 
   updateTabbySnippet(total);
 
- const tamaraSnippet = document.getElementById("tamara-cart-snippet");
-if (tamaraSnippet && total > 0 && window.TamaraWidget) {
-  tamaraSnippet.setAttribute("data-amount", total.toFixed(2));
-  
-  // Try to refresh, if not, re-render
-  if (typeof window.TamaraWidget.refresh === "function") {
-    window.TamaraWidget.refresh();
-  } else {
-    window.TamaraWidget.render();
-  }
+// --- TAMARA REFRESH LOGIC ---
+const tamaraSnippet = document.getElementById("tamara-cart-snippet");
+if (tamaraSnippet && total > 0) {
+    // 1. Force the attribute update
+    tamaraSnippet.setAttribute("data-amount", total.toFixed(2));
+    
+    // 2. Tamara needs a slight delay to "notice" the attribute change
+    if (window.TamaraWidget) {
+        setTimeout(() => {
+            // Re-run the render to ensure the new price is shown
+            window.TamaraWidget.render();
+            // If the script supports refresh, call that too
+            if (typeof window.TamaraWidget.refresh === 'function') {
+                window.TamaraWidget.refresh();
+            }
+        }, 200);
+    }
 }
   updateCartCount();
 }

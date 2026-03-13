@@ -505,10 +505,12 @@ form textarea {
 }
 
 /* Reserved space for Tamara only */
-.tamara-promo {
-  min-height: 45px !important;
-  display: block;
-  margin: 5px 0;
+/* This ensures the container stays open so the script can "see" it */
+.tamara-promo, .tamara-cart-widget {
+  min-height: 50px !important;
+  min-width: 200px !important;
+  display: block !important;
+  margin: 10px 0;
 }
 
 /* Make section titles clickable without changing their appearance */
