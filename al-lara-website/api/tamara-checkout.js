@@ -1,6 +1,10 @@
 import { checkCORS, checkRateLimit } from "./_security.js";
 const TAMARA_BASE_URL = "https://api.tamara.co";
 
+function round2(n) {
+  return Math.round((Number(n) || 0) * 100) / 100;
+}
+
 export default async function handler(req, res) {
   if (!checkCORS(req, res)) return;
   if (!(await checkRateLimit(req, res))) return;
@@ -11,60 +15,64 @@ export default async function handler(req, res) {
   const { amount, cartItems, customer } = req.body || {};
 
   // --- PHONE CLEANING (UAE FORMAT) ---
-  // We keep it as a plain numeric string without "+" because Tamara accepts that,
-  // and your earlier logs were about *data types*, not phone format.
   let cleanPhone = (customer?.tel || "").replace(/\D/g, "");
   if (cleanPhone.startsWith("0")) cleanPhone = cleanPhone.substring(1);
   if (cleanPhone.startsWith("971")) cleanPhone = cleanPhone.substring(3);
   const finalPhone = "971" + cleanPhone; // e.g. 9715XXXXXXXX
 
-  // 1. Format the items - Ensure amount is a STRING with 2 decimals
+  // 1. ITEMS (all amounts: rounded numbers)
   const items = (cartItems || []).map((item, index) => {
-    const p = parseFloat(item.price) || 0;
-    const q = parseInt(item.quantity) || 1;
+    const p = round2(item.price);
+    const q = Number(item.quantity) || 1;
+    const lineTotal = round2(p * q);
+
     return {
-  name: item.name,
-  type: "Physical",
-  reference_id: String(index + 1),
-  quantity: q,
-  unit_price: { amount: p, currency: "AED" },
-  total_amount: { amount: p * q, currency: "AED" },
-  tax_amount: { amount: 0, currency: "AED" },
-  discount_amount: { amount: 0, currency: "AED" }
-};
+      name: item.name,
+      type: "Physical",
+      reference_id: String(index + 1),
+      quantity: q,
+      unit_price: { amount: p, currency: "AED" },
+      total_amount: { amount: lineTotal, currency: "AED" },
+      tax_amount: { amount: 0, currency: "AED" },
+      discount_amount: { amount: 0, currency: "AED" },
+    };
   });
 
-  // 2. THE RECONCILIATION (Ensures Sum of Items == Grand Total)
-  const totalAmountNumber = parseFloat(amount) || 0;
-  const itemsSubtotal = items.reduce((sum, item) => sum + parseFloat(item.total_amount.amount), 0);
-  const adjustment = totalAmountNumber - itemsSubtotal;
+  // 2. RECONCILIATION
+  const totalAmountNumber = round2(amount);
+  const itemsSubtotal = items.reduce(
+    (sum, item) => sum + round2(item.total_amount.amount),
+    0
+  );
+  const adjustment = round2(totalAmountNumber - itemsSubtotal);
 
-  // Add VAT/Shipping as a service item so the math is perfect
   if (adjustment > 0.01) {
     items.push({
-  name: "VAT & Delivery (Included)",
-  type: "Service",
-  reference_id: "fees-01",
-  quantity: 1,
-  unit_price: { amount: adjustment, currency: "AED" },
-  total_amount: { amount: adjustment, currency: "AED" },
-  tax_amount: { amount: 0, currency: "AED" },
-  discount_amount: { amount: 0, currency: "AED" }
-});
-  }
-
-  // 3. Simple Validation
-  if (isNaN(totalAmountNumber) || totalAmountNumber <= 0 || items.length === 0) {
-    return res.status(400).json({
-      success: false,
-      message: "Invalid order amount or empty cart"
+      name: "VAT & Delivery (Included)",
+      type: "Service",
+      reference_id: "fees-01",
+      quantity: 1,
+      unit_price: { amount: adjustment, currency: "AED" },
+      total_amount: { amount: adjustment, currency: "AED" },
+      tax_amount: { amount: 0, currency: "AED" },
+      discount_amount: { amount: 0, currency: "AED" },
     });
   }
 
- // DEBUG LOGS — ADD HERE
+  if (!Number.isFinite(totalAmountNumber) || totalAmountNumber <= 0 || items.length === 0) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid order amount or empty cart",
+    });
+  }
+
   console.log("DEBUG amount:", amount, Number(amount));
   console.log("DEBUG cartItems:", cartItems);
   console.log("DEBUG items:", items);
+
+  const fullName = customer?.name || "Customer Guest";
+  const firstName = fullName.split(" ")[0];
+  const lastName = fullName.split(" ").slice(1).join(" ") || "Guest";
 
   try {
     const response = await fetch(`${TAMARA_BASE_URL}/checkout`, {
@@ -76,51 +84,46 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         order_reference_id: "ALV-TAM-" + Date.now(),
 
-       total_amount: {
-       amount: Number(amount),
-       currency: "AED"
-      },
+        total_amount: {
+          amount: totalAmountNumber,
+          currency: "AED",
+        },
 
-
-        // REQUIRED FOR UAE
         currency: "AED",
         country_code: "AE",
         payment_type: "PAY_BY_INSTALMENTS",
         items,
 
-        // ... inside JSON.stringify({
-  consumer: {
-    first_name: (customer?.name || "Customer").split(' ')[0], // Tamara prefers just the first name
-    last_name: (customer?.name || "Customer").split(' ').slice(1).join(' ') || "Guest", // Last name can't be just "-"
-    phone_number: finalPhone || "971500000000", // Fallback if phone cleaning failed
-    email: customer?.email || "customer@example.com",
-  },
+        consumer: {
+          first_name: firstName,
+          last_name: lastName,
+          phone_number: String(finalPhone || "971500000000"),
+          email: customer?.email || "customer@example.com",
+        },
 
-  shipping_address: {
-    first_name: (customer?.name || "Customer").split(' ')[0],
-    last_name: (customer?.name || "Customer").split(' ').slice(1).join(' ') || "Guest",
-    line1: customer?.address || "UAE Street",
-    city: customer?.emirate || "Dubai",
-    region: customer?.emirate || "Dubai", // ADD THIS: Tamara often requires region for UAE
-    country_code: "AE",
-  },
-// ...
+        shipping_address: {
+          first_name: firstName,
+          last_name: lastName,
+          line1: customer?.address || "UAE Street",
+          city: customer?.emirate || "Dubai",
+          region: customer?.emirate || "Dubai",
+          country_code: "AE",
+        },
 
         billing_address: {
-          first_name: customer?.name,
-          last_name: "-",
+          first_name: firstName,
+          last_name: lastName,
           line1: customer?.address || "UAE Street",
           city: customer?.emirate || "Dubai",
           country_code: "AE",
         },
 
         merchant_url: {
-          success: "https://allaraventures.com/checkout-success.html?pg=tamara&orderId={order_id}",
+          success:
+            "https://allaraventures.com/checkout-success.html?pg=tamara&orderId={order_id}",
           failure: "https://allaraventures.com/checkout-cancelled.html",
-          cancel: "https://allaraventures.com/checkout-cancelled.html"
+          cancel: "https://allaraventures.com/checkout-cancelled.html",
         },
-
-        platform: "WEB"
       }),
     });
 
@@ -130,21 +133,20 @@ export default async function handler(req, res) {
       console.error("TAMARA DETAILED ERROR:", JSON.stringify(data, null, 2));
       return res.status(400).json({
         success: false,
-        message: data.message || "Invalid Request"
+        message: data.message || "Invalid Request",
       });
     }
 
     return res.status(200).json({
       success: true,
       url: data.checkout_url,
-      orderId: data.order_id
+      orderId: data.order_id,
     });
-
   } catch (error) {
-    console.error("TAMARA DETAILED ERROR:", JSON.stringify(data, null, 2));
+    console.error("TAMARA RAW ERROR:", error);
     return res.status(500).json({
       success: false,
-      message: "Server connection error"
+      message: "Server connection error",
     });
   }
 }
