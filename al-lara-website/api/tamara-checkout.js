@@ -1,5 +1,5 @@
 import { checkCORS, checkRateLimit } from "./_security.js";
-const TAMARA_BASE_URL = "https://api.tamara.co";
+const TAMARA_BASE_URL = "https://api-sandbox.tamara.co";
 
 function round2(n) {
   return Math.round((Number(n) || 0) * 100) / 100;
@@ -27,15 +27,21 @@ export default async function handler(req, res) {
     const lineTotal = round2(p * q);
 
     return {
-      name: item.name,
-      type: "Physical",
-      reference_id: String(index + 1),
-      quantity: q,
-      unit_price: { amount: p, currency: "AED" },
-      total_amount: { amount: lineTotal, currency: "AED" },
-      tax_amount: { amount: 0, currency: "AED" },
-      discount_amount: { amount: 0, currency: "AED" },
-    };
+  name: item.name,
+  type: "Physical",
+  reference_id: String(index + 1),
+  quantity: q,
+  unit_price: { 
+    amount: p.toFixed(2), // Converts 165.75 to "165.75" (String)
+    currency: "AED" 
+  },
+  total_amount: { 
+    amount: lineTotal.toFixed(2), // Converts to String
+    currency: "AED" 
+  },
+  tax_amount: { amount: "0.00", currency: "AED" },
+  discount_amount: { amount: "0.00", currency: "AED" },
+};
   });
 
   // 2. RECONCILIATION
@@ -84,10 +90,10 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         order_reference_id: "ALV-TAM-" + Date.now(),
 
-        total_amount: {
-          amount: totalAmountNumber,
-          currency: "AED",
-        },
+       total_amount: {
+       amount: totalAmountNumber.toFixed(2), // "385.09" (String)
+      currency: "AED",
+      },
 
         currency: "AED",
         country_code: "AE",
