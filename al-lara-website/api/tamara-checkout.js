@@ -58,10 +58,16 @@ export default async function handler(req, res) {
       type: "Service",
       reference_id: "fees-01",
       quantity: 1,
-      unit_price: { amount: adjustment, currency: "AED" },
-      total_amount: { amount: adjustment, currency: "AED" },
-      tax_amount: { amount: 0, currency: "AED" },
-      discount_amount: { amount: 0, currency: "AED" },
+      unit_price: { 
+        amount: adjustment.toFixed(2), // FORCE STRING "33.34"
+        currency: "AED" 
+      },
+      total_amount: { 
+        amount: adjustment.toFixed(2), // FORCE STRING "33.34"
+        currency: "AED" 
+      },
+      tax_amount: { amount: "0.00", currency: "AED" }, // FORCE STRING
+      discount_amount: { amount: "0.00", currency: "AED" }, // FORCE STRING
     });
   }
 
