@@ -1,5 +1,5 @@
 import { checkCORS, checkRateLimit } from "./_security.js";
-const TAMARA_BASE_URL = "https://api-sandbox.tamara.co";
+const TAMARA_BASE_URL = "https://api.tamara.co";
 
 function round2(n) {
   return Math.round((Number(n) || 0) * 100) / 100;
