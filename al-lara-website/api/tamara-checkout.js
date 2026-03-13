@@ -23,15 +23,15 @@ export default async function handler(req, res) {
     const p = parseFloat(item.price) || 0;
     const q = parseInt(item.quantity) || 1;
     return {
-      name: item.name,
-      type: "Physical",
-      reference_id: String(index + 1),
-      quantity: q,
-      unit_price: { amount: p.toFixed(2), currency: "AED" },
-      total_amount: { amount: (p * q).toFixed(2), currency: "AED" },
-      tax_amount: { amount: "0.00", currency: "AED" },
-      discount_amount: { amount: "0.00", currency: "AED" }
-    };
+  name: item.name,
+  type: "Physical",
+  reference_id: String(index + 1),
+  quantity: q,
+  unit_price: { amount: p, currency: "AED" },
+  total_amount: { amount: p * q, currency: "AED" },
+  tax_amount: { amount: 0, currency: "AED" },
+  discount_amount: { amount: 0, currency: "AED" }
+};
   });
 
   // 2. THE RECONCILIATION (Ensures Sum of Items == Grand Total)
@@ -77,9 +77,10 @@ export default async function handler(req, res) {
         order_reference_id: "ALV-TAM-" + Date.now(),
 
        total_amount: {
-          amount: parseFloat(amount).toFixed(2), // Fixes the 385.0875 error
-          currency: "AED"
-        },
+       amount: Number(amount),
+       currency: "AED"
+      },
+
 
         // REQUIRED FOR UAE
         currency: "AED",
