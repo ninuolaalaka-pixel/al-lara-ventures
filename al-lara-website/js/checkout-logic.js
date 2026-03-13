@@ -219,6 +219,8 @@ if (tamaraBtn) {
       window.showCustomAlert("Tamara is currently unavailable: " + err.message);
       tamaraBtn.disabled = false;
       tamaraBtn.innerHTML = originalContent;
+      // Add this line after you get the "data" from the fetch
+      console.log("FULL TAMARA RESPONSE:", data);
     }
   });
 }
