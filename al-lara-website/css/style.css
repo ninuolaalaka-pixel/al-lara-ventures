@@ -504,6 +504,13 @@ form textarea {
     clear: both;
 }
 
+/* Reserved space for Tamara only */
+.tamara-promo {
+  min-height: 45px !important;
+  display: block;
+  margin: 5px 0;
+}
+
 /* Make section titles clickable without changing their appearance */
 .section-link,
 .section-link:link,

@@ -206,35 +206,36 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }, 500);   
 
-// TAMARA INJECTION 
+
+// --- TAMARA ONLY INJECTION ---
 const tamaraProducts = document.querySelectorAll('.tamara-promo');
-  const TAMARA_PUBLIC_KEY = window._tamaraPublicKey || "2026ad94-c028-4611-bda4-d8cebe604b8d";
+const TAMARA_PUBLIC_KEY = window._tamaraPublicKey || "2026ad94-c028-4611-bda4-d8cebe604b8d";
 
-  tamaraProducts.forEach((el) => {
-    const price = el.getAttribute('data-price'); // "140.50" etc.
+tamaraProducts.forEach((el, index) => {
+  const price = el.getAttribute('data-price');
+  // We use a specific inner div that the Tamara script looks for
+  el.innerHTML = `
+    <div class="tamara-product-widget"
+      data-amount="${price}"
+      data-currency="AED"
+      data-country-code="AE"
+      data-pay-type="pay_by_inst_3">
+    </div>`;
+});
 
-    el.innerHTML = `
-      <div class="tamara-product-widget"
-        data-amount="${price}"
-        data-currency="AED"
-        data-country-code="AE"
-        data-color-type="default"
-        data-show-border="true"
-        data-pay-type="pay_by_inst_3">
-      </div>`;
+// Initialize and Render Tamara separately from Tabby
+if (window.TamaraWidget) {
+  window.TamaraWidget.init({
+    lang: 'en',
+    publicKey: TAMARA_PUBLIC_KEY,
+    country: 'AE',
+    currency: 'AED'
   });
-
-  if (window.TamaraWidget) {
-    window.TamaraWidget.init({
-      lang: 'en',
-      publicKey: TAMARA_PUBLIC_KEY,
-      country: 'AE',
-      currency: 'AED'
-    });
+  // Small delay ensures the innerHTML above is rendered first
+  setTimeout(() => {
     window.TamaraWidget.render();
-  } else {
-    console.error("TamaraWidget is not available on window.");
-  }
+  }, 300);
+}
 });
 
 </script>

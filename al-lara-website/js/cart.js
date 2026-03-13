@@ -41,13 +41,15 @@ function updateTotal() {
 
   updateTabbySnippet(total);
 
-  const tamaraSnippet = document.getElementById("tamara-cart-snippet");
-
-if (tamaraSnippet && total > 0) {
+ const tamaraSnippet = document.getElementById("tamara-cart-snippet");
+if (tamaraSnippet && total > 0 && window.TamaraWidget) {
   tamaraSnippet.setAttribute("data-amount", total.toFixed(2));
-
-  if (window.TamaraWidget && typeof window.TamaraWidget.refresh === "function") {
+  
+  // Try to refresh, if not, re-render
+  if (typeof window.TamaraWidget.refresh === "function") {
     window.TamaraWidget.refresh();
+  } else {
+    window.TamaraWidget.render();
   }
 }
   updateCartCount();
