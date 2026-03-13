@@ -41,7 +41,7 @@ export default async function handler(req, res) {
 
   // Add VAT/Shipping as a service item so the math is perfect
   if (adjustment > 0.01) {
-    iitems.push({
+    items.push({
   name: "VAT & Delivery (Included)",
   type: "Service",
   reference_id: "fees-01",
