@@ -134,19 +134,13 @@
 }
 
 .tamara-btn-premium img {
-    /* Fixed Height: 120px was too big; 28px-32px is the 'Sweet Spot' 
-       for it to look large but balanced with Poppins 16px text */
-    height: 30px; 
+   /* This makes the logo much more visible/larger like Tabby */
+    height: 35px; 
     width: auto;
-    
-    /* Remove mix-blend-mode (it causes issues on dark backgrounds) */
-    mix-blend-mode: normal; 
-    
-    /* This filter makes ANY logo (black or color) turn pure white */
-    filter: brightness(0) invert(1); 
-    
-    /* Crisp rendering */
+    min-width: 80px; 
     object-fit: contain;
+    /* Removed the white filter so it shows the original branding */
+    filter: none;
 }
 
 .tamara-btn-premium:hover {
