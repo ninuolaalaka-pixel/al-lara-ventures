@@ -49,15 +49,13 @@ if (tamaraSnippet && total > 0) {
     
     // 2. Tamara needs a slight delay to "notice" the attribute change
     if (window.TamaraWidget) {
-        setTimeout(() => {
-            // Re-run the render to ensure the new price is shown
-            window.TamaraWidget.render();
-            // If the script supports refresh, call that too
-            if (typeof window.TamaraWidget.refresh === 'function') {
-                window.TamaraWidget.refresh();
-            }
-        }, 200);
-    }
+    window.TamaraWidget.render();
+    setTimeout(() => {
+        if (typeof window.TamaraWidget.refresh === 'function') {
+            window.TamaraWidget.refresh();
+        }
+    }, 200);
+}
 }
   updateCartCount();
 }

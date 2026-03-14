@@ -110,36 +110,48 @@
 
    /* MAIN TAMARA BUTTON */
 .tamara-btn-premium {
-    /* The Warmer Gradient */
-    background: linear-gradient(135deg, #7cd9f1 0%, #d9a7f0 25%, #ff9a5c 55%, #ffc93c 85%, #ffb347 100%);
+    /* Keeping your preferred size and font */
     width: 100%;
     padding: 18px;
     border-radius: 14px;
     font-size: 16px;
     font-weight: 700;
+    font-family: 'Poppins', sans-serif;
+    
+    /* Brand-safe high-contrast background */
+    background: #000000; 
+    color: #ffffff;
+    
     cursor: pointer;
     border: none;
-    font-family: 'Poppins', sans-serif;
-    color: #fff; /* Dark text for contrast */
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 12px;
-    transition: all 0.2s;
+    gap: 15px; /* Increased gap for better logo visibility */
+    transition: all 0.2s ease;
     margin-top: 10px;
-
+    overflow: hidden; /* Ensures the logo doesn't bleed out */
 }
 
 .tamara-btn-premium img {
-    height: 120px; /* Increased from 20px to match Tabby's visual weight */
+    /* Fixed Height: 120px was too big; 28px-32px is the 'Sweet Spot' 
+       for it to look large but balanced with Poppins 16px text */
+    height: 30px; 
     width: auto;
-    /* FIX FOR BLACK EDGES: This makes the black parts of the image transparent */
-    mix-blend-mode: multiply; 
-    filter: brightness(1.1); /* Makes the logo pop against the darker BG */
+    
+    /* Remove mix-blend-mode (it causes issues on dark backgrounds) */
+    mix-blend-mode: normal; 
+    
+    /* This filter makes ANY logo (black or color) turn pure white */
+    filter: brightness(0) invert(1); 
+    
+    /* Crisp rendering */
+    object-fit: contain;
 }
 
 .tamara-btn-premium:hover {
-    box-shadow: 0 6px 20px rgba(255, 179, 124, 0.3);
+    background: #1a1a1a;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
     transform: translateY(-1px);
 }
 
@@ -217,7 +229,7 @@
       Proceed to Pay in 4 with Tabby
     </button>
     <button id="pay-with-tamara" class="tamara-btn-premium">
-  <img src="images/tamara-logouse.png " style="height:20px;" alt="Tamara">
+  <img src="images/tamara-logouse.png" style="height:20px;" alt="Tamara">
   Proceed to Pay in 3 with Tamara
 </button>
 
