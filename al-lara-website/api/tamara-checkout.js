@@ -77,10 +77,12 @@ export default async function handler(req, res) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.TAMARA_API_TOKEN}`,
+        "Accept": "application/json",
+        "Authorization": `Bearer ${process.env.TAMARA_API_TOKEN.trim()}`,
       },
       body: JSON.stringify({
-        order_reference_id: "ALV-" + Date.now(),
+       order_reference_id: "ALV-" + Date.now(),
+       order_number: orderRef,
        total_amount: {
        amount: totalAmountNumber.toFixed(2), // "385.09" (String)
       currency: "AED",

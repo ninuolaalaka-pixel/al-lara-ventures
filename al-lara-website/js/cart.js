@@ -42,20 +42,19 @@ function updateTotal() {
   updateTabbySnippet(total);
 
 // --- TAMARA REFRESH LOGIC ---
+// --- TAMARA REFRESH LOGIC ---
 const tamaraSnippet = document.getElementById("tamara-cart-snippet");
 if (tamaraSnippet && total > 0) {
     // 1. Force the attribute update
     tamaraSnippet.setAttribute("data-amount", total.toFixed(2));
     
-    // 2. Tamara needs a slight delay to "notice" the attribute change
-    if (window.TamaraWidget) {
-    window.TamaraWidget.render();
-    setTimeout(() => {
-        if (typeof window.TamaraWidget.refresh === 'function') {
-            window.TamaraWidget.refresh();
-        }
-    }, 200);
-}
+    // 2. Refresh using the correct V2 object
+    if (window.TamaraWidgetV2 && typeof window.TamaraWidgetV2.refresh === 'function') {
+        window.TamaraWidgetV2.refresh();
+    } else if (window.TamaraWidget && typeof window.TamaraWidget.refresh === 'function') {
+        // Fallback for different script versions
+        window.TamaraWidget.refresh();
+    }
 }
   updateCartCount();
 }
