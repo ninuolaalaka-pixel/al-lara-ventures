@@ -20,6 +20,9 @@ export default async function handler(req, res) {
   if (cleanPhone.startsWith("971")) cleanPhone = cleanPhone.substring(3);
   const finalPhone = "971" + cleanPhone; // e.g. 9715XXXXXXXX
 
+  // 1. DEFINE ORDER REFERENCE (Fixes the ReferenceError)
+  const orderRef = "ALV-" + Date.now();
+
   // 1. ITEMS (all amounts: rounded numbers)
   const items = (cartItems || []).map((item, index) => {
     const p = round2(item.price);
@@ -81,7 +84,7 @@ export default async function handler(req, res) {
         "Authorization": `Bearer ${process.env.TAMARA_API_TOKEN.trim()}`,
       },
       body: JSON.stringify({
-       order_reference_id: "ALV-" + Date.now(),
+       order_reference_id: orderRef,
        order_number: orderRef,
        total_amount: {
        amount: totalAmountNumber.toFixed(2), // "385.09" (String)
