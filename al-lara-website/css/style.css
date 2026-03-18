@@ -427,21 +427,31 @@ form textarea {
 }
 
 /* 2. Global Widget Controls (Tabby & Tamara) */
-.tabby-promo, tamara-widget {
+/* This targets the widgets ONLY inside the store grid cards */
+.product-card .tabby-promo, 
+.product-card tamara-widget {
     display: block !important;
-    transform: scale(0.8); /* Slightly smaller scale */
-    transform-origin: top center; /* Scale from top to remove bottom gap */
-    margin: -10px 0 -20px 0 !important; /* Negative margin pulls the button up */
-    max-height: 70px !important; /* STOPS THE LONG CARDS */
-    overflow: hidden;
-    font-size: 11px !important;
+    transform: scale(0.9); /* Shorter scale to fit laptop screens */
+    transform-origin: top center;
+    margin: 0 auto !important; /* Center the widget horizontally */
+    max-height: none !important; /* REMOVE the height limit causing the cutoff */
+    overflow: visible !important; /* Allow the 'Learn More' to show */
 }
 
-/* Specific fix for Tamara Summary in Cart to keep it readable */
+/* Specific fix for the Cart page (Keep it full size and Left Aligned) */
+#tabby-cart-snippet, 
 #tamara-cart-snippet {
+    display: block !important;
     max-height: none !important;
-    transform: scale(1);
-    margin: 10px 0 !important;
+    transform: scale(1) !important;
+    margin: 20px 0 !important; /* Vertical spacing only */
+    text-align: left !important; /* NO CENTERING HERE */
+}
+
+/* Ensure the FAQ stays full width at the bottom */
+.tamara-faq-wrapper tamara-widget {
+    max-height: none !important;
+    transform: scale(1) !important;
 }
 
 /* 4. Toast Notification */
