@@ -161,16 +161,9 @@ document.addEventListener("click", e => {
 // Run count update on all pages
 updateCartCount();
 
+// Initialize the cart once the page is ready
 document.addEventListener("DOMContentLoaded", () => {
-  if (window.TamaraWidget) {
-    window.TamaraWidget.init({
-      lang: "en",
-      country: "AE",
-      currency: "AED",
-      publicKey: "2026ad94-c028-4611-bda4-d8cebe604b8d"
-    });
-    window.TamaraWidget.render();
-  }
+  renderCart(); // This calls updateTotal() which refreshes the widgets
 });
 
 
