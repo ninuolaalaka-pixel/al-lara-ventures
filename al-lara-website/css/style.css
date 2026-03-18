@@ -494,16 +494,6 @@ form textarea {
     transform: translateX(-50%);
 }
 
-.best-price-badge {
-    background: #2e7d32;
-    color: #fff;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 600;
-    margin: 10px 0;
-}
-
 #toast.show {
     visibility: visible;
     animation: fadein 0.5s, fadeout 0.5s 2.5s;
