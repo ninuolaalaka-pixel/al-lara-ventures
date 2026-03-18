@@ -448,6 +448,18 @@ form textarea {
     width: 100%;
 }
 
+/* Wholesale-only adjustments */
+.product-card.wholesale .product-img {
+    height: 180px !important; /* bigger image ONLY for wholesale */
+}
+
+.product-card.wholesale .wholesale-promo-img {
+    width: 100%;
+    max-width: 180px;
+    margin: 10px auto;
+    display: block;
+}
+
 /* 4. Keep Cart Summary Left-Aligned (As requested) */
 #tabby-cart-snippet, 
 #tamara-cart-snippet {
