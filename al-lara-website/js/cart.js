@@ -43,20 +43,31 @@ function updateTotal() {
 
 // --- TAMARA REFRESH LOGIC ---
 // --- TAMARA REFRESH LOGIC ---
+// --- TAMARA REFRESH LOGIC (Official V2 Method) ---
 const tamaraSnippet = document.getElementById("tamara-cart-snippet");
-if (tamaraSnippet && total > 0) {
-    // 1. Force the attribute update
-    tamaraSnippet.setAttribute("data-amount", total.toFixed(2));
+
+if (tamaraSnippet) {
+    // 1. V2 uses the 'amount' attribute (without 'data-')
+    tamaraSnippet.setAttribute("amount", total.toFixed(2));
     
-    // 2. Refresh using the correct V2 object
+    // 2. Ensure the global config exists for the handshake
+    if (!window.tamaraWidgetConfig) {
+        window.tamaraWidgetConfig = {
+            lang: 'en',
+            country: 'AE',
+            publicKey: window._tamaraPublicKey || "d33d7146-75f5-4f4f-aa1c-7fcba67655e7"
+        };
+    }
+
+    // 3. Trigger the V2 refresh
     if (window.TamaraWidgetV2 && typeof window.TamaraWidgetV2.refresh === 'function') {
         window.TamaraWidgetV2.refresh();
     } else if (window.TamaraWidget && typeof window.TamaraWidget.refresh === 'function') {
-        // Fallback for different script versions
+        // Fallback for older versions if needed
         window.TamaraWidget.refresh();
     }
-}
-  updateCartCount();
+}  
+updateCartCount();
 }
 
 // 3. UI Helpers

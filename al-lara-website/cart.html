@@ -4,11 +4,15 @@
   <script>
   window._tabbyPublicKey = " pk_019c445e-ce8a-936c-9575-c76ec14b961d";
 </script>
+ <script src="https://checkout.tabby.ai/tabby-promo.js"></script>
 <script>
-  window._tamaraPublicKey = "d33d7146-75f5-4f4f-aa1c-7fcba67655e7";
+  window.tamaraWidgetConfig = {
+    lang: 'en',
+    country: 'AE',
+    publicKey: 'd33d7146-75f5-4f4f-aa1c-7fcba67655e7' // Your Sandbox Key
+  };
 </script>
-  <script src="https://checkout.tabby.ai/tabby-promo.js"></script>
- <script src="https://cdn-sandbox.tamara.co/widget-v2/tamara-widget.js"></script>
+<script defer src="https://cdn.tamara.co/widget-v2/tamara-widget.js"></script>
   <script src="js/global-ui.js"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -149,15 +153,12 @@
 <div style="margin: 20px 0; display:block;">
 <div id="tabby-cart-snippet" class="tabby-promo" data-tabby-amount="0.00" data-tabby-currency="AED" data-tabby-lang="en"></div>
 </div>
-<div id="tamara-cart-snippet"
-     class="tamara-cart-widget"
-     data-amount="0.00"
-     data-currency="AED"
-     data-country-code="AE"
-     data-color-type="mono" 
-     data-show-border="true"
-     data-pay-type="pay_by_inst_3">
-</div>
+<tamara-widget 
+  id="tamara-cart-snippet" 
+  type="tamara-summary" 
+  inline-type="2" 
+  amount="0.00">
+</tamara-widget>
       <div class="checkout-buttons">
       <a href="checkout.html">
       <button id="go-to-uae-checkout" style="

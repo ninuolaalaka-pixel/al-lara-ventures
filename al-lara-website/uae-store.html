@@ -4,11 +4,15 @@
     <script>
   window._tabbyPublicKey = "pk_019c445e-ce8a-936c-9575-c76ec14b961d";
 </script>
+ <script src="https://checkout.tabby.ai/tabby-promo.js"></script>
 <script>
-  window._tamaraPublicKey = "d33d7146-75f5-4f4f-aa1c-7fcba67655e7";
+  window.tamaraWidgetConfig = {
+    lang: 'en',
+    country: 'AE',
+    publicKey: 'd33d7146-75f5-4f4f-aa1c-7fcba67655e7' // Your Sandbox Key
+  };
 </script>
-  <script src="https://checkout.tabby.ai/tabby-promo.js"></script>
-  <script src="https://cdn-sandbox.tamara.co/widget-v2/tamara-widget.js"></script>
+<script defer src="https://cdn.tamara.co/widget-v2/tamara-widget.js"></script>
   <script src="js/global-ui.js"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -206,36 +210,26 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }, 500);   
 
-
-// --- TAMARA ONLY INJECTION ---
+// --- TAMARA V2 INJECTION ---
 const tamaraProducts = document.querySelectorAll('.tamara-promo');
-const TAMARA_PUBLIC_KEY = window._tamaraPublicKey || "d33d7146-75f5-4f4f-aa1c-7fcba67655e7";
 
 tamaraProducts.forEach((el, index) => {
   const price = el.getAttribute('data-price');
-  // We use a specific inner div that the Tamara script looks for
+  // Use the new Custom Element tag instead of a div
   el.innerHTML = `
-    <div class="tamara-product-widget"
-      data-amount="${price}"
-      data-currency="AED"
-      data-country-code="AE"
-      data-pay-type="pay_by_inst_3">
-    </div>`;
+    <tamara-widget 
+      type="tamara-card-snippet" 
+      amount="${price}">
+    </tamara-widget>`;
 });
 
-// Initialize and Render Tamara separately from Tabby
-if (window.TamaraWidget) {
-  window.TamaraWidget.init({
-    lang: 'en',
-    publicKey: TAMARA_PUBLIC_KEY,
-    country: 'AE',
-    currency: 'AED'
-  });
-  // Small delay ensures the innerHTML above is rendered first
-  setTimeout(() => {
-    window.TamaraWidget.render();
-  }, 300);
-}
+// V2 handles rendering automatically when the script loads, 
+// but we call refresh in case the script loaded before the HTML was injected.
+setTimeout(() => {
+  if (window.TamaraWidgetV2) {
+    window.TamaraWidgetV2.refresh();
+  }
+}, 500);
 });
 
 </script>
