@@ -467,7 +467,7 @@ form textarea {
 #tabby-cart-snippet, 
 #tamara-cart-snippet {
     width: 100%;
-    max-width: 600px; /* Keeps it from stretching across the whole screen on PC */
+    max-width: 100% !important; /* Keeps it from stretching across the whole screen on PC */
     text-align: left !important;
     margin: 25px 0 !important;
 }
