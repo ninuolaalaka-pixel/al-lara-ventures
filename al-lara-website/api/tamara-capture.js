@@ -1,5 +1,5 @@
 // /api/tamara-capture.js
-const TAMARA_BASE_URL = "https://api.tamara.co";
+const TAMARA_SANDBOX_BASE_URL = " https://api-sandbox.tamara.co";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).send("Method not allowed");
@@ -9,21 +9,21 @@ export default async function handler(req, res) {
   try {
     // 1. AUTHORISE the order first 
     // This tells Tamara "I've seen the user come back, keep the money ready"
-    await fetch(`${TAMARA_BASE_URL}/orders/${orderId}/authorise`, {
+    await fetch(`${TAMARA_SANDBOX_BASE_URL}/orders/${orderId}/authorise`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.TAMARA_API_TOKEN}`,
+        "Authorization": `Bearer ${process.env.TAMARA_API_SANDBOX_TOKEN.trim()}`,
       }
     });
 
     // 2. CAPTURE the payment
     // We use the specific order capture endpoint for better reliability
-    const captureRes = await fetch(`${TAMARA_BASE_URL}/orders/${orderId}/capture`, {
+    const captureRes = await fetch(`${TAMARA_SANDBOX_BASE_URL}/orders/${orderId}/capture`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.TAMARA_API_TOKEN}`,
+        "Authorization": `Bearer ${process.env.TAMARA_API_SANDBOX_TOKEN.trim()}`,
       },
       body: JSON.stringify({
         total_amount: {

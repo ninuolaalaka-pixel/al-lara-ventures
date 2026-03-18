@@ -1,5 +1,5 @@
 import { checkCORS, checkRateLimit } from "./_security.js";
-const TAMARA_BASE_URL = "https://api.tamara.co";
+const TAMARA_SANDBOX_BASE_URL = "https://api-sandbox.tamara.co";
 
 function round2(n) {
   return Math.round((Number(n) || 0) * 100) / 100;
@@ -76,12 +76,12 @@ export default async function handler(req, res) {
   const lastName = fullName.split(" ").slice(1).join(" ") || "Guest";
 
   try {
-    const response = await fetch(`${TAMARA_BASE_URL}/checkout`, {
+    const response = await fetch(`${TAMARA_SANDBOX_BASE_URL}/checkout`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "Accept": "application/json",
-        "Authorization": `Bearer ${process.env.TAMARA_API_TOKEN.trim()}`,
+        "Authorization": `Bearer ${process.env.TAMARA_API_SANDBOX_TOKEN.trim()}`,
       },
       body: JSON.stringify({
        order_reference_id: orderRef,
