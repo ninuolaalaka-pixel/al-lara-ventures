@@ -426,26 +426,43 @@ form textarea {
     overflow: hidden;
 }
 
-/* 2. Global Widget Controls (Tabby & Tamara) */
-/* This targets the widgets ONLY inside the store grid cards */
+/* 1. Expand the Product Card */
+.product-card {
+    padding: 20px !important; /* More breathing room */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Aligns content to top */
+    min-height: 480px; /* Gives enough room for both widgets */
+    border: 1px solid #eee;
+    border-radius: 12px;
+    background: #fff;
+    transition: 0.3s ease;
+}
+
+/* 2. Make Widgets Wider & Stop Cutting Off */
 .product-card .tabby-promo, 
 .product-card tamara-widget {
     display: block !important;
-    transform: scale(0.9); /* Shorter scale to fit laptop screens */
-    transform-origin: top center;
-    margin: 0 auto !important; /* Center the widget horizontally */
-    max-height: none !important; /* REMOVE the height limit causing the cutoff */
-    overflow: visible !important; /* Allow the 'Learn More' to show */
+    width: 100% !important; /* Force them to use the full card width */
+    max-height: none !important; /* Allow them to show all text */
+    overflow: visible !important;
+    transform: none !important; /* Stop shrinking them */
+    margin: 10px 0 !important; /* Space between the two widgets */
 }
 
-/* Specific fix for the Cart page (Keep it full size and Left Aligned) */
+/* 3. Pull the "Add to Cart" button to the bottom */
+.product-card .add-to-cart {
+    margin-top: auto !important;
+    width: 100%;
+}
+
+/* 4. Keep Cart Summary Left-Aligned (As requested) */
 #tabby-cart-snippet, 
 #tamara-cart-snippet {
-    display: block !important;
-    max-height: none !important;
-    transform: scale(1) !important;
-    margin: 20px 0 !important; /* Vertical spacing only */
-    text-align: left !important; /* NO CENTERING HERE */
+    width: 100%;
+    max-width: 600px; /* Keeps it from stretching across the whole screen on PC */
+    text-align: left !important;
+    margin: 25px 0 !important;
 }
 
 /* Ensure the FAQ stays full width at the bottom */
