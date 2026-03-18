@@ -398,120 +398,76 @@ form textarea {
     100% { transform: rotate(360deg); }
 }
 
+/* --- CONSOLIDATED STORE UI --- */
+
+/* 1. Product Card & Image */
 .product-card {
-  position: relative; /* Required for the badge to stay inside the card */
+    padding: 15px !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    text-align: center;
+    background: #fff;
 }
 
-/* Make product images smaller and consistent */
 .product-img {
-    height: 150px; /* Reduced from default */
+    height: 130px !important;
+    width: auto;
     object-fit: contain;
-    margin-bottom: 10px;
-}
-
-/* Tighten the text and spacing */
-.product-card {
-    padding: 15px !important; /* Less padding inside the box */
+    margin: 0 auto 10px auto;
 }
 
 .product-card h3 {
-    font-size: 16px; /* Smaller title */
+    font-size: 15px !important;
+    height: 40px;
     margin: 8px 0 !important;
-    line-height: 1.2;
-    height: 40px; /* Keeps titles aligned even if one is longer */
     overflow: hidden;
 }
 
-.product-card p {
-    font-size: 14px; /* Smaller price */
-    margin-bottom: 5px !important;
+/* 2. Global Widget Controls (Tabby & Tamara) */
+.tabby-promo, tamara-widget {
+    display: block !important;
+    transform: scale(0.85); /* Shrinks them to fit the card */
+    transform-origin: center;
+    margin: -5px 0 !important; /* Pulls content tighter */
+    min-height: 40px !important;
+    font-size: 11px !important;
 }
 
-  #toast {
-  visibility: hidden;
-  min-width: 250px;
-  background-color: #2e7d32; /* Match your green theme */
-  color: #fff;
-  text-align: center;
-  border-radius: 8px;
-  padding: 16px;
-  position: fixed;
-  z-index: 1000;
-  left: 50%;
-  bottom: 30px;
-  transform: translateX(-50%);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+/* 3. Special Case: Cart Page Snippet */
+#tamara-cart-snippet, 
+#tabby-cart-snippet {
+    transform: scale(1.0); /* Full size in the cart */
+    margin: 20px 0 !important;
+    max-width: 100%;
+}
+
+/* 4. Toast Notification */
+#toast {
+    visibility: hidden;
+    min-width: 250px;
+    background-color: #2e7d32;
+    color: #fff;
+    text-align: center;
+    border-radius: 8px;
+    padding: 16px;
+    position: fixed;
+    z-index: 1000;
+    left: 50%;
+    bottom: 30px;
+    transform: translateX(-50%);
 }
 
 #toast.show {
-  visibility: visible;
-  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    visibility: visible;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
 }
 
 @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
 @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
-
-
-  /* This makes the snippets smaller and centers them nicely */
-[id^="tabby-product-1"] {
-  margin: 10px 0 !important;
-  font-size: 12px !important; /* Smaller text looks better in grids */
-  max-width: 90%;
-  display: inline-block;
-}
-
-/* This makes the snippets smaller and centers them nicely */
-[id^="tabby-product-2"] {
-  margin: 10px 0 !important;
-  font-size: 12px !important; /* Smaller text looks better in grids */
-  max-width: 90%;
-  display: inline-block;
-}
-
-/* This makes the snippets smaller and centers them nicely */
-[id^="tabby-product-3"] {
-  margin: 10px 0 !important;
-  font-size: 12px !important; /* Smaller text looks better in grids */
-  max-width: 90%;
-  display: inline-block;
-}
-
-/* This makes the snippets smaller and centers them nicely */
-[id^="tabby-product-4"] {
-  margin: 10px 0 !important;
-  font-size: 12px !important; /* Smaller text looks better in grids */
-  max-width: 90%;
-  display: inline-block;
-}
-
-/* This forces the Tabby box to stay small and not overlap */
-.tabby-wrapper {
-    display: block !important;
-    width: 100% !important;
-    min-height: 40px !important; /* Prevents it from collapsing to 0 */
-    margin-bottom: 10px !important;
-    clear: both; /* Ensures it doesn't float over text */
-}
-
-/* This targets the actual text inside the Tabby widget */
-.tabby-promo {
-    font-size: 11px !important; /* Makes the text smaller so it fits the card */
-}
-
-.tabby-cart-snippet {
-    display: block !important;
-    width: 100%;
-    clear: both;
-}
-
-/* Reserved space for Tamara only */
-/* This ensures the container stays open so the script can "see" it */
-.tamara-promo, .tamara-cart-widget {
-  min-height: 50px !important;
-  min-width: 200px !important;
-  display: block !important;
-  margin: 10px 0;
-}
 
 /* Make section titles clickable without changing their appearance */
 .section-link,

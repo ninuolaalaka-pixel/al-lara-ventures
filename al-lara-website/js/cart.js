@@ -60,12 +60,14 @@ if (tamaraSnippet) {
     }
 
     // 3. Trigger the V2 refresh
+    setTimeout(() => {
     if (window.TamaraWidgetV2 && typeof window.TamaraWidgetV2.refresh === 'function') {
         window.TamaraWidgetV2.refresh();
     } else if (window.TamaraWidget && typeof window.TamaraWidget.refresh === 'function') {
         // Fallback for older versions if needed
         window.TamaraWidget.refresh();
     }
+    }, 100);
 }  
 updateCartCount();
 }

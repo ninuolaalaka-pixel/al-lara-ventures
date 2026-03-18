@@ -153,12 +153,14 @@
 <div style="margin: 20px 0; display:block;">
 <div id="tabby-cart-snippet" class="tabby-promo" data-tabby-amount="0.00" data-tabby-currency="AED" data-tabby-lang="en"></div>
 </div>
-<tamara-widget 
-  id="tamara-cart-snippet" 
-  type="tamara-summary" 
-  inline-type="2" 
-  amount="0.00">
-</tamara-widget>
+<div style="margin: 20px 0;">
+  <tamara-widget 
+    id="tamara-cart-snippet" 
+    type="tamara-summary" 
+    inline-type="3" 
+    amount="0.00">
+  </tamara-widget>
+</div>
       <div class="checkout-buttons">
       <a href="checkout.html">
       <button id="go-to-uae-checkout" style="
@@ -181,6 +183,9 @@
  </div> <!-- CLOSE .container -->
   </section>
 
+ <div class="tamara-faq-wrapper" style="margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px;">
+  <tamara-widget type="tamara-faq" lang="en"></tamara-widget>
+</div>
 
 
     <script src="js/cart.js"></script>
