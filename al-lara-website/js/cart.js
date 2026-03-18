@@ -41,30 +41,34 @@ function updateTotal() {
 
   updateTabbySnippet(total);
 
-  // --- TAMARA REFRESH LOGIC (The "Force-Wake" Method) ---
+// --- TAMARA REFRESH LOGIC ---
+// --- TAMARA REFRESH LOGIC ---
+// --- TAMARA REFRESH LOGIC (Official V2 Method) ---
 const tamaraSnippet = document.getElementById("tamara-cart-snippet");
+
 if (tamaraSnippet) {
-    // 1. Force the amount attribute
+    // 1. V2 uses the 'amount' attribute (without 'data-')
     tamaraSnippet.setAttribute("amount", total.toFixed(2));
     
-    // 2. We use a slightly longer delay (300ms) to ensure the script is ready
+    // 2. Ensure the global config exists for the handshake
+    if (!window.tamaraWidgetConfig) {
+        window.tamaraWidgetConfig = {
+            lang: 'en',
+            country: 'AE',
+            publicKey: window._tamaraPublicKey || "d33d7146-75f5-4f4f-aa1c-7fcba67655e7"
+        };
+    }
+
+    // 3. Trigger the V2 refresh
     setTimeout(() => {
-        // Check for the V2 refresh function
-        if (window.TamaraWidgetV2 && typeof window.TamaraWidgetV2.refresh === 'function') {
-            console.log("Tamara V2 Refreshing with:", total.toFixed(2));
-            window.TamaraWidgetV2.refresh();
-        } else {
-            // If it's still not showing, we force a re-render of the component
-            const newWidget = document.createElement('tamara-widget');
-            newWidget.setAttribute('type', 'tamara-summary');
-            newWidget.setAttribute('inline-type', '3');
-            newWidget.setAttribute('amount', total.toFixed(2));
-            newWidget.id = "tamara-cart-snippet";
-            
-            tamaraSnippet.replaceWith(newWidget);
-        }
-    }, 300);
-}
+    if (window.TamaraWidgetV2 && typeof window.TamaraWidgetV2.refresh === 'function') {
+        window.TamaraWidgetV2.refresh();
+    } else if (window.TamaraWidget && typeof window.TamaraWidget.refresh === 'function') {
+        // Fallback for older versions if needed
+        window.TamaraWidget.refresh();
+    }
+    }, 100);
+}  
 updateCartCount();
 }
 
@@ -156,7 +160,6 @@ document.addEventListener("click", e => {
 
 // Run count update on all pages
 updateCartCount();
-
 // Initialize the cart once the page is ready
 document.addEventListener("DOMContentLoaded", () => {
   renderCart(); // This calls updateTotal() which refreshes the widgets
