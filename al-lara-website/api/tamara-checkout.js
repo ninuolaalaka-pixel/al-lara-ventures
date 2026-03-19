@@ -20,6 +20,13 @@ export default async function handler(req, res) {
   if (cleanPhone.startsWith("971")) cleanPhone = cleanPhone.substring(3);
   const finalPhone = "971" + cleanPhone; // e.g. 9715XXXXXXXX
 
+  if (!cleanPhone) {
+  return res.status(400).json({
+    success: false,
+    message: "Valid phone number is required for Tamara",
+  });
+}
+
   // 1. DEFINE ORDER REFERENCE (Fixes the ReferenceError)
   const orderRef = "ALV-" + Date.now();
 
@@ -136,7 +143,7 @@ export default async function handler(req, res) {
     const data = await response.json();
 
     if (!response.ok) {
-      console.error("TAMARA DETAILED ERROR:", JSON.stringify(data, null, 2));
+      console.error("TAMARA DETAILED ERROR:", response.status, JSON.stringify(data, null, 2));
       return res.status(400).json({
         success: false,
         message: data.message || "Invalid Request",
