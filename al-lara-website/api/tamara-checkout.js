@@ -46,9 +46,6 @@ export default async function handler(req, res) {
       total_amount: { amount: lineTotal, currency: "AED" },
       tax_amount: { amount: 0, currency: "AED" },
       discount_amount: { amount: 0, currency: "AED" },
-      locale: "en_US",
-      instalments: null,
-      description: "Order from Allara Ventures",
     };
   });
 
@@ -67,9 +64,6 @@ export default async function handler(req, res) {
       total_amount: { amount: adjustment, currency: "AED" },
       tax_amount: { amount: 0, currency: "AED" },
       discount_amount: { amount: 0, currency: "AED" },
-      locale: "en_US",
-      instalments: null,
-      description: "Order from Allara Ventures",
     });
   }
 
@@ -96,58 +90,41 @@ export default async function handler(req, res) {
         "Accept": "application/json",
         "Authorization": `Bearer ${process.env.TAMARA_API_SANDBOX_TOKEN.trim()}`,
       },
-      body: JSON.stringify({
-       order_reference_id: orderRef,
-       order_number: orderRef,
-       total_amount: {
-       amount: totalAmountNumber.toFixed(2), // "385.09" (String)
-      currency: "AED",
-      },
-
-        currency: "AED",
         country_code: "AE",
-        payment_type: "PAY_BY_INSTALMENTS",
-        items,
-
-        locale: "en_US",
-        instalments: null,
-        description: "Order from Allara Ventures",
-
-        consumer: {
-          first_name: firstName,
-          last_name: lastName,
-          phone_number: finalPhone.trim(),
-          email: customer?.email || "customer@example.com",
-        },
-
-        shipping_address: {
-          first_name: firstName,
-          last_name: lastName,
-          line1: customer?.address || "UAE Street",
-          city: customer?.emirate || "Dubai",
-          region: customer?.emirate || "Dubai",
-          country_code: "AE",
-        },
-
-        billing_address: {
-          first_name: firstName,
-          last_name: lastName,
-          line1: customer?.address || "UAE Street",
-          city: customer?.emirate || "Dubai",
-          region: customer?.emirate || "Dubai",
-          country_code: "AE",
-        },
-
-        merchant_url: {
-          success:
-            "https://allaraventures.com/checkout-success.html?pg=tamara&orderId={order_id}",
-          failure: "https://allaraventures.com/checkout-cancelled.html",
-          cancel: "https://allaraventures.com/checkout-cancelled.html",
-        },
-
-        platform: "WEB",
-        is_guest_checkout: true
-      }),
+body: JSON.stringify({
+  order_reference_id: orderRef,
+  order_number: orderRef,
+  total_amount: {
+    amount: totalAmountNumber.toFixed(2),
+    currency: "AED"
+  },
+  country_code: "AE",
+  payment_type: "PAY_BY_INSTALMENTS",
+  locale: "en_US",
+  description: "Order from Allara Ventures",
+  items: items, // Ensure items only contain: name, type, reference_id, quantity, unit_price, total_amount
+  consumer: {
+    first_name: firstName,
+    last_name: lastName,
+    phone_number: finalPhone.trim(),
+    email: customer?.email || "customer@example.com",
+  },
+  shipping_address: {
+    first_name: firstName,
+    last_name: lastName,
+    line1: customer?.address || "UAE Street",
+    city: customer?.emirate || "Dubai",
+    region: customer?.emirate || "Dubai",
+    country_code: "AE",
+  },
+  merchant_url: {
+    success: "https://allaraventures.com/checkout-success.html?pg=tamara&orderId={order_id}",
+    failure: "https://allaraventures.com/checkout-cancelled.html",
+    cancel: "https://allaraventures.com/checkout-cancelled.html",
+  },
+  platform: "WEB",
+  is_guest_checkout: true
+}),
     });
 
     const data = await response.json();
