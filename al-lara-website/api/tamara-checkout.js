@@ -90,7 +90,6 @@ export default async function handler(req, res) {
         "Accept": "application/json",
         "Authorization": `Bearer ${process.env.TAMARA_API_SANDBOX_TOKEN.trim()}`,
       },
-        country_code: "AE",
 body: JSON.stringify({
   order_reference_id: orderRef,
   order_number: orderRef,
