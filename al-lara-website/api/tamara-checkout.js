@@ -39,13 +39,16 @@ export default async function handler(req, res) {
     return {
       name: item.name,
       description: item.name, // Added: Often mandatory on Live
-      type: "Physical",
+      type: "Digital",
       reference_id: String(index + 1),
       quantity: q,
       unit_price: { amount: p, currency: "AED" },
       total_amount: { amount: lineTotal, currency: "AED" },
       tax_amount: { amount: 0, currency: "AED" },
       discount_amount: { amount: 0, currency: "AED" },
+      locale: "en_US",
+      instalments: null,
+      description: "Order from Allara Ventures",
     };
   });
 
@@ -57,13 +60,16 @@ export default async function handler(req, res) {
     items.push({
       name: "VAT and Delivery",
       description: "Shipping and handling fees", // Added
-      type: "Physical", // Changed from Service to Physical for safety
+      type: "Digital", // Changed from Service to Physical for safety
       reference_id: "fees-01",
       quantity: 1,
       unit_price: { amount: adjustment, currency: "AED" },
       total_amount: { amount: adjustment, currency: "AED" },
       tax_amount: { amount: 0, currency: "AED" },
       discount_amount: { amount: 0, currency: "AED" },
+      locale: "en_US",
+      instalments: null,
+      description: "Order from Allara Ventures",
     });
   }
 
@@ -102,6 +108,10 @@ export default async function handler(req, res) {
         country_code: "AE",
         payment_type: "PAY_BY_INSTALMENTS",
         items,
+
+        locale: "en_US",
+        instalments: null,
+        description: "Order from Allara Ventures",
 
         consumer: {
           first_name: firstName,
