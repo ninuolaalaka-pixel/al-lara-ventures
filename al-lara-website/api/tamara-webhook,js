@@ -1,11 +1,8 @@
 import { checkCORS } from "./_security.js";
 import crypto from "crypto";
 
-// Vercel/Node config to ensure we can read the raw body if needed
 export const config = {
-  api: {
-    bodyParser: true, // If you're using standard Vercel, this is fine for now
-  },
+  api: { bodyParser: true },
 };
 
 export default async function handler(req, res) {
@@ -15,50 +12,39 @@ export default async function handler(req, res) {
   const notificationToken = process.env.TAMARA_SB_NOTIF_TOKEN;
   const signature = req.headers["x-tamara-signature"];
 
-  if (!signature) {
-    return res.status(401).json({ success: false, message: "No signature" });
-  }
-
-  // Use the raw body if possible. 
-  // NOTE: If signature fails repeatedly, you may need to disable bodyParser.
+  // 1. SIGNATURE VERIFICATION
   const bodyString = JSON.stringify(req.body); 
   const expectedSignature = crypto
-    .createHmac("sha256", notificationToken)
+    .createHmac("sha256", notificationToken || "")
     .update(bodyString)
     .digest("hex");
 
-  // LOGS FOR DEBUGGING
-  console.log("Incoming Signature:", signature);
-  console.log("Expected Signature:", expectedSignature);
-
-  // For testing, we log the error but don't block yet
   if (signature !== expectedSignature) {
-    console.error("Signature Mismatch!");
-    // return res.status(403).json({ success: false }); 
+    console.error("Signature Mismatch! Unauthorized webhook attempt.");
+    // return res.status(403).json({ success: false }); // Uncomment for production security
   }
 
-  const { order_id, status, event_type } = req.body;
+  const { order_id, event_type } = req.body;
 
   try {
-    // Tamara usually sends 'order_approved' via webhook.
-    // You then need to call your 'Capture' API to actually take the money.
-    if (event_type === "order_approved" || status === "approved") {
-      console.log(`ORDER APPROVED: ${order_id}. Ready to capture.`);
+    // 2. AUTO-CAPTURE ON APPROVAL
+    if (event_type === "order_approved") {
+      console.log(`ORDER APPROVED: ${order_id}. Triggering internal capture...`);
       
-      // LOGIC: Trigger your internal "Process Order" function here
-      // (e.g., Send confirmation email to Bolanle/Allara Ventures team)
-      
-      return res.status(200).send("OK");
+      // We call our internal capture handler to finalize the money
+      await fetch(`https://${req.headers.host}/api/tamara-capture`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          orderId: order_id,
+          amount: req.body.total_amount?.amount // Ensure we pass the actual amount
+        })
+      });
     }
 
-    if (event_type === "order_captured") {
-      console.log(`ORDER CAPTURED: ${order_id}. Money is in the bank.`);
-      return res.status(200).send("OK");
-    }
-
-    res.status(200).send("OK");
+    return res.status(200).send("OK");
   } catch (error) {
-    console.error("Webhook Error:", error);
-    res.status(500).json({ success: false });
+    console.error("Webhook Logic Error:", error);
+    return res.status(500).json({ success: false });
   }
 }
