@@ -9,37 +9,44 @@ export default async function handler(req, res) {
   if (!checkCORS(req, res)) return;
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
+  // 1. SIGNATURE VERIFICATION (Using the Token they gave you)
   const notificationToken = process.env.TAMARA_SB_NOTIF_TOKEN;
   const signature = req.headers["x-tamara-signature"];
-
-  // 1. SIGNATURE VERIFICATION
   const bodyString = JSON.stringify(req.body); 
+
   const expectedSignature = crypto
     .createHmac("sha256", notificationToken || "")
     .update(bodyString)
     .digest("hex");
 
   if (signature !== expectedSignature) {
-    console.error("Signature Mismatch! Unauthorized webhook attempt.");
-    // return res.status(403).json({ success: false }); // Uncomment for production security
+    console.warn("Signature Mismatch - Check if TAMARA_SB_NOTIF_TOKEN is correct in Vercel.");
+    // In Sandbox, we proceed, but in Live you should return 403 here.
   }
 
-  const { order_id, event_type } = req.body;
+  const { order_id, event_type, total_amount } = req.body;
+  console.log(`WEBHOOK RECEIVED: ${event_type} for Order: ${order_id}`);
 
   try {
-    // 2. AUTO-CAPTURE ON APPROVAL
+    // 2. ONLY CAPTURE IF APPROVED
     if (event_type === "order_approved") {
-      console.log(`ORDER APPROVED: ${order_id}. Triggering internal capture...`);
+      console.log(`TRIGGERING AUTO-CAPTURE for ${order_id}...`);
       
-      // We call our internal capture handler to finalize the money
+      // We call our internal capture handler
       await fetch(`https://${req.headers.host}/api/tamara-capture`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
           orderId: order_id,
-          amount: req.body.total_amount?.amount // Ensure we pass the actual amount
+          amount: total_amount?.amount 
         })
       });
+    }
+
+    // 3. LOG OTHER EVENTS (Optional logic for Canceled/Declined)
+    if (event_type === "order_canceled" || event_type === "order_declined") {
+      console.log(`ORDER FAILED/CANCELED: ${order_id}`);
+      // Add logic here to notify your team or update your DB
     }
 
     return res.status(200).send("OK");

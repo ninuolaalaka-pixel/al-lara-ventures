@@ -8,15 +8,15 @@ export default async function handler(req, res) {
 
   const { orderId, amount } = req.body || {};
 
-  if (!orderId) {
-    return res.status(400).json({ success: false, message: "orderId is required" });
+  if (!orderId || orderId === "{order_id}") {
+    console.error("CAPTURE ERROR: Invalid orderId received.");
+    return res.status(400).json({ success: false, message: "Invalid orderId" });
   }
 
   try {
     const token = process.env.TAMARA_API_SANDBOX_TOKEN.trim();
 
-    // 1. AUTHORISE the order
-    // This acknowledges the 'approved' status from the webhook
+    // 1. AUTHORISE the order first (Acknowledges the Webhook)
     await fetch(`${TAMARA_SANDBOX_BASE_URL}/orders/${orderId}/authorise`, {
       method: "POST",
       headers: {
@@ -25,15 +25,15 @@ export default async function handler(req, res) {
       }
     });
 
-    // 2. CAPTURE the payment
-    // Fixed the URL variable injection to avoid '%7Border_id%7D' errors
-    const captureRes = await fetch(`${TAMARA_SANDBOX_BASE_URL}/orders/${orderId}/capture`, {
+    // 2. CAPTURE the payment (Using the Body-style request to avoid URL errors)
+    const captureRes = await fetch(`${TAMARA_SANDBOX_BASE_URL}/payments/capture`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`,
       },
       body: JSON.stringify({
+        order_id: orderId,
         total_amount: {
           amount: amount ? parseFloat(amount).toFixed(2) : "0.00", 
           currency: "AED"
@@ -48,15 +48,15 @@ export default async function handler(req, res) {
     const captureData = await captureRes.json();
 
     if (captureRes.ok) {
-      console.log(`SUCCESS: Payment captured for order ${orderId}`);
+      console.log(`MONEY CAPTURED: Order ${orderId} is finalized.`);
       return res.status(200).json({ success: true, status: captureData.status });
     } else {
-      console.error("TAMARA CAPTURE REJECTION:", JSON.stringify(captureData, null, 2));
-      return res.status(200).json({ success: true, message: "Authorised, pending manual capture" });
+      console.error("CAPTURE REJECTED BY TAMARA:", captureData);
+      return res.status(400).json({ success: false, error: captureData });
     }
 
   } catch (error) {
-    console.error("CAPTURE SERVER ERROR:", error);
-    return res.status(500).json({ success: false, message: "Internal server error" });
+    console.error("CAPTURE CRITICAL ERROR:", error);
+    return res.status(500).json({ success: false });
   }
 }
