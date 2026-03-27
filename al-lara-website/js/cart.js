@@ -164,6 +164,17 @@ updateCartCount();
 document.addEventListener("DOMContentLoaded", () => {
   renderCart(); // This calls updateTotal() which refreshes the widgets
 });
+document.addEventListener("DOMContentLoaded", () => {
+  if (window.TamaraWidget) {
+    window.TamaraWidget.init({
+      lang: "en",
+      country: "AE",
+      currency: "AED",
+      publicKey: "d33d7146-75f5-4f4f-aa1c-7fcba67655e7"
+    });
+    window.TamaraWidget.render();
+  }
+});
 
 
 // CONTACT FORM → CALL BACKEND
