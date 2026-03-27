@@ -6,17 +6,20 @@ export default async function handler(req, res) {
   if (!checkCORS(req, res)) return;
   if (req.method !== "POST") return res.status(405).send("Method not allowed");
 
-  const { orderId, amount } = req.body || {};
+  // FIX: Look for BOTH versions of the ID key to be safe
+  const orderId = req.body.orderId || req.body.order_id; 
+  const amount = req.body.amount || req.body.total_amount?.amount;
 
+  // CRITICAL: Stop the execution if the ID is missing or is just a placeholder string
   if (!orderId || orderId === "{order_id}") {
-    console.error("CAPTURE ERROR: Invalid orderId received.");
+    console.error("CAPTURE BLOCKED: orderId was missing from the request body.", req.body);
     return res.status(400).json({ success: false, message: "Invalid orderId" });
   }
 
   try {
     const token = process.env.TAMARA_API_SANDBOX_TOKEN.trim();
 
-    // 1. AUTHORISE the order first (Acknowledges the Webhook)
+    // 1. AUTHORISE - Confirms you received the 'approved' signal
     await fetch(`${TAMARA_SANDBOX_BASE_URL}/orders/${orderId}/authorise`, {
       method: "POST",
       headers: {
@@ -25,7 +28,7 @@ export default async function handler(req, res) {
       }
     });
 
-    // 2. CAPTURE the payment (Using the Body-style request to avoid URL errors)
+    // 2. CAPTURE - Using the POST body method (this is the most stable version)
     const captureRes = await fetch(`${TAMARA_SANDBOX_BASE_URL}/payments/capture`, {
       method: "POST",
       headers: {
@@ -48,15 +51,15 @@ export default async function handler(req, res) {
     const captureData = await captureRes.json();
 
     if (captureRes.ok) {
-      console.log(`MONEY CAPTURED: Order ${orderId} is finalized.`);
+      console.log(`MONEY CAPTURED: ${orderId} is finished.`);
       return res.status(200).json({ success: true, status: captureData.status });
     } else {
-      console.error("CAPTURE REJECTED BY TAMARA:", captureData);
+      console.error("TAMARA REJECTION:", JSON.stringify(captureData, null, 2));
       return res.status(400).json({ success: false, error: captureData });
     }
 
   } catch (error) {
-    console.error("CAPTURE CRITICAL ERROR:", error);
+    console.error("CAPTURE SERVER ERROR:", error);
     return res.status(500).json({ success: false });
   }
 }
