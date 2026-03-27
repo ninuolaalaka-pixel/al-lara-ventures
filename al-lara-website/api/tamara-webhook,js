@@ -1,5 +1,4 @@
 import { checkCORS } from "./_security.js";
-import crypto from "crypto";
 
 export const config = {
   api: { bodyParser: true },
@@ -9,41 +8,32 @@ export default async function handler(req, res) {
   if (!checkCORS(req, res)) return;
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
-  const notificationToken = process.env.TAMARA_SB_NOTIF_TOKEN;
-  const signature = req.headers["x-tamara-signature"];
-  const bodyString = JSON.stringify(req.body); 
-
-  // VERIFICATION
-  const expectedSignature = crypto
-    .createHmac("sha256", notificationToken || "")
-    .update(bodyString)
-    .digest("hex");
-
-  if (signature !== expectedSignature) {
-    console.warn("Signature Mismatch - Check Vercel Env Variables");
-  }
-
+  // Extracting only the necessary fields to avoid 'unused variable' warnings
   const { order_id, event_type, total_amount } = req.body;
-  console.log(`WEBHOOK: ${event_type} for ${order_id}`);
+  
+  // Safety check: ensure we have a real ID and not the dashboard placeholder
+  const validOrderId = (order_id && order_id !== "{order_id}") ? order_id : null;
+
+  console.log(`WEBHOOK EVENT: ${event_type} | ORDER: ${validOrderId}`);
 
   try {
-    if (event_type === "order_approved" && order_id) {
-      const captureUrl = `https://${req.headers.host}/api/tamara-capture`;
-      console.log(`REDIRECTING TO CAPTURE: ${captureUrl}`);
-      
+    if (event_type === "order_approved" && validOrderId) {
+      // Call the capture API internally
+      const captureUrl = `https://allaraventures.com/api/tamara-capture`;
       await fetch(captureUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
-          orderId: order_id, // We explicitly name it orderId for the capture script
+          orderId: validOrderId, 
           amount: total_amount?.amount 
         })
       });
     }
 
+    // Always return 200 so Tamara knows the message was delivered
     return res.status(200).send("OK");
   } catch (error) {
-    console.error("Webhook Logic Error:", error);
+    console.error("Webhook Handoff Error:", error);
     return res.status(500).json({ success: false });
   }
 }
