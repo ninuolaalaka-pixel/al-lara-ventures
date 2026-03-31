@@ -400,7 +400,6 @@ form textarea {
     border: 1px solid #eee;
     border-radius: 12px;
     background: #fff;
-    height: 100%;
     box-sizing: border-box;
     transition: box-shadow 0.2s ease;
 }
