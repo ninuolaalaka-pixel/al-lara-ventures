@@ -472,6 +472,10 @@ form textarea {
     margin: 25px 0 !important;
 }
 
+#tamara-cart-snippet {
+    display: block !important;
+}
+
 /* Ensure the FAQ stays full width at the bottom */
 .tamara-faq-wrapper tamara-widget {
     max-height: none !important;
