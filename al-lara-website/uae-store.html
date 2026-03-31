@@ -216,10 +216,12 @@ const tamaraProducts = document.querySelectorAll('.tamara-promo');
 tamaraProducts.forEach((el, index) => {
   const price = el.getAttribute('data-price');
   // Use the new Custom Element tag instead of a div
-  el.innerHTML = `
+ el.innerHTML = `
     <tamara-widget 
-      type="tamara-card-snippet" 
-      amount="${price}">
+      type="tamara-summary"
+      inline-type="2"
+      amount="${price}"
+      config='{"theme":"light","badgePosition":"","showExtraContent":"","hidePayInX":false}'>
     </tamara-widget>`;
 });
 
