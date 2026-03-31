@@ -392,75 +392,62 @@ form textarea {
 }
 
 
-/* 1. Product Card & Image */
 .product-card {
-    padding: 15px !important;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
+    align-items: center;
+    padding: 20px;
     border: 1px solid #eee;
     border-radius: 12px;
-    text-align: center;
     background: #fff;
+    height: 100%;
+    box-sizing: border-box;
+    transition: box-shadow 0.2s ease;
+}
+
+.product-card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
 }
 
 .product-img {
-    height: 130px !important;
-    width: auto;
+    height: 140px;
+    width: 100%;
     object-fit: contain;
-    margin: 0 auto 10px auto;
+    margin-bottom: 12px;
 }
 
 .product-card h3 {
-    font-size: 15px !important;
-    margin: 8px 0 !important;
-    line-height: 1.3;
+    font-size: 14px;
+    margin: 8px 0;
+    line-height: 1.4;
+    text-align: center;
+    flex-grow: 0;
 }
 
-/* 1. Expand the Product Card */
-.product-card {
-    padding: 20px !important; /* More breathing room */
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start; /* Aligns content to top */
-    min-height: 520px !important;
-    border: 1px solid #eee;
-    border-radius: 12px;
-    background: #fff;
-    transition: 0.3s ease;
+/* Widgets compact and consistent */
+.product-card .tabby-promo,
+.product-card .tamara-promo {
+    width: 100%;
+    margin: 6px 0;
 }
 
-/* 2. Make Widgets Wider & Stop Cutting Off */
-.product-card .tabby-promo, 
-.product-card tamara-widget {
-    display: block !important;
-    width: 100% !important; /* Force them to use the full card width */
-    max-height: none !important; /* Allow them to show all text */
-    overflow: visible !important;
-    transform: none !important; /* Stop shrinking them */
-    margin: 10px 0 !important; /* Space between the two widgets */
-}
-
-/* 3. Pull the "Add to Cart" button to the bottom */
+/* Button always at bottom */
 .product-card .add-to-cart {
-    margin-top: auto !important;
+    margin-top: auto;
+    padding-top: 14px;
     width: 100%;
 }
 
-/* Wholesale-only adjustments */
+/* Wholesale card overrides */
 .product-card.wholesale .product-img {
-    height: 300px !important; /* bigger product image */
-    object-fit: contain;
- /* bigger image ONLY for wholesale */
+    height: 200px;
 }
 
 .product-card.wholesale .wholesale-promo-img {
-   width: 100%;
-    max-width: 320px; /* bigger promo image */
-    margin: 12px auto;
+    width: 100%;
+    max-width: 280px;
+    margin: 10px auto;
     display: block;
-
 }
 
 /* 4. Keep Cart Summary Left-Aligned (As requested) */
