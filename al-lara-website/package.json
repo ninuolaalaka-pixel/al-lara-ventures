@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "type": "module",
   "dependencies": {
-    "stripe": "^20.2.0",
-    "resend": "latest"
+    "jsonwebtoken": "^9.0.3",
+    "resend": "latest",
+    "stripe": "^20.2.0"
   }
 }
