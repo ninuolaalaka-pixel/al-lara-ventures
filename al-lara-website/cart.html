@@ -161,7 +161,6 @@
 <div style="margin: 20px 0; display:block;">
 <div id="tabby-cart-snippet" class="tabby-promo" data-tabby-amount="0.00" data-tabby-currency="AED" data-tabby-lang="en"></div>
 </div>
-<!--
 <div style="margin: 20px 0;">
   <tamara-widget 
     id="tamara-cart-snippet" 
@@ -173,7 +172,7 @@
     currency="AED"> 
   </tamara-widget>
 </div>
--->
+
       <div class="checkout-buttons">
       <a href="checkout.html">
       <button id="go-to-uae-checkout" style="
@@ -206,6 +205,23 @@
      // Render cart on page load
      renderCart();
     </script>
+    <script>
+  window.addEventListener('load', function() {
+    window.tamaraWidgetConfig = {
+      lang: 'en',
+      country: 'AE',
+      publicKey: 'd33d7146-75f5-4f4f-aa1c-7fcba67655e7'
+    };
+    var script = document.createElement('script');
+    script.src = 'https://cdn-sandbox.tamara.co/widget-v2/tamara-widget.js';
+    script.onload = function() {
+      setTimeout(function() {
+        if (window.TamaraWidgetV2) window.TamaraWidgetV2.refresh();
+      }, 500);
+    };
+    document.body.appendChild(script);
+  });
+</script>
 
 </body>
 </html>
