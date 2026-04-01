@@ -11,7 +11,7 @@ export default async function handler(req, res) {
     req.headers["authorization"]?.replace("Bearer ", "") || 
     req.headers["authorization"];
 
-  const expectedToken = process.env.TAMARA_NOTIFICATION_KEY?.trim();
+  const expectedToken = process.env.TAMARA_SB_NOTIF_TOKEN?.trim();;
 
   if (!receivedToken || receivedToken.trim() !== expectedToken) {
     console.warn(`AUTH FAILED: Received [${receivedToken}], Expected [${expectedToken}]`);
