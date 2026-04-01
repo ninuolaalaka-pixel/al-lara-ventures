@@ -13,7 +13,8 @@
   <script>window._tabbyPublicKey = "pk_019c445e-ce8a-936c-9575-c76ec14b961d";</script>
   <script async src="https://checkout.tabby.ai/tabby-promo.js"></script>
 
-  <!-- Tamara -->
+
+  <!-- Tamara 
   <script>
     window.tamaraWidgetConfig = {
       lang: 'en',
@@ -22,6 +23,7 @@
     };
   </script>
   <script defer src="https://cdn-sandbox.tamara.co/widget-v2/tamara-widget.js"></script>
+  -->
 
   <!-- Your JS -->
   <script defer src="js/global-ui.js"></script>
@@ -212,30 +214,32 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }, 500);   
 
-// --- TAMARA V2 INJECTION ---
-const tamaraProducts = document.querySelectorAll('.tamara-promo');
+  /*/ --- TAMARA V2 INJECTION ---
+  const tamaraProducts = document.querySelectorAll('.tamara-promo');
 
-tamaraProducts.forEach((el, index) => {
-  const price = el.getAttribute('data-price');
-  // Use the new Custom Element tag instead of a div
- el.innerHTML = `
-    <tamara-widget 
-      type="tamara-summary"
-      inline-type="2"
-      amount="${price}"
-      config='{"theme":"light","badgePosition":"","showExtraContent":"","hidePayInX":false}'>
-    </tamara-widget>`;
+  tamaraProducts.forEach((el, index) => {
+    const price = el.getAttribute('data-price');
+    // Use the new Custom Element tag instead of a div
+   el.innerHTML = `
+      <tamara-widget 
+        type="tamara-summary"
+        inline-type="2"
+        amount="${price}"
+        config='{"theme":"light","badgePosition":"","showExtraContent":"","hidePayInX":false}'>
+      </tamara-widget>`;
+  });
+  */
+
+  // V2 handles rendering automatically when the script loads, 
+  // but we call refresh in case the script loaded before the HTML was injected.
+  /*
+  setTimeout(() => {
+    if (window.TamaraWidgetV2) {
+      window.TamaraWidgetV2.refresh();
+    }
+  }, 500);
+  */
 });
-
-// V2 handles rendering automatically when the script loads, 
-// but we call refresh in case the script loaded before the HTML was injected.
-setTimeout(() => {
-  if (window.TamaraWidgetV2) {
-    window.TamaraWidgetV2.refresh();
-  }
-}, 500);
-});
-
 </script>
 
 
