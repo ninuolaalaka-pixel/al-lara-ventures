@@ -44,6 +44,7 @@ function updateTotal() {
 // --- TAMARA REFRESH LOGIC ---
 // --- TAMARA REFRESH LOGIC ---
 // --- TAMARA REFRESH LOGIC (Official V2 Method) ---
+/*
 const tamaraSnippet = document.getElementById("tamara-cart-snippet");
 
 if (tamaraSnippet) {
@@ -69,7 +70,8 @@ if (tamaraSnippet) {
             }, 2000);
         }
     }, 500); 
-}
+  
+} */
 updateCartCount();
 }
 
