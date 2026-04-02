@@ -16,16 +16,15 @@
   <script>window._tabbyPublicKey = "pk_019c445e-ce8a-936c-9575-c76ec14b961d";</script>
   <script async src="https://checkout.tabby.ai/tabby-promo.js"></script>
 
-  <!-- Tamara 
-  <script>
-    window.tamaraWidgetConfig = {
-      lang: 'en',
-      country: 'AE',
-      publicKey: 'd33d7146-75f5-4f4f-aa1c-7fcba67655e7'
-    };
-  </script>
-  <script defer src="https://cdn-sandbox.tamara.co/widget-v2/tamara-widget.js"></script>
--->
+ <!-- Tamara -->
+<script>
+  window.tamaraWidgetConfig = {
+    lang: 'en',
+    country: 'AE',
+    publicKey: 'd33d7146-75f5-4f4f-aa1c-7fcba67655e7'
+  };
+</script>
+<script defer src="https://cdn-sandbox.tamara.co/widget-v2/tamara-widget.js"></script>
   <!-- Your JS -->
   <script defer src="js/global-ui.js"></script>
 
@@ -205,23 +204,5 @@
      // Render cart on page load
      renderCart();
     </script>
-    <script>
-    window.addEventListener('load', function() {
-     window.tamaraWidgetConfig = {
-      lang: 'en',
-      country: 'AE',
-      publicKey: 'd33d7146-75f5-4f4f-aa1c-7fcba67655e7'
-    };
-    var script = document.createElement('script');
-    script.src = 'https://cdn-sandbox.tamara.co/widget-v2/tamara-widget.js';
-    script.onload = function() {
-      setTimeout(function() {
-        if (window.TamaraWidgetV2) window.TamaraWidgetV2.refresh();
-      }, 500);
-    };
-    document.body.appendChild(script);
-  });
-</script>
-
 </body>
 </html>
