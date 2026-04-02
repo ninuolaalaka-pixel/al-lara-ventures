@@ -215,27 +215,25 @@ document.addEventListener("DOMContentLoaded", function() {
 
 // --- TAMARA V2 INJECTION ---
   const tamaraProducts = document.querySelectorAll('.tamara-promo');
-
-  tamaraProducts.forEach((el, index) => {
+  tamaraProducts.forEach((el) => {
     const price = el.getAttribute('data-price');
-    // Use the new Custom Element tag instead of a div
-   el.innerHTML = `
+    el.innerHTML = `
       <tamara-widget 
         type="tamara-summary"
         inline-type="2"
         amount="${price}"
-        config='{"theme":"light","badgePosition":"","showExtraContent":"","hidePayInX":false}'>
+        config='{"theme":"light","hidePayInX":false}'>
       </tamara-widget>`;
   });
-
   // V2 handles rendering automatically when the script loads, 
   // but we call refresh in case the script loaded before the HTML was injected.
-  setTimeout(() => {
+ setTimeout(() => {
     if (window.TamaraWidgetV2) {
       window.TamaraWidgetV2.refresh();
+      console.log("Tamara Widget Refreshed");
     }
-  }, 500);
-});
+  }, 300); 
+}, 800);
 </script>
 
 </body>

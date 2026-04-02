@@ -47,10 +47,8 @@ function updateTotal() {
 const tamaraSnippet = document.getElementById("tamara-cart-snippet");
 
 if (tamaraSnippet) {
-    // 1. V2 uses the 'amount' attribute (without 'data-')
     tamaraSnippet.setAttribute("amount", total.toFixed(2));
     
-    // 2. Ensure the global config exists for the handshake
     if (!window.tamaraWidgetConfig) {
         window.tamaraWidgetConfig = {
             lang: 'en',
@@ -59,16 +57,19 @@ if (tamaraSnippet) {
         };
     }
 
-    // 3. Trigger the V2 refresh
+    // Wrap in a slightly longer timeout to fight the ChunkLoadError
     setTimeout(() => {
-    if (window.TamaraWidgetV2 && typeof window.TamaraWidgetV2.refresh === 'function') {
-        window.TamaraWidgetV2.refresh();
-    } else if (window.TamaraWidget && typeof window.TamaraWidget.refresh === 'function') {
-        // Fallback for older versions if needed
-        window.TamaraWidget.refresh();
-    }
-    }, 100);
-}  
+        if (window.TamaraWidgetV2 && typeof window.TamaraWidgetV2.refresh === 'function') {
+            window.TamaraWidgetV2.refresh();
+        } else {
+            console.warn("Tamara V2 not ready yet, retrying...");
+            // One-time retry if the CDN was slow
+            setTimeout(() => { 
+                if(window.TamaraWidgetV2) window.TamaraWidgetV2.refresh(); 
+            }, 2000);
+        }
+    }, 500); 
+}
 updateCartCount();
 }
 
