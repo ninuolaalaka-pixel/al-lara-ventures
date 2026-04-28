@@ -130,7 +130,7 @@ export default async function handler(req, res) {
           success: "https://allaraventures.com/checkout-success.html?pg=tamara&orderId={order_id}",
           failure: "https://allaraventures.com/checkout-cancelled.html",
           cancel: "https://allaraventures.com/checkout-cancelled.html",
-          notification: "https://allaraventures.com/api/tamara-webhook"
+          notification: "https://allaraventures.com/api/tamara-webhook" 
         },
 
         // --- MATCHING MOHAMED'S PLATFORM EXACTLY ---
