@@ -1,4 +1,4 @@
-const TAMARA_SANDBOX_BASE_URL = "https://api-sandbox.tamara.co";
+const TAMARA_BASE_URL = "https://api.tamara.co";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
@@ -26,10 +26,10 @@ export default async function handler(req, res) {
   }));
 
   try {
-    const captureResponse = await fetch(`${TAMARA_SANDBOX_BASE_URL}/payments/capture`, {
+    const captureResponse = await fetch(`${TAMARA_BASE_URL}/payments/capture`, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${process.env.TAMARA_API_SANDBOX_TOKEN.trim()}`,
+        "Authorization": `Bearer ${process.env.TAMARA_API_TOKEN.trim()}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({

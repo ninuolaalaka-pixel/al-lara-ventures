@@ -1,6 +1,6 @@
 import { checkCORS, checkRateLimit } from "./_security.js";
 
-const TAMARA_SANDBOX_BASE_URL = "https://api-sandbox.tamara.co";
+const TAMARA_BASE_URL = "https://api.tamara.co";
 
 export default async function handler(req, res) {
   if (!checkCORS(req, res)) return;
@@ -14,10 +14,10 @@ export default async function handler(req, res) {
   }
 
   try {
-    const token = process.env.TAMARA_API_SANDBOX_TOKEN.trim();
+    const token = process.env.TAMARA_API_TOKEN.trim();
     
     // UPDATED ENDPOINT: Using the Simplified Refund path
-    const response = await fetch(`${TAMARA_SANDBOX_BASE_URL}/payments/simplified-refund/${orderId}`, {
+    const response = await fetch(`${TAMARA_BASE_URL}/payments/simplified-refund/${orderId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

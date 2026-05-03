@@ -1,12 +1,12 @@
 import jwt from 'jsonwebtoken';
 
-const TAMARA_SANDBOX_BASE_URL = "https://api-sandbox.tamara.co";
+const TAMARA_BASE_URL = "https://api.tamara.co";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
   const token = req.query.tamaraToken;
-  const secretKey = process.env.TAMARA_SB_NOTIF_TOKEN;
+  const secretKey = process.env.TAMARA_NOTIFICATION_TOKEN;
 
   try {
     if (!token) throw new Error("No token provided");
@@ -21,10 +21,10 @@ export default async function handler(req, res) {
 
   if (event_type === "order_approved") {
     try {
-      const authoriseResponse = await fetch(`${TAMARA_SANDBOX_BASE_URL}/orders/${order_id}/authorise`, {
+      const authoriseResponse = await fetch(`${TAMARA_BASE_URL}/orders/${order_id}/authorise`, {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${process.env.TAMARA_API_SANDBOX_TOKEN.trim()}`,
+          "Authorization": `Bearer ${process.env.TAMARA_API_TOKEN.trim()}`,
           "Content-Type": "application/json"
         }
       });
@@ -46,10 +46,10 @@ export default async function handler(req, res) {
   if (event_type === "order_authorised") {
     try {
       // Fetch full order details from Tamara to get amount and items
-      const orderResponse = await fetch(`${TAMARA_SANDBOX_BASE_URL}/orders/${order_id}`, {
+      const orderResponse = await fetch(`${TAMARA_BASE_URL}/orders/${order_id}`, {
         method: "GET",
         headers: {
-          "Authorization": `Bearer ${process.env.TAMARA_API_SANDBOX_TOKEN.trim()}`,
+          "Authorization": `Bearer ${process.env.TAMARA_API_TOKEN.trim()}`,
           "Content-Type": "application/json"
         }
       });
