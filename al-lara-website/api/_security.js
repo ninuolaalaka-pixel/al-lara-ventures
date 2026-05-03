@@ -13,16 +13,12 @@ export const ratelimit = new Ratelimit({
 
 // Allowed domain
 export const allowedOrigin = ["https://www.allaraventures.com", "https://allaraventures.com"];
-// || (origin && origin.includes("al-lara-ventures") && origin.endsWith(".vercel.app")) // uncomment for preview thumbnails
 
 
 // CORS check
 export function checkCORS(req, res) {
   const origin = req.headers.origin;
-  const isAllowed =
-    allowedOrigin.includes(origin) || (origin && origin.includes("al-lara-ventures") && origin.endsWith(".vercel.app")) // uncomment for preview thumbnails
-
-  if (!isAllowed) {
+  if (!allowedOrigin.includes(origin)) {
     res.status(403).json({ error: "Forbidden" });
     return false;
   }
