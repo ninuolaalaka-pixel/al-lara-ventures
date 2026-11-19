@@ -5,6 +5,7 @@
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 
+
 // Rate limiter: 5 requests per minute per IP
 export const ratelimit = new Ratelimit({
   redis: Redis.fromEnv(),
@@ -27,14 +28,22 @@ export function checkCORS(req, res) {
 
 // Rate limit check
 export async function checkRateLimit(req, res) {
-  const ip = req.headers["x-forwarded-for"] || "unknown";
-  const { success } = await ratelimit.limit(ip);
+  // x-forwarded-for can hold several IPs ("client, proxy1, proxy2"), so take the first
+  const ip = (req.headers["x-forwarded-for"] || "unknown").split(",")[0].trim();
 
-  if (!success) {
-    res.status(429).json({ error: "Too many requests" });
-    return false;
+  try {
+    const { success } = await ratelimit.limit(ip);
+
+    if (!success) {
+      res.status(429).json({ error: "Too many requests" });
+      return false;
+    }
+    return true;
+  } catch (error) {
+    // Redis is down or unreachable: log it, but don't block real customers
+    console.error("Rate limit check failed, allowing request:", error);
+    return true;
   }
-  return true;
 }
 
 // Bot protection (Turnstile)
