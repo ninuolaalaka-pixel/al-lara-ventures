@@ -48,30 +48,37 @@ export async function checkRateLimit(req, res) {
 
 // Bot protection (Turnstile)
 export async function checkBot(req, res) {
-  const token = req.body["cf-turnstile-response"];
+  const token = req.body?.["cf-turnstile-response"];
   if (!token) {
     res.status(403).json({ error: "Missing bot token" });
     return false;
   }
 
-  const verify = await fetch(
-    "https://challenges.cloudflare.com/turnstile/v0/siteverify",
-    {
-      method: "POST",
-      body: new URLSearchParams({
-        secret: process.env.TURNSTILE_SECRET_KEY,
-        response: token,
-      }),
+  try {
+    const verify = await fetch(
+      "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+      {
+        method: "POST",
+        body: new URLSearchParams({
+          secret: process.env.TURNSTILE_SECRET_KEY,
+          response: token,
+        }),
+      }
+    );
+
+    const outcome = await verify.json();
+
+    if (!outcome.success) {
+      res.status(403).json({ error: "Bot verification failed" });
+      return false;
     }
-  );
 
-  const outcome = await verify.json();
-
-  if (!outcome.success) {
-    res.status(403).json({ error: "Bot verification failed" });
+    return true;
+  } catch (error) {
+    // Couldn't reach Cloudflare: block, but with a clear, retryable message
+    console.error("Turnstile verification error:", error);
+    res.status(503).json({ error: "Verification unavailable, please try again" });
     return false;
   }
-
-  return true;
 }
 
