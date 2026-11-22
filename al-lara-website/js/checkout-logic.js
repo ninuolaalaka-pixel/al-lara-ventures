@@ -1,8 +1,7 @@
 // Load cart for checkout page
 const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
 document.addEventListener("DOMContentLoaded", () => {
-
-    // --- 1. BROWSER NAVIGATION HANDLING ---
+  // --- 1. BROWSER NAVIGATION HANDLING ---Z
         // --- 1. BROWSER NAVIGATION HANDLING ---
 
     // Remember how each payment button looks when the page first loads

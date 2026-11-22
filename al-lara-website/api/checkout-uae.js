@@ -1,4 +1,5 @@
 import { checkCORS, checkRateLimit} from "./_security.js";
+import { checkOrder } from "./_pricing.js";
 
 export default async function handler(req, res) {
   if (!checkCORS(req, res)) return;
@@ -9,7 +10,13 @@ export default async function handler(req, res) {
   }
 
   // We now pull 'amount' directly, which includes the delivery fee from the frontend
-  const { amount, cartItems, customer } = req.body || {};
+    const { amount, cartItems, customer } = req.body || {};
+
+  // Safety check: refuse orders whose prices or total don't match our own price list
+  const check = checkOrder(cartItems, customer, amount);
+  if (!check.ok) {
+    return res.status(400).json({ success: false, message: check.message });
+  }
 
   if (!amount || amount <= 0) {
     return res.status(400).json({ error: "Invalid total amount" });

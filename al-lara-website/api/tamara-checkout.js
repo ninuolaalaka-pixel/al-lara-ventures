@@ -1,4 +1,5 @@
 import { checkCORS, checkRateLimit } from "./_security.js";
+import { checkOrder } from "./_pricing.js";
 const TAMARA_BASE_URL = "https://api.tamara.co";
 
 function round2(n) {
@@ -10,8 +11,14 @@ export default async function handler(req, res) {
   if (!(await checkRateLimit(req, res))) return;
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
-  const { amount, cartItems, customer } = req.body || {};
+    const { amount, cartItems, customer } = req.body || {};
 
+  // Safety check: refuse orders whose prices or total don't match our own price list
+  const check = checkOrder(cartItems, customer, amount);
+  if (!check.ok) {
+    return res.status(400).json({ success: false, message: check.message });
+  }
+  
   // --- 1. DYNAMIC DATE (DD-MM-YYYY) ---
   const today = new Date();
   const formattedDate = `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`;
