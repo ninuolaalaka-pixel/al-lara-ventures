@@ -3,9 +3,34 @@ const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
 document.addEventListener("DOMContentLoaded", () => {
 
     // --- 1. BROWSER NAVIGATION HANDLING ---
+        // --- 1. BROWSER NAVIGATION HANDLING ---
+
+    // Remember how each payment button looks when the page first loads
+    const paymentButtons = ["checkout-uae-btn", "pay-with-tabby", "pay-with-tamara"]
+        .map((id) => document.getElementById(id))
+        .filter(Boolean)
+        .map((btn) => ({ btn, html: btn.innerHTML }));
+
+    // Put every payment button back to normal (original look, clickable)
+    function resetPaymentButtons() {
+        paymentButtons.forEach(({ btn, html }) => {
+            btn.innerHTML = html;
+            btn.disabled = false;
+        });
+    }
+
     window.addEventListener("pageshow", (event) => {
-        // Reset totals if user clicks 'back' from a payment gateway
-        if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
+        // Always show normal buttons (covers the Back button from a payment page)
+        resetPaymentButtons();
+
+        const cameBack = event.persisted || (window.performance && window.performance.navigation && window.performance.navigation.type === 2);
+        if (cameBack) {
+            // If the cart was cleared after a successful payment, don't show a stale checkout
+            const cartNow = JSON.parse(localStorage.getItem("cart")) || [];
+            if (cartNow.length === 0) {
+                window.location.replace("cart.html");
+                return;
+            }
             if (typeof calculateFinalTotal === "function") {
                 calculateFinalTotal();
             }
@@ -104,12 +129,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     window.location.href = data.url;
                 } else {
                     window.showCustomAlert("Checkout Error");
-                    checkoutUaeBtn.innerText = "Pay Now (Ziina)";
-                    checkoutUaeBtn.disabled = false;
+                    resetPaymentButtons();
                 }
             } catch (err) {
                 window.showCustomAlert("Network error.");
-                checkoutUaeBtn.disabled = false;
+                resetPaymentButtons();
+            
             }
         });
     }
@@ -153,14 +178,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (data.success) {
                     window.location.href = data.url;
                 } else {
-                    window.showCustomAlert(data.message || "Tabby is unable to approve this purchase.");
-                    tabbyBtn.innerText = "Pay in 4 with Tabby";
-                    tabbyBtn.disabled = false;
+                  window.showCustomAlert(data.message || "Tabby is unable to approve this purchase.");
+                    resetPaymentButtons();
                 }
             } catch (err) {
                 console.error("Network error:", err);
                 window.showCustomAlert("Connection error. Please try again.");
-                tabbyBtn.disabled = false;
+                resetPaymentButtons();
             }
         });
     }
@@ -216,11 +240,8 @@ if (tamaraBtn) {
       }
 
     } catch (err) {
-      window.showCustomAlert("Tamara is currently unavailable: " + err.message);
-      tamaraBtn.disabled = false;
-      tamaraBtn.innerHTML = originalContent;
-      // Add this line after you get the "data" from the fetch
-      console.log("FULL TAMARA RESPONSE:", data);
+    window.showCustomAlert("Tamara is currently unavailable: " + err.message);
+      resetPaymentButtons();
     }
   });
 }
