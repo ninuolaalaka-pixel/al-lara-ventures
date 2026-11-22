@@ -1,16 +1,23 @@
-import { checkCORS, checkRateLimit } from "./_security.js";
+import { checkRateLimit, requireSecret } from "./_security.js";
 
 const TAMARA_BASE_URL = "https://api.tamara.co";
 
 export default async function handler(req, res) {
-  if (!checkCORS(req, res)) return;
   if (!(await checkRateLimit(req, res))) return;
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
+
+  // Admin only (Postman / your own tools). Send the header  x-api-secret: <ADMIN_API_SECRET>.
+  // This replaces the old CORS check, which anyone could fake from outside a browser.
+  if (!requireSecret(req, res, "ADMIN_API_SECRET")) return;
 
   const { orderId, amount, comment } = req.body || {};
 
   if (!orderId || !amount) {
     return res.status(400).json({ success: false, message: "orderId and amount are required" });
+  }
+
+  if (!Number.isFinite(parseFloat(amount)) || parseFloat(amount) <= 0) {
+    return res.status(400).json({ success: false, message: "amount must be a positive number" });
   }
 
   try {

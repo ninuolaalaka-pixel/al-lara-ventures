@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="robots" content="noindex, nofollow">
   <title>Admin – Create Payment Link | AL LARA VENTURES UAE</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="css/style.css">
@@ -156,18 +157,25 @@
   </div>
   </div>
 
-  <script>
-    // SIMPLE PASSWORD PROTECTION
-    const ADMIN_PASSWORD = "allaraventures123"; // Change this to your desired password
+    <script>
+    // The password is NOT stored in this page. The server checks it
+    // (ADMIN_API_SECRET in Vercel), so viewing the source reveals nothing.
+    let adminKey = "";
 
     function unlock() {
       const pass = document.getElementById("adminPass").value;
-      if (pass === ADMIN_PASSWORD) {
-        document.getElementById("lockscreen").style.display = "none";
-        document.getElementById("content").style.display = "block";
-      } else {
-        alert("Wrong password");
-      }
+      if (!pass) return;
+      adminKey = pass;
+      document.getElementById("lockscreen").style.display = "none";
+      document.getElementById("content").style.display = "block";
+    }
+
+    function relock(message) {
+      adminKey = "";
+      document.getElementById("adminPass").value = "";
+      document.getElementById("content").style.display = "none";
+      document.getElementById("lockscreen").style.display = "flex";
+      alert(message);
     }
 
     // GENERATE PAYMENT LINK
@@ -176,29 +184,47 @@
       const email = document.getElementById("email").value;
       const amount = document.getElementById("amount").value;
       const message = document.getElementById("message").value;
+      const result = document.getElementById("result");
 
-      const res = await fetch("/api/create-payment-link", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          amount: Number(amount),
-          customerName: name,
-          customerEmail: email,
-          message
-        })
-      });
+      try {
+        const res = await fetch("/api/create-payment-link", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-secret": adminKey
+          },
+          body: JSON.stringify({
+            amount: Number(amount),
+            customerName: name,
+            customerEmail: email,
+            message
+          })
+        });
 
-      const data = await res.json();
+        if (res.status === 401) return relock("Wrong password");
+        if (res.status === 429) {
+          result.textContent = "Too many attempts. Wait a minute and try again.";
+          return;
+        }
 
-      if (data.success) {
-        document.getElementById("result").innerHTML =
-          `Payment Link:<br><a href="${data.url}" target="_blank">${data.url}</a>`;
-      } else {
-        document.getElementById("result").innerHTML = "Error creating link.";
+        const data = await res.json();
+        result.textContent = "";
+
+        if (data.success) {
+          const link = document.createElement("a");
+          link.href = data.url;
+          link.target = "_blank";
+          link.rel = "noopener";
+          link.textContent = data.url;
+          result.append("Payment Link:", document.createElement("br"), link);
+        } else {
+          result.textContent = "Error creating link.";
+        }
+      } catch (err) {
+        result.textContent = "Network error. Please try again.";
       }
     };
   </script>
-  
 
 </body>
 </html>

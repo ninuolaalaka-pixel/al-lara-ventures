@@ -4,6 +4,7 @@
 
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
+import crypto from "crypto";
 
 
 // Rate limiter: 5 requests per minute per IP
@@ -21,6 +22,21 @@ export function checkCORS(req, res) {
   const origin = req.headers.origin;
   if (!allowedOrigin.includes(origin)) {
     res.status(403).json({ error: "Forbidden" });
+    return false;
+  }
+  return true;
+}
+
+// Secret check for private endpoints (admin tools).
+// The caller must send the header  x-api-secret: <value of the env var>.
+// Both sides are hashed first so the comparison is constant-time and never throws.
+export function requireSecret(req, res, envName) {
+  const expected = process.env[envName] || "";
+  const given = String(req.headers["x-api-secret"] || "");
+  const a = crypto.createHash("sha256").update(given).digest();
+  const b = crypto.createHash("sha256").update(expected).digest();
+  if (!expected || !crypto.timingSafeEqual(a, b)) {
+    res.status(401).json({ error: "Unauthorized" });
     return false;
   }
   return true;
@@ -81,4 +97,3 @@ export async function checkBot(req, res) {
     return false;
   }
 }
-
