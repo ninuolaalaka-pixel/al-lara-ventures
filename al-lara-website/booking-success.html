@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Booking Successful | AL LARA VENTURES UAE</title>
+ <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Main CSS -->
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" type="image/png" href="images/Service Business Logo AL LARA VENTURES.png">
   <meta name="description" content="AL LARA VENTURES provides premium cleaning services and high‑quality cleaning products across the UAE. Book professional cleaners or shop our products online.">
@@ -11,70 +15,84 @@
     body {
       margin: 0;
       padding: 0;
-      font-family: Arial, sans-serif;
-      background: #f3e8d7; /* Soft beige */
-      color: #2e7d32; /* Brand green */
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      font-family: "Poppins", sans-serif;
+      background: #fff8ec;
+      color: #2e7d32;
+    }
+
+    .success-hero {
+      padding: 80px 20px;
       text-align: center;
     }
 
-    h1 {
-      font-size: 36px;
+    .success-hero h1 {
+      font-size: 40px;
+      font-weight: 700;
       margin-bottom: 10px;
       color: #2e7d32;
-      font-weight: 800;
     }
 
-    p {
-      font-size: 18px;
+    .success-hero p {
+      font-size: 16px;
+      color: #4b6b4f;
       margin-bottom: 30px;
-      max-width: 400px;
-      line-height: 1.5;
+    }
+
+    .success-card {
+      background: #ffffff;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 30px 24px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+      text-align: center;
+    }
+
+    .success-card h2 {
+      font-size: 22px;
+      margin-bottom: 10px;
       color: #2e7d32;
     }
 
-    a {
-      display: inline-block;
+    .success-buttons {
+      margin-top: 30px;
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .success-buttons a {
       padding: 12px 24px;
       background: #2e7d32;
       color: #fff;
       text-decoration: none;
-      font-weight: bold;
-      border-radius: 6px;
+      border-radius: 8px;
+      font-weight: 600;
       transition: 0.3s;
     }
 
-    a:hover {
+    .success-buttons a:hover {
       background: #256628;
     }
   </style>
-    
 </head>
+
 <body>
 
-  <body>
   <!-- HEADER -->
   <header>
     <div class="container">
-      <nav style="display:flex; justify-content:space-between; align-items:center;">
-        
-      <!-- Logo + Text Container -->
-       <div style="display:flex; align-items:center; gap:10px;">
-  
-  <!-- Logo Image -->
-  <a href="index.html">
-    <img src="images\Service Business Logo AL LARA VENTURES.png" alt="AL LARA VENTURES Logo" style="height:40px; width:auto;">
-  </a>
+      <nav style="display:flex; justify-content:space-between; align-items:center; padding:20px 0;">
 
-  <!-- Text -->
-  <strong style="color:#2e7d32; font-size:22px; font-weight:800;">
-    <a href="index.html" class="logo-link">AL LARA VENTURES</a>
-  </strong>
-</div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <a href="index.html">
+            <img src="images/Service Business Logo AL LARA VENTURES.png" alt="AL LARA VENTURES Logo" style="height:40px;">
+          </a>
+          <strong style="color:#2e7d32; font-size:22px; font-weight:800;">
+            <a href="index.html" class="logo-link">AL LARA VENTURES</a>
+          </strong>
+        </div>
 
         <div style="display:flex; gap:20px; align-items:center;">
           <a href="index.html" class="nav-link">Home</a>
@@ -83,10 +101,7 @@
           <a href="coming-soon.html" class="nav-link">Nigeria Store</a>
           <a href="index.html#about" class="nav-link">About</a>
           <a href="index.html#contact" class="nav-link">Contact</a>
-
-          <a href="cart.html" class="cart-link">
-            🛒 <span id="cart-count">0</span>
-          </a>
+          <a href="cart.html" class="cart-link">🛒 <span id="cart-count">0</span></a>
         </div>
 
       </nav>
