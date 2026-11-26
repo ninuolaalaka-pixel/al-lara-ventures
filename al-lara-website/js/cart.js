@@ -231,7 +231,10 @@ if (sendMessaggeBtn) {
         emailInput.value = "";
         telInput.value = "";
         messageInput.value = "";
-      } else {
+        window.showCustomAlert("Thank you! Your message has been sent.");
+      }
+      
+       else {
         console.error(data);
         window.showCustomAlert("Something went wrong. Please try again later.");
       }
