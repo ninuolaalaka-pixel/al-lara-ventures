@@ -1,4 +1,6 @@
-import { checkCORS, checkRateLimit} from "./_security.js";
+import { checkCORS, checkRateLimit } from "./_security.js";
+import { checkFormLimits } from "./_limits.js";
+import { escapeHtml, escapeHtmlWithBreaks, cleanText, isValidEmail, isValidPhone } from "./_utils.js";
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -11,28 +13,58 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { name, email, tel, message } = req.body || {};
+  // Only accept plain text, and trim it
+  const body = req.body || {};
+  const name = cleanText(body.name);
+  const email = cleanText(body.email);
+  const tel = cleanText(body.tel);
+  const message = cleanText(body.message);
 
   if (!name || !email || !tel || !message) {
     return res.status(400).json({ error: "Missing fields" });
   }
+  if (name.length < 2 || name.length > 100) {
+    return res.status(400).json({ error: "Invalid name" });
+  }
+  if (!isValidEmail(email)) {
+    return res.status(400).json({ error: "Invalid email" });
+  }
+  if (!isValidPhone(tel)) {
+    return res.status(400).json({ error: "Invalid phone number" });
+  }
+  if (message.length < 10 || message.length > 1000) {
+    return res.status(400).json({ error: "Invalid message length" });
+  }
 
-  // For now, just log it (later we'll send email / save to DB)
-  console.log("New contact message:", { name, email, tel, message });
+  // Stop one visitor (or a bot) from flooding the inbox
+  if (!(await checkFormLimits(req, res, "contact"))) return;
 
-  //contact
-await resend.emails.send({
-  from: "AL LARA VENTURES <contact@allaraventures.com>",
-  to: "contact@allaraventures.com",
-  subject: "New Contact Message",
-  html: `
-    <h2>New Contact Message</h2>
-    <p><strong>Name:</strong> ${name}</p>
-    <p><strong>Email:</strong> ${email}</p>
-    <p><strong>Phone:</strong> ${tel}</p>
-    <p><strong>Message:</strong><br>${message}</p>
-  `
-});
+  // Customer details are NOT written to the logs
+  console.log("New contact message received");
+
+  try {
+    const result = await resend.emails.send({
+      from: "AL LARA VENTURES <contact@allaraventures.com>",
+      to: "contact@allaraventures.com",
+      subject: "New Contact Message",
+      html: `
+        <h2>New Contact Message</h2>
+        <p><strong>Name:</strong> ${escapeHtml(name)}</p>
+        <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+        <p><strong>Phone:</strong> ${escapeHtml(tel)}</p>
+        <p><strong>Message:</strong><br>${escapeHtmlWithBreaks(message)}</p>
+      `
+    });
+
+    // The email service reports problems in the result instead of throwing
+    if (result?.error) {
+      console.error("Contact email was not sent:", result.error.message || result.error.name || "unknown error");
+      return res.status(502).json({ error: "Message could not be sent" });
+    }
+  } catch (error) {
+    console.error("Contact email error:", error.message);
+    return res.status(502).json({ error: "Message could not be sent" });
+  }
 
   return res.status(200).json({ success: true, message: "Message received" });
 }
